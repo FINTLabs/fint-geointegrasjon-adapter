@@ -96,7 +96,7 @@ public class EventHandlerService {
     }
 
     private boolean healthCheck() {
-        return handlers.stream().allMatch(Handler::health) && geointegrasjonService.healthy();
+        return handlers.stream().allMatch(Handler::health);
     }
 
     @PostConstruct
