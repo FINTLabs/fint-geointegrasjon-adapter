@@ -1,5 +1,5 @@
 # FINT _GeoIntegrasjon_ Adapter
-This adapter integrates with [GeoUntegrasjon Arkiv](https://geointegrasjon.no/arkiv/).
+This adapter integrates with [GeoIntegrasjon Arkiv](https://geointegrasjon.no/arkiv/).
 
 ## Adapter configuration
 | Key | Description | Default |
