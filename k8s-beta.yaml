@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adapter-geointegrasjon-fintlabs
+spec:
+  selector:
+    matchLabels:
+      app: adapter-geointegrasjon-fintlabs
+  template:
+    metadata:
+      labels:
+        app: adapter-geointegrasjon-fintlabs
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: adapter-geointegrasjon-fintlabs
+          image: fintlabs.azurecr.io/fint-geointegrasjon-adapter:PR-10.3
+          resources:
+            limits:
+              memory: "2Gi"
+              cpu: "2"
+            requests:
+              memory: "1Gi"
+              cpu: "250m"
+          ports:
+            - containerPort: 8091
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8091
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          envFrom:
+            - secretRef:
+                name: svarut-test-fintlabs
+          env:
+            - {name: TZ, value: Europe/Oslo}
+            - name: JAVA_TOOL_OPTIONS
+              value: >-
+                -Xmx1G -verbose:gc
+                -XX:+ExitOnOutOfMemoryError
+                -Dfile.encoding=UTF-8
+                -Dcom.sun.xml.ws.transport.http.client.HttpTransportPipe.dump=true
+                -Dcom.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump=true
+                -Dcom.sun.xml.ws.transport.http.HttpAdapter.dump=true
+                -Dcom.sun.xml.internal.ws.transport.http.HttpAdapter.dump=true
+                -Dcom.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold=100000
+            - {name: springfox.title, value: "SvarUt (geointegrasjon) Adapter for FINTLABS"}
+            - {name: security.basic.enabled, value: "false"}
+            - {name: fint.adapter.organizations, value: fintlabs.no}
+            - {name: fint.adapter.reject-unknown-events, value: 'false'}
+            - {name: fint.geointegrasjon.title.format.tilskuddfartoy, value: 'Tilskudd - ${kallesignal} - ${fartoyNavn} - ${kulturminneId} - ${soknadsnummer.identifikatorverdi} - ${tittel}'}
+            - {name: fint.internal-files.type, value: 'BLOB'}
+            - {name: fint.internal-files.connection-string, valueFrom: {secretKeyRef: {name: fintdockervolumes, key: connection-string}}}
+            - {name: spring.data.mongodb.uri, valueFrom: {secretKeyRef: {name: fint-mongo, key: mongodb}}}
+            - {name: spring.data.mongodb.database, value: 'svarut-geointegrasjon'}
+            - {name: fint.adapter.endpoints.providers.arkiv, value: https://beta.felleskomponent.no/administrasjon/arkiv/provider}
+            - {name: fint.adapter.endpoints.providers.kulturminne, value: https://beta.felleskomponent.no/kultur/kulturminnevern/provider}
+            - {name: fint.oauth.enabled, value: 'true'}
+            - {name: fint.oauth.username, valueFrom: {secretKeyRef: {name: fake-adapter, key: username}}}
+            - {name: fint.oauth.password, valueFrom: {secretKeyRef: {name: fake-adapter, key: password}}}
+            - {name: fint.oauth.access-token-uri, value: 'https://idp.felleskomponent.no/nidp/oauth/nam/token'}
+            - {name: fint.oauth.client-id, valueFrom: {secretKeyRef: {name: fake-adapter, key: client-id}}}
+            - {name: fint.oauth.client-secret, valueFrom: {secretKeyRef: {name: fake-adapter, key: client-secret}}}
+            - {name: fint.oauth.scope, value: 'fint-client'}
