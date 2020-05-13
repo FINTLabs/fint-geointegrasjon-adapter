@@ -1,15 +1,16 @@
-package no.fint.geointegrasjon.service.handlers;
+package no.fint.geointegrasjon.service.handler.noark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
 import no.fint.event.model.ResponseStatus;
+import no.fint.geointegrasjon.repository.InternalRepository;
+import no.fint.geointegrasjon.service.handler.Handler;
+import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.administrasjon.arkiv.ArkivActions;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.administrasjon.arkiv.DokumentfilResource;
-import no.fint.geointegrasjon.repository.InternalRepository;
-import no.fint.geointegrasjon.utils.FintUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,7 @@ public class UpdateDokumentfilHandler implements Handler {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private AtomicLong identifier =
+    private final AtomicLong identifier =
             new AtomicLong(Long
                     .parseLong(DateTimeFormatter
                             .ofPattern("yyyyDDDHHmm'000'")

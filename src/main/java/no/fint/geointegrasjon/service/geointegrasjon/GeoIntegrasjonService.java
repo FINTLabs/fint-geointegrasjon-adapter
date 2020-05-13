@@ -45,14 +45,42 @@ public class GeoIntegrasjonService {
     private SakArkivOppdateringPort sakArkivOppdatering;
 
     @PostConstruct
-    private void init() throws ApplicationException, ImplementationException, ValidationException, SystemException, FinderException, OperationalException {
+    private void init() {
         arkivInnsyn = new InnsynService().getArkivInnsyn();
         sakArkivOppdatering = new OppdateringService().getSakArkivOppdatering();
         setupEndpoint(arkivInnsyn, adapterProps.getServiceUrl() + innsynLocation, adapterProps.getUsername(), adapterProps.getPassword());
         setupEndpoint(sakArkivOppdatering, adapterProps.getServiceUrl() + oppdateringLocation, adapterProps.getUsername(), adapterProps.getPassword());
 
-        final KodeListe mappetype = arkivInnsyn.hentKodeliste("Mappetype", new ObjectFactory().createArkivKontekst());
-        mappetype.getListe().forEach(k -> log.info("{}: {}", k.getKodeverdi(), k.getKodebeskrivelse()));
+    }
+
+    public KodeListe hentKodeliste(String kodelistenavn) {
+        try {
+            return arkivInnsyn.hentKodeliste(kodelistenavn, null);
+        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public SaksmappeListe finnSaksmapper(String tittel)  {
+        try {
+            final ObjectFactory objectFactory = new ObjectFactory();
+            SoekskriterieListe sok = objectFactory.createSoekskriterieListe();
+            final Soekskriterie soekskriterie = objectFactory.createSoekskriterie();
+            soekskriterie.setOperator(SoekeOperatorEnum.EQ);
+            final Soekefelt soekefelt = objectFactory.createSoekefelt();
+            soekefelt.setFeltnavn("tittel");
+            soekefelt.setFeltverdi(tittel);
+            soekskriterie.setKriterie(soekefelt);
+            sok.getListe().add(soekskriterie);
+            boolean returnerMerknad = false;
+            boolean returnerTilleggsinformasjon = false;
+            boolean returnerSakspart = false;
+            boolean returnerKlasse = false;
+            ArkivKontekst kontekst = null;
+            return arkivInnsyn.finnSaksmapper(sok, returnerMerknad, returnerTilleggsinformasjon, returnerSakspart, returnerKlasse, kontekst);
+        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void setupEndpoint(Object port, String address, String username, String password) {

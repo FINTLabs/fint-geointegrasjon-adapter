@@ -1,4 +1,4 @@
-package no.fint.geointegrasjon.service.handlers;
+package no.fint.geointegrasjon.service.handler;
 
 import no.fint.event.model.Event;
 import no.fint.model.resource.FintLinks;
