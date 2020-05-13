@@ -1,4 +1,4 @@
-package no.fint.provider.geointegrasjon.repository
+package no.fint.geointegrasjon.repository
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.fint.event.model.Event

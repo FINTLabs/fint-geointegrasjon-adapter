@@ -1,4 +1,4 @@
-package no.fint.provider.geointegrasjon.utils
+package no.fint.geointegrasjon.utils
 
 import spock.lang.Specification
 

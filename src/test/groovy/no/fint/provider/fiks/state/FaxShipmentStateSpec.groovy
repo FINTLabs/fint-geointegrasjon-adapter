@@ -1,4 +1,4 @@
-package no.fint.provider.geointegrasjon.state
+package no.fint.geointegrasjon.state
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.fint.model.felles.kompleksedatatyper.Identifikator

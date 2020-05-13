@@ -1,4 +1,4 @@
-package no.fint.provider.geointegrasjon.utils
+package no.fint.geointegrasjon.utils
 
 import no.fint.provider.geointegrasjon.model.FaxShipment
 import spock.lang.Specification

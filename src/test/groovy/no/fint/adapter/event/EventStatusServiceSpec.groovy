@@ -1,9 +1,8 @@
-package no.fint.geointegrasjon.service
+package no.fint.adapter.event
 
 import no.fint.event.model.DefaultActions
 import no.fint.event.model.Event
 import no.fint.provider.adapter.FintAdapterEndpoints
-import no.fint.provider.adapter.event.EventStatusService
 import no.fint.provider.geointegrasjon.SupportedActions
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -11,7 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 import spock.lang.Specification
 
-class EventHandlerServiceSpec extends Specification {
+class EventStatusServiceSpec extends Specification {
     private EventStatusService eventStatusService
     private FintAdapterEndpoints endpoints
     private SupportedActions supportedActions
@@ -21,11 +20,7 @@ class EventHandlerServiceSpec extends Specification {
         restTemplate = Mock(RestTemplate)
         endpoints = Mock()
         supportedActions = new SupportedActions()
-        eventStatusService = new EventStatusService(
-                endpoints: endpoints,
-                restTemplate: restTemplate,
-                supportedActions: supportedActions
-        )
+        eventStatusService = new EventStatusService(endpoints: endpoints, restTemplate: restTemplate, supportedActions: supportedActions)
     }
 
     def "Verify event and POST event status"() {
