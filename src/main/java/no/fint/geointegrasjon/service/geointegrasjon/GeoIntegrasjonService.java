@@ -19,7 +19,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.jws.WebMethod;
+import javax.jws.WebResult;
 import javax.security.auth.callback.CallbackHandler;
+import javax.xml.ws.RequestWrapper;
+import javax.xml.ws.ResponseWrapper;
+import java.math.BigInteger;
 import java.util.Arrays;
 
 @Slf4j
@@ -59,6 +64,40 @@ public class GeoIntegrasjonService {
         } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public SaksmappeListe finnSaksmapperGittSystemId(String id)  {
+        try {
+            final ObjectFactory objectFactory = new ObjectFactory();
+            SakSystemId nokkel = objectFactory.createSakSystemId();
+            SystemID systemID = objectFactory.createSystemID();
+            systemID.setId(id);
+            nokkel.setSystemID(systemID);
+            return getSaksmappeListeBySaksnoekkel(nokkel);
+        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public SaksmappeListe finnSaksmapperGittSaksnummer(String saksaar, String sakssekvensnummer)  {
+        try {
+            final ObjectFactory objectFactory = new ObjectFactory();
+            Saksnummer nokkel = objectFactory.createSaksnummer();
+            nokkel.setSaksaar(new BigInteger(saksaar));
+            nokkel.setSakssekvensnummer(new BigInteger(sakssekvensnummer));
+            return getSaksmappeListeBySaksnoekkel(nokkel);
+        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private SaksmappeListe getSaksmappeListeBySaksnoekkel(Saksnoekkel nokkel) throws SystemException, ImplementationException, FinderException, ValidationException, OperationalException, ApplicationException {
+        boolean returnerMerknad = true;
+        boolean returnerTilleggsinformasjon = true;
+        boolean returnerSakspart = true;
+        boolean returnerKlasse = true;
+        ArkivKontekst kontekst = null;
+        return arkivInnsyn.finnSaksmapperGittNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon, returnerSakspart, returnerKlasse, kontekst);
     }
 
     public SaksmappeListe finnSaksmapper(String tittel)  {

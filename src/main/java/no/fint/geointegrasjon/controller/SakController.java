@@ -15,8 +15,18 @@ public class SakController {
     @Autowired
     private GeoIntegrasjonService geoIntegrasjonService;
 
-    @GetMapping("/sak/{title}")
+    @GetMapping("/sak/title/{title}")
     public SaksmappeListe getSak(@PathVariable String title) {
         return geoIntegrasjonService.finnSaksmapper(title);
+    }
+
+    @GetMapping("/sak/id/{id}")
+    public SaksmappeListe getSakById(@PathVariable String id) {
+        return geoIntegrasjonService.finnSaksmapperGittSystemId(id);
+    }
+
+    @GetMapping("/sak/{year}/{sequence}")
+    public SaksmappeListe getSakByCaseNumber(@PathVariable String year, @PathVariable String sequence) {
+        return geoIntegrasjonService.finnSaksmapperGittSaksnummer(year, sequence);
     }
 }
