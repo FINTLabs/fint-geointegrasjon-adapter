@@ -10,8 +10,10 @@ adapter.log
 file-cache/
 generated-sources/
 application-*.yml
+application-*.properties
 /bin/
 /.classpath
 /.project
 /.settings/
 /.vscode/
+trustStore
