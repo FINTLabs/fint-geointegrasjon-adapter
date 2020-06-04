@@ -1,7 +1,7 @@
 package no.fint.geointegrasjon.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.geointegrasjon.service.handler.noark.KodeverkHandler;
+import no.fint.geointegrasjon.handler.noark.KodeverkHandler;
 import no.fint.model.resource.FintLinks;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

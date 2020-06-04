@@ -1,12 +1,12 @@
-package no.fint.geointegrasjon.service.handler.noark;
+package no.fint.geointegrasjon.handler.noark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
 import no.fint.event.model.ResponseStatus;
+import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.repository.InternalRepository;
-import no.fint.geointegrasjon.service.handler.Handler;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.administrasjon.arkiv.ArkivActions;
 import no.fint.model.resource.FintLinks;

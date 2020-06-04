@@ -19,11 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.jws.WebMethod;
-import javax.jws.WebResult;
 import javax.security.auth.callback.CallbackHandler;
-import javax.xml.ws.RequestWrapper;
-import javax.xml.ws.ResponseWrapper;
 import java.math.BigInteger;
 import java.util.Arrays;
 

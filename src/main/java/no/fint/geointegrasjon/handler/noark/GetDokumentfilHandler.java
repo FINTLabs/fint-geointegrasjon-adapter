@@ -1,10 +1,10 @@
-package no.fint.geointegrasjon.service.handler.noark;
+package no.fint.geointegrasjon.handler.noark;
 
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.exception.FileNotFound;
-import no.fint.geointegrasjon.repository.InternalRepository;
-import no.fint.geointegrasjon.service.handler.Handler;
+import no.fint.geointegrasjon.handler.Handler;
+import no.fint.geointegrasjon.service.noark.dokument.DokumentfilService;
 import no.fint.model.administrasjon.arkiv.ArkivActions;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.administrasjon.arkiv.DokumentfilResource;
@@ -21,7 +21,7 @@ import java.util.Set;
 public class GetDokumentfilHandler implements Handler {
 
     @Autowired
-    private InternalRepository repository;
+    private DokumentfilService dokumentfilService;
 
     @Override
     public void accept(Event<FintLinks> response) {
@@ -33,7 +33,7 @@ public class GetDokumentfilHandler implements Handler {
                 response.setMessage("Invalid query: " + query);
                 return;
             }
-            DokumentfilResource dokumentfilResource = repository.getFile(StringUtils.removeStartIgnoreCase(query, "systemid/"));
+            DokumentfilResource dokumentfilResource = dokumentfilService.getDokumentfil(StringUtils.removeStartIgnoreCase(query, "systemid/"));
             response.addData(dokumentfilResource);
             response.setResponseStatus(ResponseStatus.ACCEPTED);
         } catch (FileNotFound | IOException e) {
@@ -50,6 +50,6 @@ public class GetDokumentfilHandler implements Handler {
 
     @Override
     public boolean health() {
-        return repository.health();
+        return dokumentfilService.health();
     }
 }
