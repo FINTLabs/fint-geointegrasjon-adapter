@@ -66,7 +66,7 @@ public class GeoIntegrasjonService {
         }
     }
 
-    public SaksmappeListe finnSaksmapperGittSystemId(String id)  {
+    public SaksmappeListe finnSaksmapperGittSystemId(String id) {
         try {
             final ObjectFactory objectFactory = new ObjectFactory();
             SakSystemId nokkel = objectFactory.createSakSystemId();
@@ -79,7 +79,7 @@ public class GeoIntegrasjonService {
         }
     }
 
-    public SaksmappeListe finnSaksmapperGittSaksnummer(String saksaar, String sakssekvensnummer)  {
+    public SaksmappeListe finnSaksmapperGittSaksnummer(String saksaar, String sakssekvensnummer) {
         try {
             final ObjectFactory objectFactory = new ObjectFactory();
             Saksnummer nokkel = objectFactory.createSaksnummer();
@@ -100,7 +100,7 @@ public class GeoIntegrasjonService {
         return arkivInnsyn.finnSaksmapperGittNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon, returnerSakspart, returnerKlasse, kontekst);
     }
 
-    public SaksmappeListe finnSaksmapper(String tittel)  {
+    public SaksmappeListe finnSaksmapperGittTittel(String tittel) {
         try {
             final ObjectFactory objectFactory = new ObjectFactory();
             SoekskriterieListe sok = objectFactory.createSoekskriterieListe();
@@ -117,6 +117,106 @@ public class GeoIntegrasjonService {
             boolean returnerKlasse = false;
             ArkivKontekst kontekst = null;
             return arkivInnsyn.finnSaksmapper(sok, returnerMerknad, returnerTilleggsinformasjon, returnerSakspart, returnerKlasse, kontekst);
+        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public JournalpostListe finnJournalposterGittSaksnummer(String saksaar, String sakssekvensnummer) {
+        final ObjectFactory objectFactory = new ObjectFactory();
+        Saksnummer nokkel = objectFactory.createSaksnummer();
+        nokkel.setSaksaar(new BigInteger(saksaar));
+        nokkel.setSakssekvensnummer(new BigInteger(sakssekvensnummer));
+        return finnJournalposterGittSaksmappeNoekkel(nokkel);
+    }
+
+    private JournalpostListe finnJournalposterGittSaksmappeNoekkel(Saksnoekkel nokkel) {
+        try {
+            Boolean returnerMerknad = true;
+            Boolean returnerTilleggsinformasjon = true;
+            Boolean returnerKorrespondansepart = true;
+            Boolean returnerAvskrivning = true;
+            ArkivKontekst kontekst = null;
+            return arkivInnsyn.finnJournalposterGittSaksmappeNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon, returnerKorrespondansepart, returnerAvskrivning, kontekst);
+        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public JournalpostListe finnJournalposterGittSystemID(String id) {
+        final ObjectFactory objectFactory = new ObjectFactory();
+        JournpostSystemID noekkel = objectFactory.createJournpostSystemID();
+        SystemID systemID = objectFactory.createSystemID();
+        systemID.setId(id);
+        noekkel.setSystemID(systemID);
+        return finnJournalposterGittNoekkel(noekkel);
+    }
+
+    private JournalpostListe finnJournalposterGittNoekkel(Journpostnoekkel nokkel) {
+        try {
+            Boolean returnerMerknad = true;
+            Boolean returnerTilleggsinformasjon = true;
+            Boolean returnerKorrespondansepart = true;
+            Boolean returnerAvskrivning = true;
+            ArkivKontekst kontekst = null;
+            return arkivInnsyn.finnJournalposterGittNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon, returnerKorrespondansepart, returnerAvskrivning, kontekst);
+        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public DokumentListe finnDokumenterGittSaksnummer(String saksaar, String sakssekvensnummer) {
+        final ObjectFactory objectFactory = new ObjectFactory();
+        Saksnummer nokkel = objectFactory.createSaksnummer();
+        nokkel.setSaksaar(new BigInteger(saksaar));
+        nokkel.setSakssekvensnummer(new BigInteger(sakssekvensnummer));
+        return finnDokumenterGittSaksnoekkel(nokkel);
+    }
+
+    public DokumentListe finnDokumenterGittSaksnoekkel(Saksnoekkel saksnokkel) {
+        try {
+            Boolean returnerFil = false;
+            ArkivKontekst kontekst = null;
+            return arkivInnsyn.finnDokumenterGittSaksnoekkel(saksnokkel, returnerFil, kontekst);
+        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public DokumentListe finnDokumenterGittJournalnummer(String journalaar, String journalsekvensnummer) {
+        final ObjectFactory objectFactory = new ObjectFactory();
+        Journalnummer journalnummer = objectFactory.createJournalnummer();
+        journalnummer.setJournalaar(new BigInteger(journalaar));
+        journalnummer.setJournalsekvensnummer(new BigInteger(journalsekvensnummer));
+        return finnDokumenterGittJournalpostnoekkel(journalnummer);
+    }
+
+    public DokumentListe finnDokumenterGittJournalSystemID(String id) {
+        final ObjectFactory objectFactory = new ObjectFactory();
+        JournpostSystemID noekkel = objectFactory.createJournpostSystemID();
+        SystemID systemID = objectFactory.createSystemID();
+        systemID.setId(id);
+        noekkel.setSystemID(systemID);
+        return finnDokumenterGittJournalpostnoekkel(noekkel);
+    }
+
+    private DokumentListe finnDokumenterGittJournalpostnoekkel(Journpostnoekkel journpostnokkel) {
+        try {
+            Boolean returnerFil = false;
+            ArkivKontekst kontekst = null;
+            return arkivInnsyn.finnDokumenterGittJournalpostnoekkel(journpostnokkel, returnerFil, kontekst);
+        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Fil hentFil(String id) {
+        try {
+            final ObjectFactory objectFactory = new ObjectFactory();
+            SystemID systemid = objectFactory.createSystemID();
+            systemid.setId(id);
+            ArkivKontekst kontekst = null;
+            return arkivInnsyn.hentFil(systemid, kontekst);
         } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
             throw new RuntimeException(e);
         }

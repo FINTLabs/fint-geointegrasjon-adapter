@@ -1,8 +1,8 @@
 package no.fint.adapter.event
 
-import no.fint.provider.adapter.FintAdapterEndpoints
-import no.fint.provider.adapter.FintAdapterProps
-import no.fint.provider.adapter.sse.SseInitializer
+import no.fint.adapter.FintAdapterEndpoints
+import no.fint.adapter.FintAdapterProps
+import no.fint.adapter.sse.SseInitializer
 import no.fint.sse.FintSse
 import spock.lang.Specification
 

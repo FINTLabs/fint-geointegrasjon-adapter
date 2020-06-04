@@ -2,7 +2,7 @@ package no.fint.adapter.sse
 
 import no.fint.event.model.DefaultActions
 import no.fint.event.model.Event
-import no.fint.provider.geointegrasjon.service.EventHandlerService
+import no.fint.geointegrasjon.service.EventHandlerService
 import org.glassfish.jersey.media.sse.InboundEvent
 import spock.lang.Specification
 

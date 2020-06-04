@@ -2,8 +2,8 @@ package no.fint.adapter.event
 
 import no.fint.event.model.DefaultActions
 import no.fint.event.model.Event
-import no.fint.provider.adapter.FintAdapterEndpoints
-import no.fint.provider.geointegrasjon.SupportedActions
+import no.fint.adapter.FintAdapterEndpoints
+import no.fint.geointegrasjon.SupportedActions
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity

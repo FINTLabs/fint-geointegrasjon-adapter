@@ -17,7 +17,7 @@ public class SakController {
 
     @GetMapping("/sak/title/{title}")
     public SaksmappeListe getSak(@PathVariable String title) {
-        return geoIntegrasjonService.finnSaksmapper(title);
+        return geoIntegrasjonService.finnSaksmapperGittTittel(title);
     }
 
     @GetMapping("/sak/id/{id}")
