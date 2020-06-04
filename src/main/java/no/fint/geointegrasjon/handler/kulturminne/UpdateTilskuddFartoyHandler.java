@@ -1,4 +1,4 @@
-package no.fint.geointegrasjon.service.handler.kulturminne;
+package no.fint.geointegrasjon.handler.kulturminne;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
 import no.fint.event.model.ResponseStatus;
-import no.fint.geointegrasjon.service.handler.Handler;
+import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.state.FaxShipmentState;
 import no.fint.model.kultur.kulturminnevern.KulturminnevernActions;
 import no.fint.model.resource.FintLinks;

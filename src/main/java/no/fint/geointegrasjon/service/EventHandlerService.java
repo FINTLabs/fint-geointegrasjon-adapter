@@ -1,5 +1,6 @@
 package no.fint.geointegrasjon.service;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.adapter.event.EventResponseService;
 import no.fint.adapter.event.EventStatusService;
@@ -10,7 +11,7 @@ import no.fint.event.model.health.Health;
 import no.fint.event.model.health.HealthStatus;
 import no.fint.geointegrasjon.SupportedActions;
 import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonService;
-import no.fint.geointegrasjon.service.handler.Handler;
+import no.fint.geointegrasjon.handler.Handler;
 import no.fint.model.resource.FintLinks;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class EventHandlerService {
     @Autowired
     private GeoIntegrasjonService geointegrasjonService;
 
+    @Getter
     private Map<String, Handler> actionsHandlerMap;
 
     @Autowired
