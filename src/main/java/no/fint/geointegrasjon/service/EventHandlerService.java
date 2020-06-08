@@ -10,7 +10,6 @@ import no.fint.event.model.Status;
 import no.fint.event.model.health.Health;
 import no.fint.event.model.health.HealthStatus;
 import no.fint.geointegrasjon.SupportedActions;
-import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonService;
 import no.fint.geointegrasjon.handler.Handler;
 import no.fint.model.resource.FintLinks;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -39,9 +38,6 @@ public class EventHandlerService {
 
     @Autowired
     private Collection<Handler> handlers;
-
-    @Autowired
-    private GeoIntegrasjonService geointegrasjonService;
 
     @Getter
     private Map<String, Handler> actionsHandlerMap;

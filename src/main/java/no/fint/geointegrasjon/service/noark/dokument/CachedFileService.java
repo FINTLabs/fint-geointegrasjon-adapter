@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.*;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.geointegrasjon.AdapterProps;
-import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonService;
+import no.fint.geointegrasjon.service.geointegrasjon.InnsynServiceFacade;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.resource.administrasjon.arkiv.DokumentfilResource;
 import no.geointegrasjon.arkiv.innsyn.Fil;
@@ -29,7 +29,7 @@ public class CachedFileService extends CacheLoader<String, Path> implements Remo
     private AdapterProps props;
 
     @Autowired
-    private GeoIntegrasjonService geoIntegrasjonService;
+    private InnsynServiceFacade innsynServiceFacade;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -108,7 +108,7 @@ public class CachedFileService extends CacheLoader<String, Path> implements Remo
     @Override
     public Path load(String systemId) throws Exception {
         log.info("Loading {} ...", systemId);
-        final Fil fil = geoIntegrasjonService.hentFil(systemId);
+        final Fil fil = innsynServiceFacade.hentFil(systemId);
 
         if (fil instanceof Filinnhold) {
             Filinnhold filinnhold = (Filinnhold)fil;

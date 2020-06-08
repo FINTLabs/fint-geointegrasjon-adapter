@@ -1,19 +1,22 @@
 package no.fint.geointegrasjon.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import no.fint.geointegrasjon.service.geointegrasjon.InnsynServiceFacade;
-import no.geointegrasjon.arkiv.innsyn.Fil;
+import no.geointegrasjon.arkiv.innsyn.KodeListe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
-public class FilController {
+public class KodelisteController {
+
     @Autowired
     private InnsynServiceFacade innsynServiceFacade;
 
-    @GetMapping("/fil/{systemID}")
-    public Fil getFileBySystemId(@PathVariable String systemID) {
-        return innsynServiceFacade.hentFil(systemID);
+    @GetMapping("/kodeliste/{name}")
+    public KodeListe getKodeverk(@PathVariable String name) {
+        return innsynServiceFacade.hentKodeliste(name);
     }
 }

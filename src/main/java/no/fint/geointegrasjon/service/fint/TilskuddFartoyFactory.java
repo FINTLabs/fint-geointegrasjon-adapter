@@ -1,11 +1,11 @@
 package no.fint.geointegrasjon.service.fint;
 
+import no.fint.geointegrasjon.model.FaxShipment;
+import no.fint.geointegrasjon.service.geointegrasjon.OppdateringServiceFacade;
+import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.arkiv.JournalpostResource;
 import no.fint.model.resource.kultur.kulturminnevern.TilskuddFartoyResource;
-import no.fint.geointegrasjon.model.FaxShipment;
-import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonService;
-import no.fint.geointegrasjon.utils.FintUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +17,8 @@ public class TilskuddFartoyFactory extends SaksmappeFactory {
     public static final String KULTURMINNEID = "kulturminneid";
     public static final String DIGISAKSNUMMER = "digisaksnummer";
 
-    public TilskuddFartoyFactory(GeoIntegrasjonService geointegrasjonService) {
-        super(geointegrasjonService);
+    public TilskuddFartoyFactory(OppdateringServiceFacade oppdateringServiceFacade) {
+        super(oppdateringServiceFacade);
     }
 
     public TilskuddFartoyResource toFintResource(FaxShipment faxShipment) {

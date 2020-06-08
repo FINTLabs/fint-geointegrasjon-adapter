@@ -1,13 +1,13 @@
 package no.fint.geointegrasjon.service.fint;
 
-import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonService;
+import no.fint.geointegrasjon.service.geointegrasjon.OppdateringServiceFacade;
 
 public abstract class SaksmappeFactory {
 
-    private final GeoIntegrasjonService geointegrasjonService;
+    private final OppdateringServiceFacade oppdateringServiceFacade;
 
-    protected SaksmappeFactory(GeoIntegrasjonService geointegrasjonService) {
-        this.geointegrasjonService = geointegrasjonService;
+    protected SaksmappeFactory(OppdateringServiceFacade oppdateringServiceFacade) {
+        this.oppdateringServiceFacade = oppdateringServiceFacade;
     }
 
 

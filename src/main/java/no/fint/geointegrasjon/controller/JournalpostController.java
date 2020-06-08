@@ -1,7 +1,7 @@
 package no.fint.geointegrasjon.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonService;
+import no.fint.geointegrasjon.service.geointegrasjon.InnsynServiceFacade;
 import no.geointegrasjon.arkiv.innsyn.JournalpostListe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class JournalpostController {
 
     @Autowired
-    private GeoIntegrasjonService geoIntegrasjonService;
+    private InnsynServiceFacade innsynServiceFacade;
 
     /*
 
@@ -25,11 +25,11 @@ public class JournalpostController {
 
     @GetMapping("/journalpost/id/{id}")
     public JournalpostListe getJournalpostById(@PathVariable String id) {
-        return geoIntegrasjonService.finnJournalposterGittSystemID(id);
+        return innsynServiceFacade.finnJournalposterGittSystemID(id);
     }
 
     @GetMapping("/journalpost/{year}/{sequence}")
     public JournalpostListe getJournalpostByCaseNumber(@PathVariable String year, @PathVariable String sequence) {
-        return geoIntegrasjonService.finnJournalposterGittSaksnummer(year, sequence);
+        return innsynServiceFacade.finnJournalposterGittSaksnummer(year, sequence);
     }
 }
