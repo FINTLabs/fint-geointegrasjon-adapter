@@ -52,13 +52,13 @@ public class GeoIntegrasjonConfiguration {
     }
 
     @Bean
-    public InnsynServiceFacade innsynServiceFacade() {
-        return new InnsynServiceFacade(arkivInnsyn);
+    public ArkivInnsynPort arkivInnsynPort() {
+        return arkivInnsyn;
     }
 
     @Bean
-    public OppdateringServiceFacade oppdateringServiceFacade() {
-        return new OppdateringServiceFacade(sakArkivOppdatering);
+    public SakArkivOppdateringPort sakArkivOppdateringPort() {
+        return sakArkivOppdatering;
     }
 
     private void setupEndpoint(Object port, String address, String username, String password) {
