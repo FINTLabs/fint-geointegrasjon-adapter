@@ -12,9 +12,6 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-import org.apache.cxf.transports.http.configuration.ProxyServerType;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 import org.apache.wss4j.dom.WSConstants;
@@ -40,6 +37,9 @@ public class GeoIntegrasjonConfiguration {
 
     @Value("${fint.geointegrasjon.oppdatering:/ArkivOppdateringService.svc/ArkivOppdateringService}")
     private String oppdateringLocation;
+
+    @Value("${fint.geointegrasjon.tracing:false}")
+    private boolean tracing;
 
     private ArkivInnsynPort arkivInnsyn;
     private SakArkivOppdateringPort sakArkivOppdatering;
@@ -80,8 +80,10 @@ public class GeoIntegrasjonConfiguration {
                                         WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT,
                                         WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler(password)
                                 )));
-        client.getInInterceptors().add(new LoggingInInterceptor());
-        client.getOutInterceptors().add(new LoggingOutInterceptor());
+        if (tracing) {
+            client.getInInterceptors().add(new LoggingInInterceptor());
+            client.getOutInterceptors().add(new LoggingOutInterceptor());
+        }
     }
 
     private CallbackHandler passwordCallbackHandler(String password) {
