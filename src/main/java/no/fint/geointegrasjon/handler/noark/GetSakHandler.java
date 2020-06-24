@@ -40,7 +40,7 @@ public class GetSakHandler implements Handler {
             return;
         }
         response.setData(new LinkedList<>());
-        caseQueryService.query(query).map(saksmappeMapper.toFintResource(SakResource::new)).peek(journalpostService::addJournalpost).forEach(response::addData);
+        caseQueryService.query(query).map(saksmappeMapper.toFintResource(SakResource::new, null)).peek(journalpostService::addJournalpost).forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
 

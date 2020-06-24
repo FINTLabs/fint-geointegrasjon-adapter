@@ -1,11 +1,13 @@
 package no.fint.geointegrasjon.service.geointegrasjon;
 
+import lombok.extern.slf4j.Slf4j;
 import no.geointegrasjon.arkiv.innsyn.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 
 @Service
+@Slf4j
 public class InnsynServiceFacade {
     private final ArkivInnsynPort arkivInnsyn;
 
@@ -49,10 +51,11 @@ public class InnsynServiceFacade {
     public SaksmappeListe finnSaksmapperGittEksternNokkel(String fagsystem, String noekkel) {
         try {
             final ObjectFactory objectFactory = new ObjectFactory();
-            SakEksternNoekkel sakEksternNoekkel = objectFactory.createSakEksternNoekkel();
             final EksternNoekkel eksternNoekkel = objectFactory.createEksternNoekkel();
             eksternNoekkel.setFagsystem(fagsystem);
             eksternNoekkel.setNoekkel(noekkel);
+            SakEksternNoekkel sakEksternNoekkel = objectFactory.createSakEksternNoekkel();
+            sakEksternNoekkel.setEksternnoekkel(eksternNoekkel);
             return getSaksmappeListeBySaksnoekkel(sakEksternNoekkel);
         } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
             throw new RuntimeException(e);
@@ -60,6 +63,7 @@ public class InnsynServiceFacade {
     }
 
     private SaksmappeListe getSaksmappeListeBySaksnoekkel(Saksnoekkel nokkel) throws SystemException, ImplementationException, FinderException, ValidationException, OperationalException, ApplicationException {
+        log.info("Finn saksmapper gitt {}", nokkel);
         boolean returnerMerknad = true;
         boolean returnerTilleggsinformasjon = true;
         boolean returnerSakspart = true;
@@ -182,8 +186,11 @@ public class InnsynServiceFacade {
             Boolean returnerFil = false;
             ArkivKontekst kontekst = null;
             return arkivInnsyn.finnDokumenterGittJournalpostnoekkel(journpostnokkel, returnerFil, kontekst);
-        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
+        } catch (SystemException | ImplementationException | ValidationException | OperationalException | ApplicationException e) {
             throw new RuntimeException(e);
+        } catch (FinderException e) {
+            log.info("Not found: {} - {}", journpostnokkel, e.getMessage());
+            return new DokumentListe();
         }
     }
 

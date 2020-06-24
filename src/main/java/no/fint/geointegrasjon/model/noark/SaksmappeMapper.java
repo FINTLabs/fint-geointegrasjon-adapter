@@ -1,6 +1,7 @@
 package no.fint.geointegrasjon.model.noark;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.geointegrasjon.model.kulturminne.TilskuddFartoyMapper;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.administrasjon.arkiv.Arkivdel;
 import no.fint.model.administrasjon.arkiv.Saksstatus;
@@ -12,6 +13,7 @@ import no.fint.model.resource.administrasjon.arkiv.SaksmappeResource;
 import no.geointegrasjon.arkiv.innsyn.Merknad;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import no.geointegrasjon.arkiv.innsyn.*;
+import org.jooq.lambda.function.Consumer2;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -23,7 +25,7 @@ import static no.fint.geointegrasjon.utils.FintUtils.*;
 @Service
 @Slf4j
 public class SaksmappeMapper {
-    public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(Supplier<R> supplier) {
+    public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(Supplier<R> supplier, Consumer2<Saksmappe, R> consumer) {
         return saksmappe -> {
             R resource = supplier.get();
             log.info("Sak SystemID {}", saksmappe.getSystemID());
@@ -41,6 +43,8 @@ public class SaksmappeMapper {
 
             ifPresent(saksmappe.getMerknader(), resource::setMerknad, l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
             ifPresent(saksmappe.getSakspart(), resource::setPart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
+
+            consumer.accept(saksmappe, resource);
             return resource;
         };
     }

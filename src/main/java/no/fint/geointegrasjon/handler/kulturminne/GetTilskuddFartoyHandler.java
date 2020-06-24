@@ -2,51 +2,48 @@ package no.fint.geointegrasjon.handler.kulturminne;
 
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
-import no.fint.geointegrasjon.exception.GetTilskuddFartoyNotFoundException;
 import no.fint.geointegrasjon.handler.Handler;
-import no.fint.geointegrasjon.service.fint.TilskuddFartoyFactory;
-import no.fint.geointegrasjon.state.FaxShipmentState;
+import no.fint.geointegrasjon.model.kulturminne.TilskuddFartoyMapper;
+import no.fint.geointegrasjon.model.noark.SaksmappeMapper;
+import no.fint.geointegrasjon.service.fint.CaseQueryService;
+import no.fint.geointegrasjon.service.fint.JournalpostService;
 import no.fint.model.kultur.kulturminnevern.KulturminnevernActions;
 import no.fint.model.resource.FintLinks;
-import org.apache.commons.lang3.StringUtils;
+import no.fint.model.resource.kultur.kulturminnevern.TilskuddFartoyResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Set;
 
 @Service
 public class GetTilskuddFartoyHandler implements Handler {
 
     @Autowired
-    private FaxShipmentState faxShipmentState;
+    private CaseQueryService caseQueryService;
 
     @Autowired
-    private TilskuddFartoyFactory tilskuddFartoyFactory;
+    private SaksmappeMapper saksmappeMapper;
+
+    @Autowired
+    private JournalpostService journalpostService;
+
+    @Autowired
+    private TilskuddFartoyMapper tilskuddFartoyMapper;
 
     @Override
     public void accept(Event<FintLinks> response) {
         String query = response.getQuery();
-        try {
-            response.getData().clear();
-            if (StringUtils.startsWithIgnoreCase(query, "systemid/")) {
-                String systemId = StringUtils.removeStartIgnoreCase(query, "systemid/");
-                response.addData(tilskuddFartoyFactory.toFintResource(faxShipmentState.getById(systemId)));
-            } else if (StringUtils.startsWithIgnoreCase(query, "mappeid/")) {
-                String svarUtShipmentId = StringUtils.removeStartIgnoreCase(query, "mappeid/");
-                response.addData(tilskuddFartoyFactory.toFintResource(faxShipmentState.getBySvarUtShipmentId(svarUtShipmentId)));
-            } else if (StringUtils.startsWithIgnoreCase(query, "soknadsnummer/")) {
-                String applicationId = StringUtils.removeStartIgnoreCase(query, "soknadsnummer/");
-                response.addData(tilskuddFartoyFactory.toFintResource(faxShipmentState.getByApplicationId(applicationId)));
-            } else {
-                throw new IllegalArgumentException("Invalid query: " + query);
-            }
-            response.setResponseStatus(ResponseStatus.ACCEPTED);
-        } catch (GetTilskuddFartoyNotFoundException e) {
+        if (!caseQueryService.isValidQuery(query)) {
             response.setResponseStatus(ResponseStatus.REJECTED);
-            response.setStatusCode("NOT_FOUND");
-            response.setMessage(e.getMessage());
+            response.setStatusCode("BAD_REQUEST");
+            response.setMessage("Invalid query: " + query);
+            return;
         }
+        response.setData(new LinkedList<>());
+        caseQueryService.query(query).map(saksmappeMapper.toFintResource(TilskuddFartoyResource::new, tilskuddFartoyMapper)).peek(journalpostService::addJournalpost).forEach(response::addData);
+        response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
 
     @Override
