@@ -10,11 +10,13 @@ import no.fint.model.resource.administrasjon.arkiv.JournalpostResource;
 import no.fint.model.resource.administrasjon.arkiv.SaksmappeResource;
 import no.geointegrasjon.arkiv.oppdatering.*;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.lambda.function.Consumer2;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.function.Consumer;
@@ -36,7 +38,7 @@ public class GeoIntegrasjonFactory {
         this.fagsystem = fagsystem;
     }
 
-    public Saksmappe newSak(SaksmappeResource resource, String externalID) {
+    public <T extends SaksmappeResource> Saksmappe newSak(T resource, String externalID, Consumer2<T, Saksmappe> consumer) {
         Saksmappe saksmappe = objectFactory.createSaksmappe();
 
         saksmappe.setTittel(resource.getTittel());
@@ -55,6 +57,8 @@ public class GeoIntegrasjonFactory {
             eksternNoekkel.setNoekkel(externalID);
             saksmappe.setReferanseEksternNoekkel(eksternNoekkel);
         }
+
+        consumer.accept(resource, saksmappe);
 
         return saksmappe;
     }
@@ -107,10 +111,16 @@ public class GeoIntegrasjonFactory {
         links.stream().map(Link::getHref).map(UrlUtils::getFileIdFromUri).filter(StringUtils::isNotBlank).forEach(consumer);
     }
 
-    private <T extends Kode> T setKodeverdi(Supplier<T> supplier, String format) {
+    private <T extends Kode> T setKodeverdi(Supplier<T> supplier, String kodeverdi) {
         T result = supplier.get();
-        result.setKodeverdi(format);
+        result.setKodeverdi(kodeverdi);
         return result;
+    }
+
+    private <T extends Kode> void setKodeverdi(Supplier<T> supplier, String kodeverdi, Consumer<T> consumer) {
+        T result = supplier.get();
+        result.setKodeverdi(kodeverdi);
+        consumer.accept(result);
     }
 
     private SakSystemId newSakSystemId(String caseId) {
@@ -129,4 +139,16 @@ public class GeoIntegrasjonFactory {
         return fil;
     }
 
+    public Tilleggsinformasjon newTilleggsinformasjon(String kodeverdi, String informasjon) {
+        final Tilleggsinformasjon tilleggsinformasjon = objectFactory.createTilleggsinformasjon();
+        setKodeverdi(objectFactory::createInformasjonstype, kodeverdi, tilleggsinformasjon::setInformasjonstype);
+        tilleggsinformasjon.setInformasjon(informasjon);
+        return tilleggsinformasjon;
+    }
+
+    public void addTilleggsinformasjon(Saksmappe saksmappe, Tilleggsinformasjon... tillegg) {
+        final TilleggsinformasjonListe tilleggsinformasjonListe = objectFactory.createTilleggsinformasjonListe();
+        Arrays.stream(tillegg).forEach(tilleggsinformasjonListe.getListe()::add);
+        saksmappe.setTilleggsinformasjon(tilleggsinformasjonListe);
+    }
 }

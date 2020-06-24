@@ -1,7 +1,6 @@
 package no.fint.geointegrasjon.model.noark;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.geointegrasjon.model.kulturminne.TilskuddFartoyMapper;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.administrasjon.arkiv.Arkivdel;
 import no.fint.model.administrasjon.arkiv.Saksstatus;
@@ -16,9 +15,12 @@ import no.geointegrasjon.arkiv.innsyn.*;
 import org.jooq.lambda.function.Consumer2;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static no.fint.geointegrasjon.utils.FintUtils.*;
 
@@ -45,6 +47,15 @@ public class SaksmappeMapper {
             ifPresent(saksmappe.getSakspart(), resource::setPart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
 
             consumer.accept(saksmappe, resource);
+
+            Optional
+                    .ofNullable(saksmappe.getTilleggsinformasjon())
+                    .map(TilleggsinformasjonListe::getListe)
+                    .map(List::stream)
+                    .orElse(Stream.empty())
+                    .forEach(t ->
+                            log.info("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
+
             return resource;
         };
     }

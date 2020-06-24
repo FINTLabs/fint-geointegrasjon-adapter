@@ -6,19 +6,20 @@ import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.handler.Handler;
+import no.fint.geointegrasjon.model.kulturminne.TilskuddFartoyExporter;
 import no.fint.geointegrasjon.repository.InternalRepository;
 import no.fint.geointegrasjon.service.fint.CaseDefaultsService;
 import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostCreator;
 import no.fint.geointegrasjon.service.fint.ValidationService;
 import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonFactory;
-import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.kultur.kulturminnevern.KulturminnevernActions;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.kultur.kulturminnevern.TilskuddFartoyResource;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import no.geointegrasjon.arkiv.oppdatering.Journalpost;
 import org.jooq.lambda.tuple.Tuple;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -33,29 +34,22 @@ import static no.fint.geointegrasjon.utils.FintUtils.externalId;
 @Slf4j
 public class UpdateTilskuddFartoyHandler implements Handler {
 
-    private final ObjectMapper objectMapper;
-    private final ValidationService validationService;
-    private final CaseQueryService caseQueryService;
-    private final GeoIntegrasjonFactory geoIntegrasjonFactory;
-    private final JournalpostCreator journalpostCreator;
-    private final InternalRepository internalRepository;
-    private final CaseDefaultsService caseDefaultsService;
-
-    public UpdateTilskuddFartoyHandler(ObjectMapper objectMapper,
-                                       ValidationService validationService,
-                                       CaseQueryService caseQueryService,
-                                       GeoIntegrasjonFactory geoIntegrasjonFactory,
-                                       JournalpostCreator journalpostCreator,
-                                       InternalRepository internalRepository,
-                                       CaseDefaultsService caseDefaultsService) {
-        this.objectMapper = objectMapper;
-        this.validationService = validationService;
-        this.caseQueryService = caseQueryService;
-        this.geoIntegrasjonFactory = geoIntegrasjonFactory;
-        this.journalpostCreator = journalpostCreator;
-        this.internalRepository = internalRepository;
-        this.caseDefaultsService = caseDefaultsService;
-    }
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private ValidationService validationService;
+    @Autowired
+    private CaseQueryService caseQueryService;
+    @Autowired
+    private GeoIntegrasjonFactory geoIntegrasjonFactory;
+    @Autowired
+    private JournalpostCreator journalpostCreator;
+    @Autowired
+    private InternalRepository internalRepository;
+    @Autowired
+    private CaseDefaultsService caseDefaultsService;
+    @Autowired
+    private TilskuddFartoyExporter tilskuddFartoyExporter;
 
     @Override
     public void accept(Event<FintLinks> response) {
@@ -124,13 +118,16 @@ public class UpdateTilskuddFartoyHandler implements Handler {
                 .flatMap(t -> t.v2.stream().peek(d -> d.v1.setReferanseJournalpostSystemID(t.v1)))
                 .map(t -> t.map2(internalRepository::silentGetFile))
                 .map(t -> t.map2(geoIntegrasjonFactory::newFil))
-                .map(Tuple.function((d, f) -> { d.setFil(f); return d;}))
+                .map(Tuple.function((d, f) -> {
+                    d.setFil(f);
+                    return d;
+                }))
                 .forEach(journalpostCreator::createDokument);
     }
 
     private void createCase(Event<FintLinks> event, TilskuddFartoyResource resource) {
 
-        final String caseId = journalpostCreator.createSaksmappe(geoIntegrasjonFactory.newSak(resource, externalId(resource.getSoknadsnummer()))).getSystemID();
+        final String caseId = journalpostCreator.createSaksmappe(geoIntegrasjonFactory.newSak(resource, externalId(resource.getSoknadsnummer()), tilskuddFartoyExporter)).getSystemID();
         resource.setSystemId(createIdentifikator(caseId));
         log.info("Case ID: {}", caseId);
 

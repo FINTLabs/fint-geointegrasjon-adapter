@@ -3,7 +3,7 @@ package no.fint.geointegrasjon.handler.kulturminne;
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.handler.Handler;
-import no.fint.geointegrasjon.model.kulturminne.TilskuddFartoyMapper;
+import no.fint.geointegrasjon.model.kulturminne.TilskuddFartoyImporter;
 import no.fint.geointegrasjon.model.noark.SaksmappeMapper;
 import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostService;
@@ -30,7 +30,7 @@ public class GetTilskuddFartoyHandler implements Handler {
     private JournalpostService journalpostService;
 
     @Autowired
-    private TilskuddFartoyMapper tilskuddFartoyMapper;
+    private TilskuddFartoyImporter tilskuddFartoyImporter;
 
     @Override
     public void accept(Event<FintLinks> response) {
@@ -42,7 +42,7 @@ public class GetTilskuddFartoyHandler implements Handler {
             return;
         }
         response.setData(new LinkedList<>());
-        caseQueryService.query(query).map(saksmappeMapper.toFintResource(TilskuddFartoyResource::new, tilskuddFartoyMapper)).peek(journalpostService::addJournalpost).forEach(response::addData);
+        caseQueryService.query(query).map(saksmappeMapper.toFintResource(TilskuddFartoyResource::new, tilskuddFartoyImporter)).peek(journalpostService::addJournalpost).forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
 
