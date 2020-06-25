@@ -84,16 +84,13 @@ public class GeoIntegrasjonFactory {
         return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
     }
 
-    private Korrespondansepart newKorrespondansepart(KorrespondanseResource resource) {
+    private Korrespondansepart newKorrespondansepart(KorrespondansepartResource resource) {
         Korrespondansepart result = objectFactory.createKorrespondansepart();
 
         setKodeverdiFromLink(resource.getKorrespondanseparttype(), objectFactory::createKorrespondanseparttype, result::setKorrespondanseparttype);
-        resource.getKorrespondansepart().stream().map(Link::getHref).map(UrlUtils::getFileIdFromUri).map(id -> {
-            final Kontakt kontakt = objectFactory.createKontakt();
-            kontakt.setNavn(id);
-            return kontakt;
-        }).forEach(result::setKontakt);
-
+        final Kontakt kontakt = objectFactory.createKontakt();
+        kontakt.setNavn(resource.getKorrespondansepartNavn());
+        result.setKontakt(kontakt);
         return result;
     }
 

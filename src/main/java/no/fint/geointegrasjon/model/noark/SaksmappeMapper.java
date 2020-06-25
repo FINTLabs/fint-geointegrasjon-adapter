@@ -7,27 +7,27 @@ import no.fint.model.administrasjon.arkiv.Saksstatus;
 import no.fint.model.administrasjon.arkiv.*;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.arkiv.MerknadResource;
-import no.fint.model.resource.administrasjon.arkiv.PartsinformasjonResource;
 import no.fint.model.resource.administrasjon.arkiv.SaksmappeResource;
 import no.geointegrasjon.arkiv.innsyn.Merknad;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import no.geointegrasjon.arkiv.innsyn.*;
-import org.jooq.lambda.function.Consumer2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static no.fint.geointegrasjon.utils.FintUtils.*;
+import static no.fint.geointegrasjon.utils.FintUtils.ifPresent;
+import static no.fint.geointegrasjon.utils.FintUtils.setIdentifikator;
 
 @Service
 @Slf4j
 public class SaksmappeMapper {
-    public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(Supplier<R> supplier, Consumer2<Saksmappe, R> consumer) {
+    public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(Supplier<R> supplier, BiConsumer<Saksmappe, R> consumer) {
         return saksmappe -> {
             R resource = supplier.get();
             log.info("Sak SystemID {}", saksmappe.getSystemID());
@@ -44,7 +44,7 @@ public class SaksmappeMapper {
             ifPresent(saksmappe.getReferanseArkivdel(), resource::addArkivdel, Link.apply(Arkivdel.class, "systemid").compose(Kode::getKodeverdi));
 
             ifPresent(saksmappe.getMerknader(), resource::setMerknad, l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
-            ifPresent(saksmappe.getSakspart(), resource::setPart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
+            //ifPresent(saksmappe.getSakspart(), resource::setPart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
 
             consumer.accept(saksmappe, resource);
 
@@ -68,6 +68,7 @@ public class SaksmappeMapper {
         };
     }
 
+    /*
     private PartsinformasjonResource part(Sakspart sakspart) {
         PartsinformasjonResource r = new PartsinformasjonResource();
         ifPresent(sakspart.getSakspartRolle(), r::addPartRolle, linkTo(Link.apply(PartRolle.class, "systemid")));
@@ -75,15 +76,7 @@ public class SaksmappeMapper {
         return r;
     }
 
-    public static String kontakt(Kontakt kontakt) {
-        return kontakt.getNavn();
-        /*
-        return kontakt instanceof Person
-                ? ((Person) kontakt).getPersonid().getPersonidentifikatorNr()
-                : ((Organisasjon) kontakt).getOrganisasjonsnummer();
-
-         */
-    }
+     */
 
     public static MerknadResource merknad(Merknad merknad) {
         MerknadResource r = new MerknadResource();

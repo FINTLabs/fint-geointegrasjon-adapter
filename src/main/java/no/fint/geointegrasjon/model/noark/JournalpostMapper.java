@@ -5,12 +5,12 @@ import no.fint.geointegrasjon.service.geointegrasjon.InnsynServiceFacade;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.administrasjon.arkiv.JournalStatus;
 import no.fint.model.administrasjon.arkiv.JournalpostType;
+import no.fint.model.administrasjon.arkiv.KorrespondansepartType;
 import no.fint.model.administrasjon.arkiv.Part;
-import no.fint.model.administrasjon.arkiv.PartRolle;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.arkiv.DokumentbeskrivelseResource;
 import no.fint.model.resource.administrasjon.arkiv.JournalpostResource;
-import no.fint.model.resource.administrasjon.arkiv.KorrespondanseResource;
+import no.fint.model.resource.administrasjon.arkiv.KorrespondansepartResource;
 import no.geointegrasjon.arkiv.innsyn.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class JournalpostMapper {
     @Autowired
     private DokumentbeskrivelseMapper dokumentbeskrivelseMapper;
 
-    public Function<Journalpost,JournalpostResource> toFintResource(Supplier<JournalpostResource> supplier) {
+    public Function<Journalpost, JournalpostResource> toFintResource(Supplier<JournalpostResource> supplier) {
         return journalpost -> {
             JournalpostResource resource = supplier.get();
             log.info("Journalpost SystemID {} for sak {}", journalpost.getSystemID(), journalpost.getReferanseSakSystemID().getSystemID().getId());
@@ -91,10 +91,18 @@ public class JournalpostMapper {
         };
     }
 
-    private KorrespondanseResource part(Korrespondansepart korrespondansepart) {
-        KorrespondanseResource r = new KorrespondanseResource();
-        ifPresent(korrespondansepart.getKorrespondanseparttype(), r::addKorrespondanseparttype, linkTo(Link.apply(PartRolle.class, "systemid")));
-        ifPresent(korrespondansepart.getKontakt(), r::addKorrespondansepart, Link.apply(Part.class, "partid").compose(SaksmappeMapper::kontakt));
+    private KorrespondansepartResource part(Korrespondansepart korrespondansepart) {
+        KorrespondansepartResource r = new KorrespondansepartResource();
+        ifPresent(korrespondansepart.getKorrespondanseparttype(), r::addKorrespondanseparttype, linkTo(Link.apply(KorrespondansepartType.class, "systemid")));
+        final Kontakt kontakt = korrespondansepart.getKontakt();
+        ifPresent(kontakt.getNavn(), r::setKorrespondansepartNavn);
+        if (kontakt instanceof Person) {
+            Person person = (Person) kontakt;
+            ifPresent(person.getPersonid(), r::setFodselsnummer, Personidentifikator::getPersonidentifikatorNr);
+        } else if (kontakt instanceof Organisasjon) {
+            Organisasjon organisasjon = (Organisasjon) kontakt;
+            ifPresent(organisasjon.getOrganisasjonsnummer(), r::setOrganisasjonsnummer);
+        }
         return r;
     }
 
