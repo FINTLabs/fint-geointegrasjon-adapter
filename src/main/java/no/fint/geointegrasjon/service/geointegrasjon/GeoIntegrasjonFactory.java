@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.geointegrasjon.utils.UrlUtils;
 import no.fint.model.resource.Link;
-import no.fint.model.resource.administrasjon.arkiv.DokumentbeskrivelseResource;
-import no.fint.model.resource.administrasjon.arkiv.DokumentfilResource;
-import no.fint.model.resource.administrasjon.arkiv.JournalpostResource;
-import no.fint.model.resource.administrasjon.arkiv.SaksmappeResource;
+import no.fint.model.resource.administrasjon.arkiv.*;
 import no.geointegrasjon.arkiv.oppdatering.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.lambda.function.Consumer2;
@@ -19,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -76,10 +74,27 @@ public class GeoIntegrasjonFactory {
         journalpost.setOffentligTittel(resource.getOffentligTittel());
         journalpost.setTittel(resource.getTittel());
 
+        final KorrespondansepartListe korrespondansepartListe = objectFactory.createKorrespondansepartListe();
+        Optional.ofNullable(resource.getKorrespondansepart()).map(List::stream).orElse(Stream.empty()).map(this::newKorrespondansepart).forEach(korrespondansepartListe.getListe()::add);
+        journalpost.setKorrespondansepart(korrespondansepartListe);
+
         setKodeverdiFromLink(resource.getJournalposttype(), objectFactory::createJournalposttype, journalpost::setJournalposttype);
         setKodeverdiFromLink(resource.getJournalstatus(), objectFactory::createJournalstatus, journalpost::setJournalstatus);
 
         return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
+    }
+
+    private Korrespondansepart newKorrespondansepart(KorrespondanseResource resource) {
+        Korrespondansepart result = objectFactory.createKorrespondansepart();
+
+        setKodeverdiFromLink(resource.getKorrespondanseparttype(), objectFactory::createKorrespondanseparttype, result::setKorrespondanseparttype);
+        resource.getKorrespondansepart().stream().map(Link::getHref).map(UrlUtils::getFileIdFromUri).map(id -> {
+            final Kontakt kontakt = objectFactory.createKontakt();
+            kontakt.setNavn(id);
+            return kontakt;
+        }).forEach(result::setKontakt);
+
+        return result;
     }
 
     private Stream<Tuple2<Dokument, String>> newDokument(DokumentbeskrivelseResource db) {

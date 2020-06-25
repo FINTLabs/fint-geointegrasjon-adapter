@@ -49,6 +49,14 @@ public class SaksmappeMapper {
             consumer.accept(saksmappe, resource);
 
             Optional
+                    .ofNullable(saksmappe.getMerknader())
+                    .map(MerknadListe::getListe)
+                    .map(List::stream)
+                    .orElse(Stream.empty())
+                    .forEach(m ->
+                            log.info("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
+
+            Optional
                     .ofNullable(saksmappe.getTilleggsinformasjon())
                     .map(TilleggsinformasjonListe::getListe)
                     .map(List::stream)
@@ -68,9 +76,13 @@ public class SaksmappeMapper {
     }
 
     public static String kontakt(Kontakt kontakt) {
+        return kontakt.getNavn();
+        /*
         return kontakt instanceof Person
                 ? ((Person) kontakt).getPersonid().getPersonidentifikatorNr()
                 : ((Organisasjon) kontakt).getOrganisasjonsnummer();
+
+         */
     }
 
     public static MerknadResource merknad(Merknad merknad) {
