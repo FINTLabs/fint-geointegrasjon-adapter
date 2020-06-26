@@ -68,10 +68,12 @@ public class EventHandlerService {
                 e.setMessage("Unsupported action");
             }).accept(response);
         } catch (ClientException e) {
+            log.debug("{}", e, e);
             response.setResponseStatus(ResponseStatus.REJECTED);
             response.setStatusCode(e.getCode());
             response.setMessage(e.getDescription());
         } catch (ServerException e) {
+            log.debug("{}", e, e);
             response.setResponseStatus(ResponseStatus.ERROR);
             response.setStatusCode(e.getCode());
             response.setMessage(e.getDescription());

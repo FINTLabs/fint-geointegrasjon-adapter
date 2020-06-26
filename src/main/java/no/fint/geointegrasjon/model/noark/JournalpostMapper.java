@@ -1,6 +1,7 @@
 package no.fint.geointegrasjon.model.noark;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.geointegrasjon.service.geointegrasjon.ClientException;
 import no.fint.geointegrasjon.service.geointegrasjon.InnsynServiceFacade;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.administrasjon.arkiv.JournalStatus;
@@ -63,12 +64,16 @@ public class JournalpostMapper {
             ifPresent(journalpost.getJournalstatus(), resource::addJournalstatus, Link.apply(JournalStatus.class, "systemid").compose(Kode::getKodeverdi));
 
             resource.setDokumentbeskrivelse(new LinkedList<>());
-            innsynServiceFacade
-                    .finnDokumenterGittJournalSystemID(journalpost.getSystemID())
-                    .getListe()
-                    .stream()
-                    .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
-                    .forEach(resource.getDokumentbeskrivelse()::add);
+            try {
+                innsynServiceFacade
+                        .finnDokumenterGittJournalSystemID(journalpost.getSystemID())
+                        .getListe()
+                        .stream()
+                        .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
+                        .forEach(resource.getDokumentbeskrivelse()::add);
+            } catch (ClientException e) {
+                log.debug("No documents found for {}", journalpost.getSystemID());
+            }
 
             Optional
                     .ofNullable(journalpost.getMerknader())
@@ -76,7 +81,7 @@ public class JournalpostMapper {
                     .map(List::stream)
                     .orElse(Stream.empty())
                     .forEach(m ->
-                            log.info("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
+                            log.debug("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
 
             Optional
                     .ofNullable(journalpost.getTilleggsinformasjon())
@@ -84,7 +89,7 @@ public class JournalpostMapper {
                     .map(List::stream)
                     .orElse(Stream.empty())
                     .forEach(t ->
-                            log.info("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
+                            log.debug("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
 
 
             return resource;
