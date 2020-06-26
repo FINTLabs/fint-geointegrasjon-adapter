@@ -1,19 +1,26 @@
 package no.fint.geointegrasjon.service.geointegrasjon;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class FaultHandler {
     public static ClientException handleFault(no.geointegrasjon.arkiv.oppdatering.ApplicationFault faultInfo) {
+        log.debug("Oppdatering ApplicationFault: {}", faultInfo);
         return new ClientException(faultInfo.getFeilKode(), faultInfo.getFeilBeskrivelse(), faultInfo.getFeilDetaljer().getListe());
     }
 
     public static ServerException handleFault(no.geointegrasjon.arkiv.oppdatering.SystemFault faultInfo) {
+        log.debug("Oppdatering SystemFault: {}", faultInfo);
         return new ServerException(faultInfo.getFeilKode(), faultInfo.getFeilBeskrivelse(), faultInfo.getFeilDetaljer().getListe());
     }
 
     public static ClientException handleFault(no.geointegrasjon.arkiv.innsyn.ApplicationFault faultInfo) {
+        log.debug("Innsyn ApplicationFault: {}", faultInfo);
         return new ClientException(faultInfo.getFeilKode(), faultInfo.getFeilBeskrivelse(), faultInfo.getFeilDetaljer().getListe());
     }
 
     public static ServerException handleFault(no.geointegrasjon.arkiv.innsyn.SystemFault faultInfo) {
+        log.debug("Innsyn SystemFault: {}", faultInfo);
         return new ServerException(faultInfo.getFeilKode(), faultInfo.getFeilBeskrivelse(), faultInfo.getFeilDetaljer().getListe());
     }
 }
