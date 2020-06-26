@@ -1,5 +1,7 @@
 package no.fint.geointegrasjon.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class UrlUtils {
 
     private UrlUtils() {
@@ -13,7 +15,6 @@ public class UrlUtils {
      */
 
     public static String getFileIdFromUri(String uri) {
-        String[] uriParts = uri.split("/");
-        return uriParts[uriParts.length - 1];
+        return StringUtils.substringAfterLast(uri, "/");
     }
 }

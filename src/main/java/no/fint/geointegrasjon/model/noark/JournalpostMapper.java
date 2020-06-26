@@ -5,22 +5,23 @@ import no.fint.geointegrasjon.service.geointegrasjon.InnsynServiceFacade;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.administrasjon.arkiv.JournalStatus;
 import no.fint.model.administrasjon.arkiv.JournalpostType;
+import no.fint.model.administrasjon.arkiv.KorrespondansepartType;
 import no.fint.model.administrasjon.arkiv.Part;
-import no.fint.model.administrasjon.arkiv.PartRolle;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.arkiv.DokumentbeskrivelseResource;
 import no.fint.model.resource.administrasjon.arkiv.JournalpostResource;
-import no.fint.model.resource.administrasjon.arkiv.KorrespondanseResource;
-import no.geointegrasjon.arkiv.innsyn.Journalpost;
-import no.geointegrasjon.arkiv.innsyn.Kode;
-import no.geointegrasjon.arkiv.innsyn.Korrespondansepart;
+import no.fint.model.resource.administrasjon.arkiv.KorrespondansepartResource;
+import no.geointegrasjon.arkiv.innsyn.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static no.fint.geointegrasjon.utils.FintUtils.ifPresent;
 import static no.fint.geointegrasjon.utils.FintUtils.linkTo;
@@ -35,7 +36,7 @@ public class JournalpostMapper {
     @Autowired
     private DokumentbeskrivelseMapper dokumentbeskrivelseMapper;
 
-    public Function<Journalpost,JournalpostResource> toFintResource(Supplier<JournalpostResource> supplier) {
+    public Function<Journalpost, JournalpostResource> toFintResource(Supplier<JournalpostResource> supplier) {
         return journalpost -> {
             JournalpostResource resource = supplier.get();
             log.info("Journalpost SystemID {} for sak {}", journalpost.getSystemID(), journalpost.getReferanseSakSystemID().getSystemID().getId());
@@ -56,7 +57,7 @@ public class JournalpostMapper {
 
             ifPresent(journalpost.getMerknader(), resource::setMerknad, l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
 
-            //ifPresent(journalpost.getKorrespondansepart(), resource::setKorrespondansepart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
+            ifPresent(journalpost.getKorrespondansepart(), resource::setKorrespondansepart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
 
             ifPresent(journalpost.getJournalposttype(), resource::addJournalposttype, Link.apply(JournalpostType.class, "systemid").compose(Kode::getKodeverdi));
             ifPresent(journalpost.getJournalstatus(), resource::addJournalstatus, Link.apply(JournalStatus.class, "systemid").compose(Kode::getKodeverdi));
@@ -69,14 +70,39 @@ public class JournalpostMapper {
                     .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
                     .forEach(resource.getDokumentbeskrivelse()::add);
 
+            Optional
+                    .ofNullable(journalpost.getMerknader())
+                    .map(MerknadListe::getListe)
+                    .map(List::stream)
+                    .orElse(Stream.empty())
+                    .forEach(m ->
+                            log.info("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
+
+            Optional
+                    .ofNullable(journalpost.getTilleggsinformasjon())
+                    .map(TilleggsinformasjonListe::getListe)
+                    .map(List::stream)
+                    .orElse(Stream.empty())
+                    .forEach(t ->
+                            log.info("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
+
+
             return resource;
         };
     }
 
-    private KorrespondanseResource part(Korrespondansepart korrespondansepart) {
-        KorrespondanseResource r = new KorrespondanseResource();
-        ifPresent(korrespondansepart.getKorrespondanseparttype(), r::addKorrespondanseparttype, linkTo(Link.apply(PartRolle.class, "systemid")));
-        ifPresent(korrespondansepart.getKontakt(), r::addKorrespondansepart, Link.apply(Part.class, "partid").compose(SaksmappeMapper::kontakt));
+    private KorrespondansepartResource part(Korrespondansepart korrespondansepart) {
+        KorrespondansepartResource r = new KorrespondansepartResource();
+        ifPresent(korrespondansepart.getKorrespondanseparttype(), r::addKorrespondanseparttype, linkTo(Link.apply(KorrespondansepartType.class, "systemid")));
+        final Kontakt kontakt = korrespondansepart.getKontakt();
+        ifPresent(kontakt.getNavn(), r::setKorrespondansepartNavn);
+        if (kontakt instanceof Person) {
+            Person person = (Person) kontakt;
+            ifPresent(person.getPersonid(), r::setFodselsnummer, Personidentifikator::getPersonidentifikatorNr);
+        } else if (kontakt instanceof Organisasjon) {
+            Organisasjon organisasjon = (Organisasjon) kontakt;
+            ifPresent(organisasjon.getOrganisasjonsnummer(), r::setOrganisasjonsnummer);
+        }
         return r;
     }
 
