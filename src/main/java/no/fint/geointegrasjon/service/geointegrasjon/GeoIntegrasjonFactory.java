@@ -3,8 +3,10 @@ package no.fint.geointegrasjon.service.geointegrasjon;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.geointegrasjon.utils.UrlUtils;
+import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon;
 import no.fint.model.resource.Link;
 import no.fint.model.resource.administrasjon.arkiv.*;
+import no.fint.model.resource.felles.kompleksedatatyper.AdresseResource;
 import no.geointegrasjon.arkiv.oppdatering.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.lambda.function.Consumer2;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static no.fint.geointegrasjon.utils.FintUtils.toXmlDate;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -49,7 +52,7 @@ public class GeoIntegrasjonFactory {
         setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, saksmappe::setJournalenhet);
         setKodeverdiFromLink(resource.getSaksstatus(), objectFactory::createSaksstatus, saksmappe::setSaksstatus);
 
-        if (StringUtils.isNotBlank(externalID)) {
+        if (isNotBlank(externalID)) {
             EksternNoekkel eksternNoekkel = objectFactory.createEksternNoekkel();
             eksternNoekkel.setFagsystem(fagsystem);
             eksternNoekkel.setNoekkel(externalID);
@@ -88,10 +91,107 @@ public class GeoIntegrasjonFactory {
         Korrespondansepart result = objectFactory.createKorrespondansepart();
 
         setKodeverdiFromLink(resource.getKorrespondanseparttype(), objectFactory::createKorrespondanseparttype, result::setKorrespondanseparttype);
-        final Kontakt kontakt = objectFactory.createKontakt();
+        final Kontakt kontakt;
+        if (isNotBlank(resource.getOrganisasjonsnummer())) {
+            kontakt = createOrganisasjon(resource);
+        } else if (isNotBlank(resource.getFodselsnummer())) {
+            kontakt = createPerson(resource);
+        } else {
+            kontakt = objectFactory.createKontakt();
+        }
         kontakt.setNavn(resource.getKorrespondansepartNavn());
+        kontakt.setAdresser(createAdresser(resource.getAdresse()));
+        kontakt.setElektroniskeAdresser(createElektroniskeAdresser(resource.getKontaktinformasjon()));
+
         result.setKontakt(kontakt);
         return result;
+    }
+
+    private ElektroniskAdresseListe createElektroniskeAdresser(Kontaktinformasjon resource) {
+        if (resource == null) {
+            return null;
+        }
+        ElektroniskAdresseListe result = objectFactory.createElektroniskAdresseListe();
+
+        if (isNotBlank(resource.getEpostadresse())) {
+            Epost epost = objectFactory.createEpost();
+            epost.setEpostadresse(resource.getEpostadresse());
+            result.getListe().add(epost);
+        }
+
+        if (isNotBlank(resource.getMobiltelefonnummer())) {
+            Telefon telefon = objectFactory.createTelefon();
+            telefon.setTelefonnummer(resource.getMobiltelefonnummer());
+            result.getListe().add(telefon);
+        }
+
+        if (isNotBlank(resource.getTelefonnummer())) {
+            Telefon telefon = objectFactory.createTelefon();
+            telefon.setTelefonnummer(resource.getTelefonnummer());
+            result.getListe().add(telefon);
+        }
+
+        return result;
+    }
+
+    private EnkelAdresseListe createAdresser(AdresseResource resource) {
+        if (resource == null) {
+            return null;
+        }
+        EnkelAdresseListe result = objectFactory.createEnkelAdresseListe();
+
+        EnkelAdresse adresse = objectFactory.createEnkelAdresse();
+
+        setKodeverdi(objectFactory::createEnkelAdressetype, "P", adresse::setAdressetype);
+        setKodeverdiFromLink(resource.getLand(), objectFactory::createLandkode, adresse::setLandkode);
+
+        if (resource.getAdresselinje() != null && !resource.getAdresselinje().isEmpty()) {
+            adresse.setAdresselinje1(resource.getAdresselinje().get(0));
+            if (resource.getAdresselinje().size() > 1) {
+                adresse.setAdresselinje2(resource.getAdresselinje().get(1));
+            }
+        }
+
+        PostadministrativeOmraader postadresse = objectFactory.createPostadministrativeOmraader();
+        postadresse.setPostnummer(resource.getPostnummer());
+        postadresse.setPoststed(resource.getPoststed());
+        adresse.setPostadresse(postadresse);
+
+        result.getListe().add(adresse);
+
+        return result;
+    }
+
+    private Person createPerson(KorrespondansepartResource resource) {
+        Person person = objectFactory.createPerson();
+        Personidentifikator personidentifikator = objectFactory.createPersonidentifikator();
+        personidentifikator.setPersonidentifikatorNr(resource.getFodselsnummer());
+        setKodeverdi(objectFactory::createPersonidentifikatorType, "F", personidentifikator::setPersonidentifikatorType);
+        person.setPersonid(personidentifikator);
+
+        if (isNotBlank(resource.getKontaktperson())) {
+            setNavn(resource.getKontaktperson(), person);
+        } else {
+            setNavn(resource.getKorrespondansepartNavn(), person);
+        }
+
+        return person;
+    }
+
+    private void setNavn(String navn, Person person) {
+        if (StringUtils.contains(navn, ", ")) {
+            person.setEtternavn(StringUtils.substringBefore(navn, ", "));
+            person.setFornavn(StringUtils.substringAfter(navn, ", "));
+        } else {
+            person.setEtternavn(StringUtils.substringAfterLast(navn, " "));
+            person.setFornavn(StringUtils.substringBeforeLast(navn, " "));
+        }
+    }
+
+    private Organisasjon createOrganisasjon(KorrespondansepartResource resource) {
+        Organisasjon organisasjon = objectFactory.createOrganisasjon();
+        organisasjon.setOrganisasjonsnummer(resource.getOrganisasjonsnummer());
+        return organisasjon;
     }
 
     private Stream<Tuple2<Dokument, String>> newDokument(DokumentbeskrivelseResource db) {
