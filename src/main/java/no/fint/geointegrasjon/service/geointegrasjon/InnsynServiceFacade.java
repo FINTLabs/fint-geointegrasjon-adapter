@@ -18,8 +18,18 @@ public class InnsynServiceFacade {
     public KodeListe hentKodeliste(String kodelistenavn) {
         try {
             return arkivInnsyn.hentKodeliste(kodelistenavn, null);
-        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
-            throw new RuntimeException(e);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
 
@@ -31,8 +41,18 @@ public class InnsynServiceFacade {
             systemID.setId(id);
             nokkel.setSystemID(systemID);
             return getSaksmappeListeBySaksnoekkel(nokkel);
-        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
-            throw new RuntimeException(e);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
 
@@ -43,8 +63,18 @@ public class InnsynServiceFacade {
             nokkel.setSaksaar(new BigInteger(saksaar));
             nokkel.setSakssekvensnummer(new BigInteger(sakssekvensnummer));
             return getSaksmappeListeBySaksnoekkel(nokkel);
-        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
-            throw new RuntimeException(e);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
 
@@ -57,8 +87,18 @@ public class InnsynServiceFacade {
             SakEksternNoekkel sakEksternNoekkel = objectFactory.createSakEksternNoekkel();
             sakEksternNoekkel.setEksternnoekkel(eksternNoekkel);
             return getSaksmappeListeBySaksnoekkel(sakEksternNoekkel);
-        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
-            throw new RuntimeException(e);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
 
@@ -89,8 +129,18 @@ public class InnsynServiceFacade {
             boolean returnerKlasse = false;
             ArkivKontekst kontekst = null;
             return arkivInnsyn.finnSaksmapper(sok, returnerMerknad, returnerTilleggsinformasjon, returnerSakspart, returnerKlasse, kontekst);
-        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
-            throw new RuntimeException(e);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
 
@@ -119,8 +169,18 @@ public class InnsynServiceFacade {
             Boolean returnerAvskrivning = true;
             ArkivKontekst kontekst = null;
             return arkivInnsyn.finnJournalposterGittSaksmappeNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon, returnerKorrespondansepart, returnerAvskrivning, kontekst);
-        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
-            throw new RuntimeException(e);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
 
@@ -141,8 +201,18 @@ public class InnsynServiceFacade {
             Boolean returnerAvskrivning = true;
             ArkivKontekst kontekst = null;
             return arkivInnsyn.finnJournalposterGittNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon, returnerKorrespondansepart, returnerAvskrivning, kontekst);
-        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
-            throw new RuntimeException(e);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
 
@@ -159,8 +229,18 @@ public class InnsynServiceFacade {
             Boolean returnerFil = false;
             ArkivKontekst kontekst = null;
             return arkivInnsyn.finnDokumenterGittSaksnoekkel(saksnokkel, returnerFil, kontekst);
-        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
-            throw new RuntimeException(e);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
 
@@ -186,11 +266,18 @@ public class InnsynServiceFacade {
             Boolean returnerFil = false;
             ArkivKontekst kontekst = null;
             return arkivInnsyn.finnDokumenterGittJournalpostnoekkel(journpostnokkel, returnerFil, kontekst);
-        } catch (SystemException | ImplementationException | ValidationException | OperationalException | ApplicationException e) {
-            throw new RuntimeException(e);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            log.info("Not found: {} - {}", journpostnokkel, e.getMessage());
-            return new DokumentListe();
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
 
@@ -201,8 +288,18 @@ public class InnsynServiceFacade {
             systemid.setId(id);
             ArkivKontekst kontekst = null;
             return arkivInnsyn.hentFil(systemid, kontekst);
-        } catch (SystemException | ImplementationException | FinderException | ValidationException | OperationalException | ApplicationException e) {
-            throw new RuntimeException(e);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
 
