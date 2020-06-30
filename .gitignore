@@ -19,3 +19,4 @@ application-*.properties
 trustStore
 cert
 internal-files/
+src/test/java/Scratch.java
