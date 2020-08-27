@@ -7,11 +7,13 @@ import no.geointegrasjon.arkiv.innsyn.ArkivInnsynPort;
 import no.geointegrasjon.arkiv.innsyn.InnsynService;
 import no.geointegrasjon.arkiv.oppdatering.OppdateringService;
 import no.geointegrasjon.arkiv.oppdatering.SakArkivOppdateringPort;
+import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 import org.apache.wss4j.dom.WSConstants;
@@ -41,6 +43,9 @@ public class GeoIntegrasjonConfiguration {
     @Value("${fint.geointegrasjon.tracing:false}")
     private boolean tracing;
 
+    @Value("${fint.geointegrasjon.use-wss:false}")
+    private boolean useWSS;
+
     private ArkivInnsynPort arkivInnsyn;
     private SakArkivOppdateringPort sakArkivOppdatering;
 
@@ -69,21 +74,37 @@ public class GeoIntegrasjonConfiguration {
     private void setupEndpoint(Object port, String address, String username, String password) {
         final Client client = ClientProxy.getClient(port);
         client.getRequestContext().put(Message.ENDPOINT_ADDRESS, address);
-        client
-                .getEndpoint()
-                .getOutInterceptors()
-                .add(
-                        new WSS4JOutInterceptor(
-                                ImmutableMap.of(
-                                        WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN,
-                                        WSHandlerConstants.USER, username,
-                                        WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT,
-                                        WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler(password)
-                                )));
+
+        if (useWSS) {
+            client
+                    .getEndpoint()
+                    .getOutInterceptors()
+                    .add(
+                            new WSS4JOutInterceptor(
+                                    ImmutableMap.of(
+                                            WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN,
+                                            WSHandlerConstants.USER, username,
+                                            WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT,
+                                            WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler(password)
+                                    )));
+        } else {
+            HTTPConduit conduit = (HTTPConduit) client.getConduit();
+            conduit.setAuthorization(basicAuthorization(username, password));
+        }
         if (tracing) {
             client.getInInterceptors().add(new LoggingInInterceptor());
             client.getOutInterceptors().add(new LoggingOutInterceptor());
         }
+    }
+
+    private AuthorizationPolicy basicAuthorization(String username, String password) {
+        AuthorizationPolicy authorizationPolicy =
+                new AuthorizationPolicy();
+        authorizationPolicy.setUserName(username);
+        authorizationPolicy.setPassword(password);
+        authorizationPolicy.setAuthorizationType("Basic");
+
+        return authorizationPolicy;
     }
 
     private CallbackHandler passwordCallbackHandler(String password) {
