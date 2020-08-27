@@ -1,6 +1,8 @@
 package no.fint.geointegrasjon.model.noark;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.arkiv.AdditionalFieldService;
+import no.fint.arkiv.TitleService;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.administrasjon.arkiv.Arkivdel;
 import no.fint.model.administrasjon.arkiv.Saksstatus;
@@ -11,6 +13,8 @@ import no.fint.model.resource.administrasjon.arkiv.SaksmappeResource;
 import no.geointegrasjon.arkiv.innsyn.Merknad;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import no.geointegrasjon.arkiv.innsyn.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,17 +25,35 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Optional.ofNullable;
 import static no.fint.geointegrasjon.utils.FintUtils.ifPresent;
 import static no.fint.geointegrasjon.utils.FintUtils.setIdentifikator;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
 
 @Service
 @Slf4j
 public class SaksmappeMapper {
+
+    private final String tilleggstype;
+    private final TitleService titleService;
+    private final AdditionalFieldService additionalFieldService;
+
+    public SaksmappeMapper(
+            @Value("${fint.geointegrasjon.tilleggstype}") String tilleggstype,
+            TitleService titleService,
+            AdditionalFieldService additionalFieldService) {
+        this.tilleggstype = tilleggstype;
+        this.titleService = titleService;
+        this.additionalFieldService = additionalFieldService;
+    }
+
     public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(Supplier<R> supplier, BiConsumer<Saksmappe, R> consumer) {
         return saksmappe -> {
             R resource = supplier.get();
             log.info("Sak SystemID {}", saksmappe.getSystemID());
-            ifPresent(saksmappe.getTittel(), resource::setTittel);
+
+
             ifPresent(saksmappe.getOffentligTittel(), resource::setOffentligTittel);
             ifPresent(saksmappe.getSaksdato(), resource::setSaksdato, FintUtils::fromXmlDate);
             setIdentifikator(saksmappe.getSystemID(), resource::setSystemId);
@@ -46,18 +68,31 @@ public class SaksmappeMapper {
             ifPresent(saksmappe.getMerknader(), resource::setMerknad, l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
             //ifPresent(saksmappe.getSakspart(), resource::setPart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
 
+            ifPresent(saksmappe.getTittel(), t -> titleService.parseTitle(resource, t));
+            additionalFieldService.setFieldsForResource(resource,
+                    ofNullable(saksmappe.getTilleggsinformasjon())
+                            .map(TilleggsinformasjonListe::getListe)
+                            .map(List::stream)
+                            .orElse(Stream.empty())
+                            .filter(t -> tilleggstype.equals(t.getInformasjonstype().getKodeverdi()))
+                            .map(Tilleggsinformasjon::getInformasjon)
+                            .filter(s -> s.contains(": "))
+                            .peek(s -> log.debug("{}", s))
+                            .map(s -> new AdditionalFieldService.Field(
+                                    substringBefore(s, ":"),
+                                    substringAfter(s, ": ")))
+                            .collect(Collectors.toList()));
+
             consumer.accept(saksmappe, resource);
 
-            Optional
-                    .ofNullable(saksmappe.getMerknader())
+            ofNullable(saksmappe.getMerknader())
                     .map(MerknadListe::getListe)
                     .map(List::stream)
                     .orElse(Stream.empty())
                     .forEach(m ->
                             log.info("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
 
-            Optional
-                    .ofNullable(saksmappe.getTilleggsinformasjon())
+            ofNullable(saksmappe.getTilleggsinformasjon())
                     .map(TilleggsinformasjonListe::getListe)
                     .map(List::stream)
                     .orElse(Stream.empty())

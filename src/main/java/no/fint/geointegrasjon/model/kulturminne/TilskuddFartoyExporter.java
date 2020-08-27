@@ -19,10 +19,13 @@ public class TilskuddFartoyExporter implements Consumer2<TilskuddFartoyResource,
 
     @Override
     public void accept(TilskuddFartoyResource resource, Saksmappe saksmappe) {
+        /*
         geoIntegrasjonFactory.addTilleggsinformasjon(saksmappe,
                 geoIntegrasjonFactory.newTilleggsinformasjon(tilleggstype, "Fartøy: " + resource.getFartoyNavn()),
                 geoIntegrasjonFactory.newTilleggsinformasjon(tilleggstype, "Kallesignal: " + resource.getKallesignal()),
                 geoIntegrasjonFactory.newTilleggsinformasjon(tilleggstype, "KulturminneID: " + resource.getKulturminneId())
         );
+
+         */
     }
 }

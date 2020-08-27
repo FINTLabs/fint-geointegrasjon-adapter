@@ -2,13 +2,15 @@ package no.fint.geointegrasjon.handler.kulturminne;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.arkiv.CaseDefaults;
+import no.fint.arkiv.CaseProperties;
 import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.model.kulturminne.TilskuddFartoyExporter;
 import no.fint.geointegrasjon.repository.InternalRepository;
-import no.fint.geointegrasjon.service.fint.CaseDefaultsService;
+import no.fint.geointegrasjon.service.fint.GeointegrasjonCaseDefaultsService;
 import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostCreator;
 import no.fint.geointegrasjon.service.fint.ValidationService;
@@ -47,9 +49,11 @@ public class UpdateTilskuddFartoyHandler implements Handler {
     @Autowired
     private InternalRepository internalRepository;
     @Autowired
-    private CaseDefaultsService caseDefaultsService;
+    private GeointegrasjonCaseDefaultsService caseDefaultsService;
     @Autowired
     private TilskuddFartoyExporter tilskuddFartoyExporter;
+    @Autowired
+    private CaseDefaults caseDefaults;
 
     @Override
     public void accept(Event<FintLinks> response) {
@@ -64,7 +68,7 @@ public class UpdateTilskuddFartoyHandler implements Handler {
         TilskuddFartoyResource tilskuddFartoyResource = objectMapper.convertValue(response.getData().get(0), TilskuddFartoyResource.class);
 
         if (operation == Operation.CREATE) {
-            caseDefaultsService.applyDefaultsForCreation("tilskudd-fartoy", tilskuddFartoyResource);
+            caseDefaultsService.applyDefaultsForCreation(caseDefaults.getTilskuddfartoy(), tilskuddFartoyResource);
 
             log.info("Case: {}", tilskuddFartoyResource);
 
@@ -76,7 +80,7 @@ public class UpdateTilskuddFartoyHandler implements Handler {
              */
             createCase(response, tilskuddFartoyResource);
         } else if (operation == Operation.UPDATE) {
-            caseDefaultsService.applyDefaultsForUpdate("tilskudd-fartoy", tilskuddFartoyResource);
+            caseDefaultsService.applyDefaultsForUpdate(caseDefaults.getTilskuddfartoy(), tilskuddFartoyResource);
             if (!validationService.validate(response, tilskuddFartoyResource.getJournalpost())) {
                 return;
             }
