@@ -28,6 +28,6 @@ This adapter integrates with [GeoIntegrasjon Arkiv](https://geointegrasjon.no/ar
 | `fint.case.format.*` | Formats for titles and custom fields for various case types | |
 
 ## More information on configuration
-- **[`fint.case.*` attributes](https://github.com/FINTLabs/fint-arkiv-case-defaults)**
+- **[`fint.case.*` attributes](https://github.com/FINTLabs/fint-arkiv-case-defaults#fint-arkiv-case-defaults)**
 - **[SSE Configuration](https://github.com/FINTLabs/fint-sse#sse-configuration)**
 - **[OAuth Configuration](https://github.com/FINTLabs/fint-sse#oauth-configuration)** 
