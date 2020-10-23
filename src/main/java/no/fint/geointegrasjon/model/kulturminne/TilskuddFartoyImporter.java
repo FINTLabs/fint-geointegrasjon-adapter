@@ -23,6 +23,8 @@ public class TilskuddFartoyImporter implements Consumer2<Saksmappe, TilskuddFart
     @Override
     public void accept(Saksmappe saksmappe, TilskuddFartoyResource resource) {
         ifPresent(saksmappe.getReferanseEksternNoekkel(), resource::setSoknadsnummer, r -> createIdentifikator(r.getNoekkel()));
+
+        /*
         Optional.ofNullable(saksmappe.getTilleggsinformasjon())
                 .map(TilleggsinformasjonListe::getListe)
                 .map(List::stream)
@@ -41,5 +43,7 @@ public class TilskuddFartoyImporter implements Consumer2<Saksmappe, TilskuddFart
                             break;
                     }
                 });
+
+         */
     }
 }

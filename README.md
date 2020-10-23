@@ -15,21 +15,19 @@ This adapter integrates with [GeoIntegrasjon Arkiv](https://geointegrasjon.no/ar
 | `fint.internal-files.directory` | `file-cache` | |
 | `fint.internal-files.connection-string` | Azure connection string to storage account | |
 | `fint.internal-files.type` | `BLOB` or `FILE`. `BLOB` will store files in Azure while `FILE` will store files in the container | |
-| `fint.geointegrasjon.service-url` | `https://test.svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV11` | |
-| `fint.geointegrasjon.username`|  | |
-| `fint.geointegrasjon.password` |  | |
-| `fint.geointegrasjon.connection-timeout` | `120000` | |
-| `fint.geointegrasjon.receive-timeout` | `120000` | |
-| `fint.geointegrasjon.organisation.number` |  | |
-| `fint.geointegrasjon.organisation.name` |  | |
-| `fint.geointegrasjon.organisation.adresse1` |  | |
-| `fint.geointegrasjon.organisation.adresse2` | '' | |
-| `fint.geointegrasjon.organisation.adresse3` | '' | |
-| `fint.geointegrasjon.organisation.postalcode` |  | |
-| `fint.geointegrasjon.organisation.city` |  | |
-| `fint.geointegrasjon.leveringsmetode` | `KUN_DIGITAL_UTEN_LEVERANSEGARANTI_MASSEUTSENDELSE` | |
-
+| `fint.geointegrasjon.service-url` | Root URL for the GeoIntegrasjon SOAP endpoint | |
+| `fint.geointegrasjon.innsyn` | Path to the Innsyn service endpoint | `/ArkivInnsynService.svc/ArkivInnsynService` |
+| `fint.geointegrasjon.oppdatering` | Path to the Oppdatering service endpoint | `/ArkivOppdateringService.svc/ArkivOppdateringService` |
+| `fint.geointegrasjon.username`| Service username | |
+| `fint.geointegrasjon.password` | Service password | |
+| `fint.geointegrasjon.use-wss` | Use WS-Security instead of Basic Auth | `false` |
+| `fint.geointegrasjon.tracing` | Log trace of SOAP requests and responses | `false` |
+| `fint.geointegrasjon.fagsystem` | System name for external key (EksternNoekkel) | |
+| `fint.geointegrasjon.tilleggstype` | Name of Tilleggsinformasjon attribute used for custom fields | |
+| `fint.case.defaults.*` | Defaults for various case types | |
+| `fint.case.format.*` | Formats for titles and custom fields for various case types | |
 
 ## More information on configuration
+- **[`fint.case.*` attributes](https://github.com/FINTLabs/fint-arkiv-case-defaults#fint-arkiv-case-defaults)**
 - **[SSE Configuration](https://github.com/FINTLabs/fint-sse#sse-configuration)**
 - **[OAuth Configuration](https://github.com/FINTLabs/fint-sse#oauth-configuration)** 

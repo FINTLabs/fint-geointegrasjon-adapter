@@ -1,6 +1,8 @@
 package no.fint.geointegrasjon.service.geointegrasjon;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.arkiv.AdditionalFieldService;
+import no.fint.arkiv.TitleService;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.geointegrasjon.utils.UrlUtils;
 import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon;
@@ -32,17 +34,29 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class GeoIntegrasjonFactory {
 
     private final ObjectFactory objectFactory = new ObjectFactory();
-    private final String fagsystem;
+    private final String fagsystem, tilleggstype;
+    private final TitleService titleService;
+    private final AdditionalFieldService additionalFieldService;
 
     public GeoIntegrasjonFactory(
-            @Value("${fint.geointegrasjon.fagsystem}") String fagsystem) {
+            @Value("${fint.geointegrasjon.fagsystem}") String fagsystem,
+            @Value("${fint.geointegrasjon.tilleggstype}") String tilleggstype,
+            TitleService titleService,
+            AdditionalFieldService additionalFieldService) {
         this.fagsystem = fagsystem;
+        this.tilleggstype = tilleggstype;
+        this.titleService = titleService;
+        this.additionalFieldService = additionalFieldService;
     }
 
     public <T extends SaksmappeResource> Saksmappe newSak(T resource, String externalID, Consumer2<T, Saksmappe> consumer) {
         Saksmappe saksmappe = objectFactory.createSaksmappe();
 
-        saksmappe.setTittel(resource.getTittel());
+        saksmappe.setTittel(titleService.getTitle(resource));
+        addTilleggsinformasjon(saksmappe,
+                additionalFieldService.getFieldsForResource(resource)
+                        .map(f -> newTilleggsinformasjon(tilleggstype, String.format("%s: %s", f.getName(), f.getValue())))
+                        .toArray(Tilleggsinformasjon[]::new));
         saksmappe.setOffentligTittel(resource.getOffentligTittel());
 
         setKodeverdiFromLink(resource.getAdministrativEnhet(), saksmappe::setAdministrativEnhet);
