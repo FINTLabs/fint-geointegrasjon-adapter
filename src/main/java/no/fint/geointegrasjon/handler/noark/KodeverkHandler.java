@@ -2,6 +2,7 @@ package no.fint.geointegrasjon.handler.noark;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.arkiv.NoarkMetadataService;
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
 import no.fint.event.model.Status;
@@ -31,6 +32,9 @@ import static no.fint.model.arkiv.kodeverk.KodeverkActions.*;
 public class KodeverkHandler implements Handler {
 
     @Autowired
+    private NoarkMetadataService noarkMetadataService;
+
+    @Autowired
     private InnsynServiceFacade innsynServiceFacade;
 
     @Getter
@@ -39,39 +43,46 @@ public class KodeverkHandler implements Handler {
     @PostConstruct
     public void init() {
         suppliers.put(GET_ALL_DOKUMENTSTATUS,
-                kodeverk("Dokumentstatus",
-                        begrep(DokumentStatusResource::new)
-                                .andThen(FintLinks.class::cast)));
+                merge(noarkMetadataService::getDokumentStatus,
+                        kodeverk("Dokumentstatus",
+                                begrep(DokumentStatusResource::new)
+                                        .andThen(FintLinks.class::cast))));
 
         suppliers.put(GET_ALL_DOKUMENTTYPE,
-                kodeverk("Dokumenttype",
-                        begrep(DokumentTypeResource::new)
-                                .andThen(FintLinks.class::cast)));
+                merge(noarkMetadataService::getDokumentType,
+                        kodeverk("Dokumenttype",
+                                begrep(DokumentTypeResource::new)
+                                        .andThen(FintLinks.class::cast))));
 
         suppliers.put(GET_ALL_JOURNALPOSTTYPE,
-                kodeverk("Journalposttype",
-                        begrep(JournalpostTypeResource::new)
-                                .andThen(FintLinks.class::cast)));
+                merge(noarkMetadataService::getJournalpostType,
+                        kodeverk("Journalposttype",
+                                begrep(JournalpostTypeResource::new)
+                                        .andThen(FintLinks.class::cast))));
 
         suppliers.put(GET_ALL_JOURNALSTATUS,
-                kodeverk("Journalstatus",
-                        begrep(JournalStatusResource::new)
-                                .andThen(FintLinks.class::cast)));
+                merge(noarkMetadataService::getJournalStatus,
+                        kodeverk("Journalstatus",
+                                begrep(JournalStatusResource::new)
+                                        .andThen(FintLinks.class::cast))));
 
         suppliers.put(GET_ALL_KORRESPONDANSEPARTTYPE,
-                kodeverk("Korrespondanseparttype",
-                        begrep(KorrespondansepartTypeResource::new)
-                                .andThen(FintLinks.class::cast)));
+                merge(noarkMetadataService::getKorrespondansepartType,
+                        kodeverk("Korrespondanseparttype",
+                                begrep(KorrespondansepartTypeResource::new)
+                                        .andThen(FintLinks.class::cast))));
 
         suppliers.put(GET_ALL_PARTROLLE,
-                kodeverk("SakspartRolle",
-                        begrep(PartRolleResource::new)
-                                .andThen(FintLinks.class::cast)));
+                merge(noarkMetadataService::getPartRolle,
+                        kodeverk("SakspartRolle",
+                                begrep(PartRolleResource::new)
+                                        .andThen(FintLinks.class::cast))));
 
         suppliers.put(GET_ALL_SAKSSTATUS,
-                kodeverk("Saksstatus",
-                        begrep(SaksstatusResource::new)
-                                .andThen(FintLinks.class::cast)));
+                merge(noarkMetadataService::getSaksStatus,
+                        kodeverk("Saksstatus",
+                                begrep(SaksstatusResource::new)
+                                        .andThen(FintLinks.class::cast))));
 
         suppliers.put(GET_ALL_SKJERMINGSHJEMMEL,
                 kodeverk("SkjermingsHjemmel",
@@ -84,14 +95,16 @@ public class KodeverkHandler implements Handler {
                                 .andThen(FintLinks.class::cast)));
 
         suppliers.put(GET_ALL_TILKNYTTETREGISTRERINGSOM,
-                kodeverk("TilknyttetRegistreringSom",
-                        begrep(TilknyttetRegistreringSomResource::new)
-                                .andThen(FintLinks.class::cast)));
+                merge(noarkMetadataService::getTilknyttetRegistreringSom,
+                        kodeverk("TilknyttetRegistreringSom",
+                                begrep(TilknyttetRegistreringSomResource::new)
+                                        .andThen(FintLinks.class::cast))));
 
         suppliers.put(GET_ALL_VARIANTFORMAT,
-                kodeverk("Variantformat",
-                        begrep(VariantformatResource::new)
-                                .andThen(FintLinks.class::cast)));
+                merge(noarkMetadataService::getVariantformat,
+                        kodeverk("Variantformat",
+                                begrep(VariantformatResource::new)
+                                        .andThen(FintLinks.class::cast))));
 
         //suppliers.put(GET_ALL_MERKNADSTYPE, kodeverkRepository::getMerknadstype);
         //suppliers.put(GET_ALL_KLASSIFIKASJONSSYSTEM, kodeverk("Klassifikasjonssystem", KlassifikasjonssystemResource::new));
@@ -155,6 +168,14 @@ public class KodeverkHandler implements Handler {
             begrep.setSystemId(createIdentifikator(kode.getKodeverdi()));
             return begrep;
         };
+    }
+
+    private Supplier<Stream<? extends FintLinks>> merge(Supplier<Stream<? extends FintLinks>>... suppliers) {
+        return () -> Stream.of(suppliers).flatMap(Supplier::get);
+    }
+
+    public Stream<? extends FintLinks> getCodes(KodeverkActions name) {
+        return suppliers.get(name).get();
     }
 
 }
