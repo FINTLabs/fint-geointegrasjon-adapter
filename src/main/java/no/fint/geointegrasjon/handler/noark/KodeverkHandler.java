@@ -152,7 +152,7 @@ public class KodeverkHandler implements Handler {
         return suppliers.keySet().stream().map(Enum::name).collect(Collectors.toSet());
     }
 
-    private Supplier<Stream<? extends FintLinks>> kodeverk(String name, Function<Kode, FintLinks> mapper) {
+    Supplier<Stream<? extends FintLinks>> kodeverk(String name, Function<Kode, FintLinks> mapper) {
         return () -> innsynServiceFacade
                 .hentKodeliste(name)
                 .getListe()
@@ -173,9 +173,4 @@ public class KodeverkHandler implements Handler {
     private Supplier<Stream<? extends FintLinks>> merge(Supplier<Stream<? extends FintLinks>>... suppliers) {
         return () -> Stream.of(suppliers).flatMap(Supplier::get);
     }
-
-    public Stream<? extends FintLinks> getCodes(KodeverkActions name) {
-        return suppliers.get(name).get();
-    }
-
 }
