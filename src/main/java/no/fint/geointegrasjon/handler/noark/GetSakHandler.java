@@ -7,6 +7,7 @@ import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.model.noark.SaksmappeMapper;
 import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostService;
+import no.fint.model.arkiv.noark.NoarkActions;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.arkiv.noark.SakResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class GetSakHandler implements Handler {
 
     @Override
     public Set<String> actions() {
-        return Collections.singleton(ArkivActions.GET_SAK.name());
+        return Collections.singleton(NoarkActions.GET_SAK.name());
     }
 
 }
