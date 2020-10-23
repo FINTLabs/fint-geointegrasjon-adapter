@@ -1,10 +1,14 @@
 package no.fint.geointegrasjon.model.noark;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.administrasjon.arkiv.*;
+import no.fint.model.arkiv.kodeverk.DokumentStatus;
+import no.fint.model.arkiv.kodeverk.DokumentType;
+import no.fint.model.arkiv.kodeverk.TilknyttetRegistreringSom;
+import no.fint.model.arkiv.kodeverk.Variantformat;
+import no.fint.model.arkiv.noark.Dokumentfil;
 import no.fint.model.resource.Link;
-import no.fint.model.resource.administrasjon.arkiv.DokumentbeskrivelseResource;
-import no.fint.model.resource.administrasjon.arkiv.DokumentobjektResource;
+import no.fint.model.resource.arkiv.noark.DokumentbeskrivelseResource;
+import no.fint.model.resource.arkiv.noark.DokumentobjektResource;
 import no.geointegrasjon.arkiv.innsyn.Dokument;
 import no.geointegrasjon.arkiv.innsyn.Kode;
 import org.springframework.stereotype.Service;

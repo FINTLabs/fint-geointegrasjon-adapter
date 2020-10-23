@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.geointegrasjon.AdapterProps;
 import no.fint.geointegrasjon.service.geointegrasjon.InnsynServiceFacade;
 import no.fint.geointegrasjon.utils.FintUtils;
-import no.fint.model.resource.administrasjon.arkiv.DokumentfilResource;
+import no.fint.model.resource.arkiv.noark.DokumentfilResource;
 import no.geointegrasjon.arkiv.innsyn.Fil;
 import no.geointegrasjon.arkiv.innsyn.Filinnhold;
 import org.apache.commons.lang3.StringUtils;

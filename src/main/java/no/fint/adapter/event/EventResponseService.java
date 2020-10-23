@@ -1,9 +1,9 @@
 package no.fint.adapter.event;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.adapter.FintAdapterEndpoints;
 import no.fint.event.model.Event;
 import no.fint.event.model.HeaderConstants;
-import no.fint.adapter.FintAdapterEndpoints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;

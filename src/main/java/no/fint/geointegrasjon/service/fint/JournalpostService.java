@@ -3,8 +3,8 @@ package no.fint.geointegrasjon.service.fint;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.geointegrasjon.model.noark.JournalpostMapper;
 import no.fint.geointegrasjon.service.geointegrasjon.InnsynServiceFacade;
-import no.fint.model.resource.administrasjon.arkiv.JournalpostResource;
-import no.fint.model.resource.administrasjon.arkiv.SaksmappeResource;
+import no.fint.model.resource.arkiv.noark.JournalpostResource;
+import no.fint.model.resource.arkiv.noark.SaksmappeResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

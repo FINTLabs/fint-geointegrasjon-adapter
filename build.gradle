@@ -69,8 +69,9 @@ dependencies {
     compile('no.fint:fint-spring-secrets:0.1.0')
     compile('no.fint:fint-sse:2.0.0-rc-1')
 
-    compile("no.fint:fint-arkiv-model-java:${apiVersion}")
-    compile('no.fint:fint-arkiv-case-defaults:1.0.0-beta-11')
+    compile('no.fint:fint-arkiv-case-defaults:2.0.0-alpha-7')
+    compile("no.fint:fint-arkiv-resource-model-java:${apiVersion}")
+    compile("no.fint:fint-administrasjon-resource-model-java:${apiVersion}")
 
     compile('org.springframework.hateoas:spring-hateoas')
     runtime('org.springframework.plugin:spring-plugin-core')

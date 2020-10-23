@@ -7,7 +7,7 @@ import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.geointegrasjon.utils.UrlUtils;
 import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon;
 import no.fint.model.resource.Link;
-import no.fint.model.resource.administrasjon.arkiv.*;
+import no.fint.model.resource.arkiv.noark.*;
 import no.fint.model.resource.felles.kompleksedatatyper.AdresseResource;
 import no.geointegrasjon.arkiv.oppdatering.*;
 import org.apache.commons.lang3.StringUtils;

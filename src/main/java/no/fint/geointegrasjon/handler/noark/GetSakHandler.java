@@ -7,9 +7,8 @@ import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.model.noark.SaksmappeMapper;
 import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostService;
-import no.fint.model.administrasjon.arkiv.ArkivActions;
 import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.administrasjon.arkiv.SakResource;
+import no.fint.model.resource.arkiv.noark.SakResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

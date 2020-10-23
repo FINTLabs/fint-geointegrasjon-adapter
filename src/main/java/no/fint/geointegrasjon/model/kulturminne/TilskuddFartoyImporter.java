@@ -3,19 +3,11 @@ package no.fint.geointegrasjon.model.kulturminne;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.kultur.kulturminnevern.TilskuddFartoyResource;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
-import no.geointegrasjon.arkiv.innsyn.Tilleggsinformasjon;
-import no.geointegrasjon.arkiv.innsyn.TilleggsinformasjonListe;
 import org.jooq.lambda.function.Consumer2;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import static no.fint.geointegrasjon.utils.FintUtils.createIdentifikator;
 import static no.fint.geointegrasjon.utils.FintUtils.ifPresent;
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
 
 @Service
 @Slf4j
