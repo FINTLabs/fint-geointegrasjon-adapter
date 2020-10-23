@@ -7,12 +7,12 @@ import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.handler.Handler;
-import no.fint.geointegrasjon.model.kulturminne.TilskuddFartoyExporter;
+import no.fint.geointegrasjon.model.kulturminne.TilskuddFredaBygningPrivatEieExporter;
 import no.fint.geointegrasjon.service.fint.*;
 import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonFactory;
 import no.fint.model.arkiv.kulturminnevern.KulturminnevernActions;
 import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.arkiv.kulturminnevern.TilskuddFartoyResource;
+import no.fint.model.resource.arkiv.kulturminnevern.TilskuddFredaBygningPrivatEieResource;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ import static no.fint.geointegrasjon.utils.FintUtils.externalId;
 
 @Service
 @Slf4j
-public class UpdateTilskuddFartoyHandler implements Handler {
+public class UpdateTilskuddFredaBygningPrivatEieHandler implements Handler {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -44,7 +44,7 @@ public class UpdateTilskuddFartoyHandler implements Handler {
     @Autowired
     private GeointegrasjonCaseDefaultsService caseDefaultsService;
     @Autowired
-    private TilskuddFartoyExporter tilskuddFartoyExporter;
+    private TilskuddFredaBygningPrivatEieExporter tilskuddFredaBygningPrivatEieExporter;
     @Autowired
     private CaseDefaults caseDefaults;
 
@@ -58,30 +58,30 @@ public class UpdateTilskuddFartoyHandler implements Handler {
 
         Operation operation = response.getOperation();
 
-        TilskuddFartoyResource tilskuddFartoyResource = objectMapper.convertValue(response.getData().get(0), TilskuddFartoyResource.class);
+        TilskuddFredaBygningPrivatEieResource tilskuddFredaBygningPrivatEieResource = objectMapper.convertValue(response.getData().get(0), TilskuddFredaBygningPrivatEieResource.class);
 
         if (operation == Operation.CREATE) {
-            caseDefaultsService.applyDefaultsForCreation(caseDefaults.getTilskuddfartoy(), tilskuddFartoyResource);
-            log.info("Case: {}", tilskuddFartoyResource);
-            if (!validationService.validate(response, tilskuddFartoyResource)) {
+            caseDefaultsService.applyDefaultsForCreation(caseDefaults.getTilskuddfredabygningprivateie(), tilskuddFredaBygningPrivatEieResource);
+            log.info("Case: {}", tilskuddFredaBygningPrivatEieResource);
+            if (!validationService.validate(response, tilskuddFredaBygningPrivatEieResource)) {
                 return;
             }
-            createCase(response, tilskuddFartoyResource);
+            createCase(response, tilskuddFredaBygningPrivatEieResource);
         } else if (operation == Operation.UPDATE) {
-            caseDefaultsService.applyDefaultsForUpdate(caseDefaults.getTilskuddfartoy(), tilskuddFartoyResource);
-            if (!validationService.validate(response, tilskuddFartoyResource.getJournalpost())) {
+            caseDefaultsService.applyDefaultsForUpdate(caseDefaults.getTilskuddfredabygningprivateie(), tilskuddFredaBygningPrivatEieResource);
+            if (!validationService.validate(response, tilskuddFredaBygningPrivatEieResource.getJournalpost())) {
                 return;
             }
-            updateCase(response, response.getQuery(), tilskuddFartoyResource);
+            updateCase(response, response.getQuery(), tilskuddFredaBygningPrivatEieResource);
         } else {
             throw new IllegalArgumentException("Invalid operation: " + operation);
         }
 
         response.setResponseStatus(ResponseStatus.ACCEPTED);
-        response.setData(Collections.singletonList(tilskuddFartoyResource));
+        response.setData(Collections.singletonList(tilskuddFredaBygningPrivatEieResource));
     }
 
-    private void updateCase(Event<FintLinks> event, String query, TilskuddFartoyResource resource) {
+    private void updateCase(Event<FintLinks> event, String query, TilskuddFredaBygningPrivatEieResource resource) {
         if (!caseQueryService.isValidQuery(query)) {
             event.setStatusCode("BAD_REQUEST");
             event.setResponseStatus(ResponseStatus.REJECTED);
@@ -100,9 +100,9 @@ public class UpdateTilskuddFartoyHandler implements Handler {
         journalpostService.createJournalpostForCase(caseId, resource);
     }
 
-    private void createCase(Event<FintLinks> event, TilskuddFartoyResource resource) {
+    private void createCase(Event<FintLinks> event, TilskuddFredaBygningPrivatEieResource resource) {
 
-        final String caseId = journalpostCreator.createSaksmappe(geoIntegrasjonFactory.newSak(resource, externalId(resource.getSoknadsnummer()), tilskuddFartoyExporter)).getSystemID();
+        final String caseId = journalpostCreator.createSaksmappe(geoIntegrasjonFactory.newSak(resource, externalId(resource.getSoknadsnummer()), tilskuddFredaBygningPrivatEieExporter)).getSystemID();
         resource.setSystemId(createIdentifikator(caseId));
         log.info("Case ID: {}", caseId);
 
@@ -114,6 +114,6 @@ public class UpdateTilskuddFartoyHandler implements Handler {
 
     @Override
     public Set<String> actions() {
-        return Collections.singleton(KulturminnevernActions.UPDATE_TILSKUDDFARTOY.name());
+        return Collections.singleton(KulturminnevernActions.UPDATE_TILSKUDDFREDABYGNINGPRIVATEIE.name());
     }
 }
