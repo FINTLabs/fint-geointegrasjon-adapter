@@ -78,7 +78,6 @@ dependencies {
     compile('org.springframework.boot:spring-boot-devtools')
     compile('org.springframework.boot:spring-boot-starter-hateoas')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
 
     compile('com.azure:azure-storage-blob:12.1.0')
     compile 'io.projectreactor:reactor-core:3.3.1.RELEASE'
