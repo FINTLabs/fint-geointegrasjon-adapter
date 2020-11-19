@@ -3,6 +3,7 @@ package no.fint.geointegrasjon.model.noark;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.arkiv.AdditionalFieldService;
 import no.fint.arkiv.TitleService;
+import no.fint.geointegrasjon.exception.InvalidCaseType;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.arkiv.kodeverk.Merknadstype;
 import no.fint.model.arkiv.kodeverk.Saksstatus;
@@ -51,7 +52,7 @@ public class SaksmappeMapper {
             R resource = supplier.get();
             log.info("Sak SystemID {}", saksmappe.getSystemID());
 
-
+            ifPresent(saksmappe.getTittel(), resource::setTittel);
             ifPresent(saksmappe.getOffentligTittel(), resource::setOffentligTittel);
             ifPresent(saksmappe.getSaksdato(), resource::setSaksdato, FintUtils::fromXmlDate);
             setIdentifikator(saksmappe.getSystemID(), resource::setSystemId);
@@ -66,7 +67,10 @@ public class SaksmappeMapper {
             ifPresent(saksmappe.getMerknader(), resource::setMerknad, l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
             //ifPresent(saksmappe.getSakspart(), resource::setPart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
 
-            ifPresent(saksmappe.getTittel(), t -> titleService.parseTitle(resource, t));
+            if (!titleService.parseTitle(resource, saksmappe.getTittel())) {
+                log.warn("Title {} does not match expected format for {}", saksmappe.getTittel(), resource.getClass());
+                throw new InvalidCaseType(resource.getClass().getSimpleName());
+            }
             additionalFieldService.setFieldsForResource(resource,
                     ofNullable(saksmappe.getTilleggsinformasjon())
                             .map(TilleggsinformasjonListe::getListe)

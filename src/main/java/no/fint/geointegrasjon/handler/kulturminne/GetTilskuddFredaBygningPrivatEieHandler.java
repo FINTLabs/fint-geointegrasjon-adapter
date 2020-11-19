@@ -9,7 +9,6 @@ import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostService;
 import no.fint.model.arkiv.kulturminnevern.KulturminnevernActions;
 import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.arkiv.kulturminnevern.TilskuddFredaBygningPrivatEieResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +43,7 @@ public class GetTilskuddFredaBygningPrivatEieHandler implements Handler {
         response.setData(new LinkedList<>());
         caseQueryService
                 .query(query)
-                .map(saksmappeMapper.toFintResource(TilskuddFredaBygningPrivatEieResource::new, tilskuddFredaBygningPrivatEieImporter))
+                .map(saksmappeMapper.toFintResource(tilskuddFredaBygningPrivatEieImporter, tilskuddFredaBygningPrivatEieImporter))
                 .peek(journalpostService::addJournalpost)
                 .forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);

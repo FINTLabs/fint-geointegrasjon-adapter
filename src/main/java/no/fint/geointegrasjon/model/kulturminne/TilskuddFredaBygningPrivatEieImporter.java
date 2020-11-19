@@ -2,16 +2,19 @@ package no.fint.geointegrasjon.model.kulturminne;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.arkiv.kulturminnevern.TilskuddFredaBygningPrivatEieResource;
+import no.fint.model.resource.felles.kompleksedatatyper.MatrikkelnummerResource;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import org.jooq.lambda.function.Consumer2;
 import org.springframework.stereotype.Service;
+
+import java.util.function.Supplier;
 
 import static no.fint.geointegrasjon.utils.FintUtils.createIdentifikator;
 import static no.fint.geointegrasjon.utils.FintUtils.ifPresent;
 
 @Service
 @Slf4j
-public class TilskuddFredaBygningPrivatEieImporter implements Consumer2<Saksmappe, TilskuddFredaBygningPrivatEieResource> {
+public class TilskuddFredaBygningPrivatEieImporter implements Consumer2<Saksmappe, TilskuddFredaBygningPrivatEieResource>, Supplier<TilskuddFredaBygningPrivatEieResource> {
     @Override
     public void accept(Saksmappe saksmappe, TilskuddFredaBygningPrivatEieResource resource) {
         ifPresent(saksmappe.getReferanseEksternNoekkel(), resource::setSoknadsnummer, r -> createIdentifikator(r.getNoekkel()));
@@ -37,5 +40,12 @@ public class TilskuddFredaBygningPrivatEieImporter implements Consumer2<Saksmapp
                 });
 
          */
+    }
+
+    @Override
+    public TilskuddFredaBygningPrivatEieResource get() {
+        final TilskuddFredaBygningPrivatEieResource resource = new TilskuddFredaBygningPrivatEieResource();
+        resource.setMatrikkelnummer(new MatrikkelnummerResource());
+        return resource;
     }
 }
