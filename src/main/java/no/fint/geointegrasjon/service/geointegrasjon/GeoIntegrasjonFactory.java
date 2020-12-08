@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static no.fint.geointegrasjon.utils.FintUtils.toXmlDate;
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -66,7 +67,7 @@ public class GeoIntegrasjonFactory {
         setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, saksmappe::setJournalenhet);
         setKodeverdiFromLink(resource.getSaksstatus(), objectFactory::createSaksstatus, saksmappe::setSaksstatus);
 
-        if (isNotBlank(externalID)) {
+        if (isNoneBlank(fagsystem, externalID)) {
             EksternNoekkel eksternNoekkel = objectFactory.createEksternNoekkel();
             eksternNoekkel.setFagsystem(fagsystem);
             eksternNoekkel.setNoekkel(externalID);

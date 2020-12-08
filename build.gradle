@@ -74,7 +74,7 @@ dependencies {
     compile('no.fint:fint-spring-secrets:0.1.0')
     compile('no.fint:fint-sse:2.0.0-rc-1')
 
-    compile('no.fint:fint-arkiv-case-defaults:2.0.0')
+    compile('no.fint:fint-arkiv-case-defaults:2.2.0-rc-1')
     compile("no.fint:fint-arkiv-resource-model-java:${apiVersion}")
     compile("no.fint:fint-administrasjon-resource-model-java:${apiVersion}")
 
@@ -84,6 +84,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-devtools')
     compile('org.springframework.boot:spring-boot-starter-hateoas')
     compile('org.springframework.boot:spring-boot-starter-web')
+    compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 
     compile('com.azure:azure-storage-blob:12.1.0')
     compile 'io.projectreactor:reactor-core:3.3.1.RELEASE'
