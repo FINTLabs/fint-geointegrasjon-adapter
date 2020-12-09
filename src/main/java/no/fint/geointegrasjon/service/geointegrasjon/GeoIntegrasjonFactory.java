@@ -17,10 +17,7 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -84,7 +81,7 @@ public class GeoIntegrasjonFactory {
         Journalpost journalpost = objectFactory.createJournalpost();
         journalpost.setReferanseSakSystemID(newSakSystemId(caseId));
 
-        journalpost.setAntallVedlegg(String.valueOf(resource.getAntallVedlegg()));
+        journalpost.setAntallVedlegg(Objects.toString(resource.getAntallVedlegg(), "0"));
         journalpost.setDokumentetsDato(toXmlDate(resource.getDokumentetsDato()));
         journalpost.setForfallsdato(toXmlDate(resource.getForfallsDato()));
         journalpost.setJournaldato(toXmlDate(resource.getJournalDato()));
@@ -98,7 +95,7 @@ public class GeoIntegrasjonFactory {
                 .orElse(Stream.empty())
                 .map(this::newKorrespondansepart)
                 .peek(korrespondansepart -> {
-                    setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
+                    //setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
                     setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhet);
                     setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, korrespondansepart::setJournalenhet);
                     setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandlerInit);
