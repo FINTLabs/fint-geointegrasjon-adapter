@@ -99,8 +99,10 @@ public class GeoIntegrasjonFactory {
                 .map(this::newKorrespondansepart)
                 .peek(korrespondansepart -> {
                     setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
+                    setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhet);
                     setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, korrespondansepart::setJournalenhet);
                     setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandlerInit);
+                    setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandler);
                 })
                 .forEach(korrespondansepartListe.getListe()::add);
         journalpost.setKorrespondansepart(korrespondansepartListe);
