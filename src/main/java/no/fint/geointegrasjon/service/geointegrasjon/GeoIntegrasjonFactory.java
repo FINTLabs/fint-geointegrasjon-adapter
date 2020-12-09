@@ -60,7 +60,7 @@ public class GeoIntegrasjonFactory {
                         .toArray(Tilleggsinformasjon[]::new));
         saksmappe.setOffentligTittel(resource.getOffentligTittel());
 
-        setKodeverdiFromLink(resource.getAdministrativEnhet(), saksmappe::setAdministrativEnhet);
+        setKodeverdiFromLink(resource.getAdministrativEnhet(), saksmappe::setAdministrativEnhetInit);
         setKodeverdiFromLink(resource.getSaksansvarlig(), saksmappe::setSaksansvarligInit);
 
         setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, saksmappe::setReferanseArkivdel);
@@ -98,6 +98,7 @@ public class GeoIntegrasjonFactory {
 
         setKodeverdiFromLink(resource.getJournalposttype(), objectFactory::createJournalposttype, journalpost::setJournalposttype);
         setKodeverdiFromLink(resource.getJournalstatus(), objectFactory::createJournalstatus, journalpost::setJournalstatus);
+        //setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, journalpost::setReferanseArkivdel);
 
         return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
     }
