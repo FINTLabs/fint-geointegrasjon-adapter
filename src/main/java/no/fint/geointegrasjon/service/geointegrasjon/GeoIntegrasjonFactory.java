@@ -93,7 +93,16 @@ public class GeoIntegrasjonFactory {
         journalpost.setTittel(resource.getTittel());
 
         final KorrespondansepartListe korrespondansepartListe = objectFactory.createKorrespondansepartListe();
-        Optional.ofNullable(resource.getKorrespondansepart()).map(List::stream).orElse(Stream.empty()).map(this::newKorrespondansepart).forEach(korrespondansepartListe.getListe()::add);
+        Optional.ofNullable(resource.getKorrespondansepart())
+                .map(List::stream)
+                .orElse(Stream.empty())
+                .map(this::newKorrespondansepart)
+                .peek(korrespondansepart -> {
+                    setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
+                    setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, korrespondansepart::setJournalenhet);
+                    setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandlerInit);
+                })
+                .forEach(korrespondansepartListe.getListe()::add);
         journalpost.setKorrespondansepart(korrespondansepartListe);
 
         setKodeverdiFromLink(resource.getJournalposttype(), objectFactory::createJournalposttype, journalpost::setJournalposttype);
