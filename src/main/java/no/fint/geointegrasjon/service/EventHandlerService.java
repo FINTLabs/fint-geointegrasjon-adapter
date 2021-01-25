@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.adapter.event.EventResponseService;
 import no.fint.adapter.event.EventStatusService;
 import no.fint.event.model.Event;
+import no.fint.event.model.Problem;
 import no.fint.event.model.ResponseStatus;
 import no.fint.event.model.Status;
 import no.fint.event.model.health.Health;
@@ -24,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -72,11 +74,21 @@ public class EventHandlerService {
             response.setResponseStatus(ResponseStatus.REJECTED);
             response.setStatusCode(e.getCode());
             response.setMessage(e.getDescription());
+            response.setProblems(e.getDetails().stream().map(s -> {
+                Problem p = new Problem();
+                p.setMessage(s);
+                return p;
+            }).collect(Collectors.toList()));
         } catch (ServerException e) {
             log.debug("{}", e, e);
             response.setResponseStatus(ResponseStatus.ERROR);
             response.setStatusCode(e.getCode());
             response.setMessage(e.getDescription());
+            response.setProblems(e.getDetails().stream().map(s -> {
+                Problem p = new Problem();
+                p.setMessage(s);
+                return p;
+            }).collect(Collectors.toList()));
         } catch (Exception e) {
             response.setResponseStatus(ResponseStatus.ERROR);
             response.setMessage(ExceptionUtils.getStackTrace(e));
