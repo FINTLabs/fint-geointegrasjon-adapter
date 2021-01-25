@@ -106,31 +106,9 @@ public class KodeverkHandler implements Handler {
                                 begrep(VariantformatResource::new)
                                         .andThen(FintLinks.class::cast))));
 
-        //suppliers.put(GET_ALL_MERKNADSTYPE, kodeverkRepository::getMerknadstype);
-        //suppliers.put(GET_ALL_KLASSIFIKASJONSSYSTEM, kodeverk("Klassifikasjonssystem", KlassifikasjonssystemResource::new));
-        //suppliers.put(GET_ALL_KLASSE, kodeverkRepository::getKlasse);
-
-        /* TODO suppliers.put(GET_ALL_ARKIVDEL,
-                kodeverk("Arkivdel",
-                        kode -> {
-                            ArkivdelResource r = new ArkivdelResource();
-                            r.setTittel(kode.getKodebeskrivelse());
-                            r.setSystemId(createIdentifikator(kode.getKodeverdi()));
-                            return r;
-                        }));
-
-         */
-
-        /* TODO suppliers.put(GET_ALL_KLASSIFIKASJONSSYSTEM,
-                kodeverk("Klassifikasjonssystem",
-                        kode -> {
-                            KlassifikasjonssystemResource r = new KlassifikasjonssystemResource();
-                            r.setTittel(kode.getKodebeskrivelse());
-                            r.setSystemId(createIdentifikator(kode.getKodeverdi()));
-                            return r;
-                        }));
-
-         */
+        // TODO suppliers.put(GET_ALL_MERKNADSTYPE, kodeverkRepository::getMerknadstype);
+        // TODO suppliers.put(GET_ALL_KLASSIFIKASJONSSYSTEM, kodeverk("Klassifikasjonssystem", KlassifikasjonssystemResource::new));
+        // TODO suppliers.put(GET_ALL_KLASSE, kodeverkRepository::getKlasse);
 
     }
 

@@ -94,14 +94,10 @@ public class GeoIntegrasjonFactory {
                 .map(List::stream)
                 .orElse(Stream.empty())
                 .map(this::newKorrespondansepart)
-                .peek(korrespondansepart -> {
-                    //setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
-                    setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhet);
-                    setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, korrespondansepart::setJournalenhet);
-                    setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandlerInit);
-                    setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandler);
-                })
                 .forEach(korrespondansepartListe.getListe()::add);
+
+        korrespondansepartListe.getListe().add(newInternKorrespondansepart(resource));
+
         journalpost.setKorrespondansepart(korrespondansepartListe);
 
         setKodeverdiFromLink(resource.getJournalposttype(), objectFactory::createJournalposttype, journalpost::setJournalposttype);
@@ -109,6 +105,25 @@ public class GeoIntegrasjonFactory {
         //setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, journalpost::setReferanseArkivdel);
 
         return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
+    }
+
+    private Korrespondansepart newInternKorrespondansepart(JournalpostResource resource) {
+        Korrespondansepart korrespondansepart = objectFactory.createKorrespondansepart();
+        //setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
+        setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhet);
+        setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, korrespondansepart::setJournalenhet);
+        setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandlerInit);
+        setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandler);
+
+        Kontakt kontakt = objectFactory.createKontakt();
+        kontakt.setNavn("FIXME"); // TODO
+
+        korrespondansepart.setKontakt(kontakt);
+
+        final Korrespondanseparttype korrespondanseparttype = objectFactory.createKorrespondanseparttype();
+        korrespondanseparttype.setKodeverdi("IA"); // TODO
+        korrespondansepart.setKorrespondanseparttype(korrespondanseparttype);
+        return korrespondansepart;
     }
 
     private Korrespondansepart newKorrespondansepart(KorrespondansepartResource resource) {
