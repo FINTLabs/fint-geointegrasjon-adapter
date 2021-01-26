@@ -11,6 +11,8 @@ import no.fint.model.arkiv.noark.AdministrativEnhet;
 import no.fint.model.arkiv.noark.Arkivdel;
 import no.fint.model.arkiv.noark.Arkivressurs;
 import no.fint.model.resource.Link;
+import no.fint.model.resource.arkiv.noark.KlasseResource;
+import no.fint.model.resource.arkiv.noark.KlassifikasjonssystemResource;
 import no.fint.model.resource.arkiv.noark.MerknadResource;
 import no.fint.model.resource.arkiv.noark.SaksmappeResource;
 import no.geointegrasjon.arkiv.innsyn.*;
@@ -25,8 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
-import static no.fint.geointegrasjon.utils.FintUtils.ifPresent;
-import static no.fint.geointegrasjon.utils.FintUtils.setIdentifikator;
+import static no.fint.geointegrasjon.utils.FintUtils.*;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 
@@ -67,6 +68,8 @@ public class SaksmappeMapper {
             ifPresent(saksmappe.getMerknader(), resource::setMerknad, l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
             //ifPresent(saksmappe.getSakspart(), resource::setPart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
 
+            ifPresent(saksmappe.getKlasse(), resource::setKlasse, l -> l.getListe().stream().map(SaksmappeMapper::klasse).collect(Collectors.toList()));
+
             if (!titleService.parseTitle(resource, saksmappe.getTittel())) {
                 log.warn("Title {} does not match expected format for {}", saksmappe.getTittel(), resource.getClass());
                 throw new InvalidCaseType(resource.getClass().getSimpleName());
@@ -103,6 +106,15 @@ public class SaksmappeMapper {
 
             return resource;
         };
+    }
+
+    private static KlasseResource klasse(Klasse klasse) {
+        final KlasseResource resource = new KlasseResource();
+        ifPresent(klasse.getKlasseID(), resource::setKlasseId);
+        ifPresent(klasse.getTittel(), resource::setTittel);
+        ifPresent(klasse.getRekkefoelge(), resource::setRekkefolge, Integer::parseInt);
+        ifPresent(klasse.getKlassifikasjonssystem(), resource::addKlassifikasjonssystem, linkTo(KlassifikasjonssystemResource.class, "systemid"));
+        return resource;
     }
 
     /*
