@@ -116,9 +116,9 @@ public class GeoIntegrasjonFactory {
         setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandler);
 
         Kontakt kontakt = objectFactory.createKontakt();
-        kontakt.setNavn("FIXME"); // TODO
+        setKodeverdiFromLink(resource.getSaksbehandler(), kontakt::setNavn);
 
-        korrespondansepart.setBehandlingsansvarlig("1");
+        korrespondansepart.setBehandlingsansvarlig("1"); // Ref 4.1.11 in the standard
         korrespondansepart.setKontakt(kontakt);
 
         final Korrespondanseparttype korrespondanseparttype = objectFactory.createKorrespondanseparttype();
