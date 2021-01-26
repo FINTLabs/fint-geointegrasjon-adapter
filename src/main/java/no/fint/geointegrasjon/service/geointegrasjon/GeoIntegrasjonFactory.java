@@ -71,9 +71,29 @@ public class GeoIntegrasjonFactory {
             saksmappe.setReferanseEksternNoekkel(eksternNoekkel);
         }
 
+        saksmappe.setKlasse(newKlasseListe(resource.getKlasse()));
+
         consumer.accept(resource, saksmappe);
 
         return saksmappe;
+    }
+
+    private KlasseListe newKlasseListe(List<KlasseResource> resources) {
+        if (resources == null || resources.isEmpty()) {
+            return null;
+        }
+        final KlasseListe liste = new KlasseListe();
+        resources.stream().map(this::newKlasse).forEach(liste.getListe()::add);
+        return liste;
+    }
+
+    private Klasse newKlasse(KlasseResource resource) {
+        final Klasse klasse = objectFactory.createKlasse();
+        klasse.setKlasseID(resource.getKlasseId());
+        klasse.setTittel(resource.getTittel());
+        klasse.setRekkefoelge(String.valueOf(resource.getRekkefolge()));
+        setKodeverdiFromLink(resource.getKlassifikasjonssystem(), objectFactory::createKlassifikasjonssystem, klasse::setKlassifikasjonssystem);
+        return klasse;
     }
 
 
