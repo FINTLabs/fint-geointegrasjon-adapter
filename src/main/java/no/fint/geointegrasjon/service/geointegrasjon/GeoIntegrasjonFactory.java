@@ -90,7 +90,7 @@ public class GeoIntegrasjonFactory {
     private Klasse newKlasse(KlasseResource resource) {
         final Klasse klasse = objectFactory.createKlasse();
         klasse.setKlasseID(resource.getKlasseId());
-        klasse.setTittel(resource.getTittel());
+        //klasse.setTittel(resource.getTittel());
         klasse.setRekkefoelge(String.valueOf(resource.getRekkefolge()));
         setKodeverdiFromLink(resource.getKlassifikasjonssystem(), objectFactory::createKlassifikasjonssystem, klasse::setKlassifikasjonssystem);
         return klasse;
