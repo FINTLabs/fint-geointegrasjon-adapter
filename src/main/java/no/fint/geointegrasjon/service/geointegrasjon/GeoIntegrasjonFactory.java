@@ -118,6 +118,7 @@ public class GeoIntegrasjonFactory {
         Kontakt kontakt = objectFactory.createKontakt();
         kontakt.setNavn("FIXME"); // TODO
 
+        korrespondansepart.setBehandlingsansvarlig("1");
         korrespondansepart.setKontakt(kontakt);
 
         final Korrespondanseparttype korrespondanseparttype = objectFactory.createKorrespondanseparttype();
