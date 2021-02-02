@@ -1,5 +1,6 @@
 package no.fint.geointegrasjon.handler.kulturminne;
 
+import no.fint.arkiv.CaseDefaults;
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.handler.Handler;
@@ -32,6 +33,9 @@ public class GetTilskuddFartoyHandler implements Handler {
     @Autowired
     private TilskuddFartoyImporter tilskuddFartoyImporter;
 
+    @Autowired
+    private CaseDefaults caseDefaults;
+
     @Override
     public void accept(Event<FintLinks> response) {
         String query = response.getQuery();
@@ -42,7 +46,7 @@ public class GetTilskuddFartoyHandler implements Handler {
             return;
         }
         response.setData(new LinkedList<>());
-        caseQueryService.query(query).map(saksmappeMapper.toFintResource(TilskuddFartoyResource::new, tilskuddFartoyImporter)).peek(journalpostService::addJournalpost).forEach(response::addData);
+        caseQueryService.query(query).map(saksmappeMapper.toFintResource(caseDefaults.getTilskuddfartoy(), TilskuddFartoyResource::new, tilskuddFartoyImporter)).peek(journalpostService::addJournalpost).forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
 

@@ -101,7 +101,7 @@ public class UpdateTilskuddFredaBygningPrivatEieHandler implements Handler {
 
     private void createCase(Event<FintLinks> event, TilskuddFredaBygningPrivatEieResource resource) {
 
-        final no.geointegrasjon.arkiv.oppdatering.Saksmappe saksmappe = journalpostCreator.createSaksmappe(geoIntegrasjonFactory.newSak(resource, externalId(resource.getSoknadsnummer()), tilskuddFredaBygningPrivatEieExporter));
+        final no.geointegrasjon.arkiv.oppdatering.Saksmappe saksmappe = journalpostCreator.createSaksmappe(geoIntegrasjonFactory.newSak(caseDefaults.getTilskuddfredabygningprivateie(), resource, externalId(resource.getSoknadsnummer()), tilskuddFredaBygningPrivatEieExporter));
         final String caseId = saksmappe.getSystemID();
         log.info("Case IDs: {} {}", caseId, saksmappe.getSaksnr());
         resource.setSystemId(createIdentifikator(caseId));

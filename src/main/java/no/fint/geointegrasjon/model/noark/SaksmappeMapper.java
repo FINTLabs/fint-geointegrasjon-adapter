@@ -2,6 +2,7 @@ package no.fint.geointegrasjon.model.noark;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.arkiv.AdditionalFieldService;
+import no.fint.arkiv.CaseProperties;
 import no.fint.arkiv.TitleService;
 import no.fint.geointegrasjon.exception.InvalidCaseType;
 import no.fint.geointegrasjon.utils.FintUtils;
@@ -48,7 +49,7 @@ public class SaksmappeMapper {
         this.additionalFieldService = additionalFieldService;
     }
 
-    public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(Supplier<R> supplier, BiConsumer<Saksmappe, R> consumer) {
+    public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(CaseProperties caseProperties, Supplier<R> supplier, BiConsumer<Saksmappe, R> consumer) {
         return saksmappe -> {
             R resource = supplier.get();
             log.info("Sak SystemID {}", saksmappe.getSystemID());
@@ -70,11 +71,11 @@ public class SaksmappeMapper {
 
             ifPresent(saksmappe.getKlasse(), resource::setKlasse, l -> l.getListe().stream().map(SaksmappeMapper::klasse).collect(Collectors.toList()));
 
-            if (!titleService.parseTitle(resource, saksmappe.getTittel())) {
+            if (!titleService.parseCaseTitle(caseProperties.getTitle(), resource, saksmappe.getTittel())) {
                 log.warn("Title {} does not match expected format for {}", saksmappe.getTittel(), resource.getClass());
                 throw new InvalidCaseType(resource.getClass().getSimpleName());
             }
-            additionalFieldService.setFieldsForResource(resource,
+            additionalFieldService.setFieldsForResource(caseProperties.getField(), resource,
                     ofNullable(saksmappe.getTilleggsinformasjon())
                             .map(TilleggsinformasjonListe::getListe)
                             .map(List::stream)

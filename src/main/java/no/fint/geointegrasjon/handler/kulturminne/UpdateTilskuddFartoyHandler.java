@@ -102,7 +102,7 @@ public class UpdateTilskuddFartoyHandler implements Handler {
 
     private void createCase(Event<FintLinks> event, TilskuddFartoyResource resource) {
 
-        final String caseId = journalpostCreator.createSaksmappe(geoIntegrasjonFactory.newSak(resource, externalId(resource.getSoknadsnummer()), tilskuddFartoyExporter)).getSystemID();
+        final String caseId = journalpostCreator.createSaksmappe(geoIntegrasjonFactory.newSak(caseDefaults.getTilskuddfartoy(), resource, externalId(resource.getSoknadsnummer()), tilskuddFartoyExporter)).getSystemID();
         resource.setSystemId(createIdentifikator(caseId));
         log.info("Case ID: {}", caseId);
 

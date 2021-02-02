@@ -2,6 +2,7 @@ package no.fint.geointegrasjon.service.geointegrasjon;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.arkiv.AdditionalFieldService;
+import no.fint.arkiv.CaseProperties;
 import no.fint.arkiv.TitleService;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.geointegrasjon.utils.UrlUtils;
@@ -47,12 +48,12 @@ public class GeoIntegrasjonFactory {
         this.additionalFieldService = additionalFieldService;
     }
 
-    public <T extends SaksmappeResource> Saksmappe newSak(T resource, String externalID, Consumer2<T, Saksmappe> consumer) {
+    public <T extends SaksmappeResource> Saksmappe newSak(CaseProperties caseProperties, T resource, String externalID, Consumer2<T, Saksmappe> consumer) {
         Saksmappe saksmappe = objectFactory.createSaksmappe();
 
-        saksmappe.setTittel(titleService.getTitle(resource));
+        saksmappe.setTittel(titleService.getCaseTitle(caseProperties.getTitle(), resource));
         addTilleggsinformasjon(saksmappe,
-                additionalFieldService.getFieldsForResource(resource)
+                additionalFieldService.getFieldsForResource(caseProperties.getField(), resource)
                         .map(f -> newTilleggsinformasjon(tilleggstype, String.format("%s: %s", f.getName(), f.getValue())))
                         .toArray(Tilleggsinformasjon[]::new));
         saksmappe.setOffentligTittel(resource.getOffentligTittel());
