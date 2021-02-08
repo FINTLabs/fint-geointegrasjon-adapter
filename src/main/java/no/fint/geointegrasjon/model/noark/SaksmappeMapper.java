@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.arkiv.AdditionalFieldService;
 import no.fint.arkiv.CaseProperties;
 import no.fint.arkiv.TitleService;
-import no.fint.geointegrasjon.exception.InvalidCaseType;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.arkiv.kodeverk.Merknadstype;
 import no.fint.model.arkiv.kodeverk.Saksstatus;
@@ -73,7 +72,7 @@ public class SaksmappeMapper {
 
             if (!titleService.parseCaseTitle(caseProperties.getTitle(), resource, saksmappe.getTittel())) {
                 log.warn("Title {} does not match expected format for {}", saksmappe.getTittel(), resource.getClass());
-                throw new InvalidCaseType(resource.getClass().getSimpleName());
+                //FIXME throw new InvalidCaseType(resource.getClass().getSimpleName());
             }
             additionalFieldService.setFieldsForResource(caseProperties.getField(), resource,
                     ofNullable(saksmappe.getTilleggsinformasjon())
