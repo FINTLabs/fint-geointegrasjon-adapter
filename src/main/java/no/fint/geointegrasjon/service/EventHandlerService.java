@@ -13,11 +13,13 @@ import no.fint.event.model.health.HealthStatus;
 import no.fint.geointegrasjon.SupportedActions;
 import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.service.geointegrasjon.ClientException;
+import no.fint.geointegrasjon.service.geointegrasjon.NotFoundException;
 import no.fint.geointegrasjon.service.geointegrasjon.ServerException;
 import no.fint.model.resource.FintLinks;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -69,6 +71,11 @@ public class EventHandlerService {
                 e.setResponseStatus(ResponseStatus.REJECTED);
                 e.setMessage("Unsupported action");
             }).accept(response);
+        } catch (NotFoundException e) {
+            log.debug("{}", e, e);
+            response.setResponseStatus(ResponseStatus.REJECTED);
+            response.setStatusCode(HttpStatus.NOT_FOUND.name());
+            response.setMessage(e.getMessage());
         } catch (ClientException e) {
             log.debug("{}", e, e);
             response.setResponseStatus(ResponseStatus.REJECTED);

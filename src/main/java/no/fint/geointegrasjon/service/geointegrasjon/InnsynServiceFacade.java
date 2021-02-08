@@ -25,7 +25,7 @@ public class InnsynServiceFacade {
         } catch (SystemException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
         } catch (ImplementationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (OperationalException e) {
@@ -48,7 +48,7 @@ public class InnsynServiceFacade {
         } catch (SystemException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
         } catch (ImplementationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (OperationalException e) {
@@ -70,7 +70,7 @@ public class InnsynServiceFacade {
         } catch (SystemException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
         } catch (ImplementationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (OperationalException e) {
@@ -94,7 +94,7 @@ public class InnsynServiceFacade {
         } catch (SystemException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
         } catch (ImplementationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (OperationalException e) {
@@ -136,7 +136,7 @@ public class InnsynServiceFacade {
         } catch (SystemException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
         } catch (ImplementationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (OperationalException e) {
@@ -176,7 +176,7 @@ public class InnsynServiceFacade {
         } catch (SystemException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
         } catch (ImplementationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (OperationalException e) {
@@ -208,7 +208,7 @@ public class InnsynServiceFacade {
         } catch (SystemException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
         } catch (ImplementationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (OperationalException e) {
@@ -236,7 +236,7 @@ public class InnsynServiceFacade {
         } catch (SystemException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
         } catch (ImplementationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (OperationalException e) {
@@ -273,7 +273,7 @@ public class InnsynServiceFacade {
         } catch (SystemException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
         } catch (ImplementationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (OperationalException e) {
@@ -295,7 +295,7 @@ public class InnsynServiceFacade {
         } catch (SystemException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (FinderException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
         } catch (ImplementationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         } catch (OperationalException e) {

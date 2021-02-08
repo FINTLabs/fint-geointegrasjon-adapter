@@ -62,7 +62,7 @@ public class JournalpostService {
             final Tuple2<Journalpost, List<Tuple2<Dokument, String>>> t1 = geoIntegrasjonFactory.newJournalpost(caseId, jp);
             final Journalpost journalpost = t1.v1;
             final List<Tuple2<Dokument, String>> dokumentListe = t1.v2;
-            boolean updateJournalpost = journalpost.getJournalstatus().getKodeverdi().equals("J") && noark_3_2;
+            boolean updateJournalpost = noark_3_2 && journalpost.getJournalstatus().getKodeverdi().equals("J");
             if (updateJournalpost) {
                 journalpost.setJournalstatus(noark32Status(journalpost.getJournalposttype().getKodeverdi().toUpperCase(Locale.ROOT)));
                 log.info("NOARK avsnitt 3.2: Setter journalstatus til {}", journalpost.getJournalstatus());
