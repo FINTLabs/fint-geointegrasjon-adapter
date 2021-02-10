@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.FintMainObject;
 import no.fint.model.felles.kompleksedatatyper.Identifikator;
+import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
 import no.geointegrasjon.arkiv.innsyn.Kode;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -13,7 +14,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Optional;
@@ -78,6 +78,10 @@ public enum FintUtils {
 
     public static Function<Kode, Link> linkTo(Function<String, Link> linker) {
         return kode -> linker.apply(kode.getKodeverdi());
+    }
+
+    public static Function<Kode, Link> linkTo(Class<? extends FintLinks> type, String attribute) {
+        return kode -> Link.with(type, attribute, kode.getKodeverdi());
     }
 
     public static String externalId(Identifikator identifikator) {

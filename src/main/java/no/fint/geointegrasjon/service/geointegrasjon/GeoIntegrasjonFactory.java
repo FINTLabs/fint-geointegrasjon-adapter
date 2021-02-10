@@ -2,12 +2,13 @@ package no.fint.geointegrasjon.service.geointegrasjon;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.arkiv.AdditionalFieldService;
+import no.fint.arkiv.CaseProperties;
 import no.fint.arkiv.TitleService;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.geointegrasjon.utils.UrlUtils;
 import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon;
 import no.fint.model.resource.Link;
-import no.fint.model.resource.administrasjon.arkiv.*;
+import no.fint.model.resource.arkiv.noark.*;
 import no.fint.model.resource.felles.kompleksedatatyper.AdresseResource;
 import no.geointegrasjon.arkiv.oppdatering.*;
 import org.apache.commons.lang3.StringUtils;
@@ -17,16 +18,14 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static no.fint.geointegrasjon.utils.FintUtils.toXmlDate;
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -49,33 +48,53 @@ public class GeoIntegrasjonFactory {
         this.additionalFieldService = additionalFieldService;
     }
 
-    public <T extends SaksmappeResource> Saksmappe newSak(T resource, String externalID, Consumer2<T, Saksmappe> consumer) {
+    public <T extends SaksmappeResource> Saksmappe newSak(CaseProperties caseProperties, T resource, String externalID, Consumer2<T, Saksmappe> consumer) {
         Saksmappe saksmappe = objectFactory.createSaksmappe();
 
-        saksmappe.setTittel(titleService.getTitle(resource));
+        saksmappe.setTittel(titleService.getCaseTitle(caseProperties.getTitle(), resource));
         addTilleggsinformasjon(saksmappe,
-                additionalFieldService.getFieldsForResource(resource)
+                additionalFieldService.getFieldsForResource(caseProperties.getField(), resource)
                         .map(f -> newTilleggsinformasjon(tilleggstype, String.format("%s: %s", f.getName(), f.getValue())))
                         .toArray(Tilleggsinformasjon[]::new));
         saksmappe.setOffentligTittel(resource.getOffentligTittel());
 
-        setKodeverdiFromLink(resource.getAdministrativEnhet(), saksmappe::setAdministrativEnhet);
+        setKodeverdiFromLink(resource.getAdministrativEnhet(), saksmappe::setAdministrativEnhetInit);
         setKodeverdiFromLink(resource.getSaksansvarlig(), saksmappe::setSaksansvarligInit);
 
         setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, saksmappe::setReferanseArkivdel);
         setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, saksmappe::setJournalenhet);
         setKodeverdiFromLink(resource.getSaksstatus(), objectFactory::createSaksstatus, saksmappe::setSaksstatus);
 
-        if (isNotBlank(externalID)) {
+        if (isNoneBlank(fagsystem, externalID)) {
             EksternNoekkel eksternNoekkel = objectFactory.createEksternNoekkel();
             eksternNoekkel.setFagsystem(fagsystem);
             eksternNoekkel.setNoekkel(externalID);
             saksmappe.setReferanseEksternNoekkel(eksternNoekkel);
         }
 
+        saksmappe.setKlasse(newKlasseListe(resource.getKlasse()));
+
         consumer.accept(resource, saksmappe);
 
         return saksmappe;
+    }
+
+    private KlasseListe newKlasseListe(List<KlasseResource> resources) {
+        if (resources == null || resources.isEmpty()) {
+            return null;
+        }
+        final KlasseListe liste = new KlasseListe();
+        resources.stream().map(this::newKlasse).forEach(liste.getListe()::add);
+        return liste;
+    }
+
+    private Klasse newKlasse(KlasseResource resource) {
+        final Klasse klasse = objectFactory.createKlasse();
+        klasse.setKlasseID(resource.getKlasseId());
+        klasse.setTittel(resource.getTittel());
+        klasse.setRekkefoelge(String.valueOf(resource.getRekkefolge()));
+        setKodeverdiFromLink(resource.getKlassifikasjonssystem(), objectFactory::createKlassifikasjonssystem, klasse::setKlassifikasjonssystem);
+        return klasse;
     }
 
 
@@ -83,7 +102,7 @@ public class GeoIntegrasjonFactory {
         Journalpost journalpost = objectFactory.createJournalpost();
         journalpost.setReferanseSakSystemID(newSakSystemId(caseId));
 
-        journalpost.setAntallVedlegg(String.valueOf(resource.getAntallVedlegg()));
+        journalpost.setAntallVedlegg(Objects.toString(resource.getAntallVedlegg(), "0"));
         journalpost.setDokumentetsDato(toXmlDate(resource.getDokumentetsDato()));
         journalpost.setForfallsdato(toXmlDate(resource.getForfallsDato()));
         journalpost.setJournaldato(toXmlDate(resource.getJournalDato()));
@@ -92,13 +111,41 @@ public class GeoIntegrasjonFactory {
         journalpost.setTittel(resource.getTittel());
 
         final KorrespondansepartListe korrespondansepartListe = objectFactory.createKorrespondansepartListe();
-        Optional.ofNullable(resource.getKorrespondansepart()).map(List::stream).orElse(Stream.empty()).map(this::newKorrespondansepart).forEach(korrespondansepartListe.getListe()::add);
+        Optional.ofNullable(resource.getKorrespondansepart())
+                .map(List::stream)
+                .orElse(Stream.empty())
+                .map(this::newKorrespondansepart)
+                .forEach(korrespondansepartListe.getListe()::add);
+
+        korrespondansepartListe.getListe().add(newInternKorrespondansepart(resource));
+
         journalpost.setKorrespondansepart(korrespondansepartListe);
 
         setKodeverdiFromLink(resource.getJournalposttype(), objectFactory::createJournalposttype, journalpost::setJournalposttype);
         setKodeverdiFromLink(resource.getJournalstatus(), objectFactory::createJournalstatus, journalpost::setJournalstatus);
+        //setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, journalpost::setReferanseArkivdel);
 
         return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
+    }
+
+    private Korrespondansepart newInternKorrespondansepart(JournalpostResource resource) {
+        Korrespondansepart korrespondansepart = objectFactory.createKorrespondansepart();
+        //setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
+        setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhet);
+        setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, korrespondansepart::setJournalenhet);
+        setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandlerInit);
+        setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandler);
+
+        Kontakt kontakt = objectFactory.createKontakt();
+        setKodeverdiFromLink(resource.getSaksbehandler(), kontakt::setNavn);
+
+        korrespondansepart.setBehandlingsansvarlig("1"); // Ref 4.1.11 in the standard
+        korrespondansepart.setKontakt(kontakt);
+
+        final Korrespondanseparttype korrespondanseparttype = objectFactory.createKorrespondanseparttype();
+        korrespondanseparttype.setKodeverdi("IA"); // TODO
+        korrespondansepart.setKorrespondanseparttype(korrespondanseparttype);
+        return korrespondansepart;
     }
 
     private Korrespondansepart newKorrespondansepart(KorrespondansepartResource resource) {

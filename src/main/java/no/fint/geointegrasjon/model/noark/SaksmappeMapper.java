@@ -2,23 +2,24 @@ package no.fint.geointegrasjon.model.noark;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.arkiv.AdditionalFieldService;
+import no.fint.arkiv.CaseProperties;
 import no.fint.arkiv.TitleService;
 import no.fint.geointegrasjon.utils.FintUtils;
-import no.fint.model.administrasjon.arkiv.Arkivdel;
-import no.fint.model.administrasjon.arkiv.Saksstatus;
-import no.fint.model.administrasjon.arkiv.*;
+import no.fint.model.arkiv.kodeverk.Merknadstype;
+import no.fint.model.arkiv.kodeverk.Saksstatus;
+import no.fint.model.arkiv.noark.AdministrativEnhet;
+import no.fint.model.arkiv.noark.Arkivdel;
+import no.fint.model.arkiv.noark.Arkivressurs;
 import no.fint.model.resource.Link;
-import no.fint.model.resource.administrasjon.arkiv.MerknadResource;
-import no.fint.model.resource.administrasjon.arkiv.SaksmappeResource;
-import no.geointegrasjon.arkiv.innsyn.Merknad;
-import no.geointegrasjon.arkiv.innsyn.Saksmappe;
+import no.fint.model.resource.arkiv.noark.KlasseResource;
+import no.fint.model.resource.arkiv.noark.KlassifikasjonssystemResource;
+import no.fint.model.resource.arkiv.noark.MerknadResource;
+import no.fint.model.resource.arkiv.noark.SaksmappeResource;
 import no.geointegrasjon.arkiv.innsyn.*;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -26,8 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
-import static no.fint.geointegrasjon.utils.FintUtils.ifPresent;
-import static no.fint.geointegrasjon.utils.FintUtils.setIdentifikator;
+import static no.fint.geointegrasjon.utils.FintUtils.*;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 
@@ -48,12 +48,12 @@ public class SaksmappeMapper {
         this.additionalFieldService = additionalFieldService;
     }
 
-    public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(Supplier<R> supplier, BiConsumer<Saksmappe, R> consumer) {
+    public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(CaseProperties caseProperties, Supplier<R> supplier, BiConsumer<Saksmappe, R> consumer) {
         return saksmappe -> {
             R resource = supplier.get();
             log.info("Sak SystemID {}", saksmappe.getSystemID());
 
-
+            ifPresent(saksmappe.getTittel(), resource::setTittel);
             ifPresent(saksmappe.getOffentligTittel(), resource::setOffentligTittel);
             ifPresent(saksmappe.getSaksdato(), resource::setSaksdato, FintUtils::fromXmlDate);
             setIdentifikator(saksmappe.getSystemID(), resource::setSystemId);
@@ -68,8 +68,13 @@ public class SaksmappeMapper {
             ifPresent(saksmappe.getMerknader(), resource::setMerknad, l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
             //ifPresent(saksmappe.getSakspart(), resource::setPart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
 
-            ifPresent(saksmappe.getTittel(), t -> titleService.parseTitle(resource, t));
-            additionalFieldService.setFieldsForResource(resource,
+            ifPresent(saksmappe.getKlasse(), resource::setKlasse, l -> l.getListe().stream().map(SaksmappeMapper::klasse).collect(Collectors.toList()));
+
+            if (!titleService.parseCaseTitle(caseProperties.getTitle(), resource, saksmappe.getTittel())) {
+                log.warn("Title {} does not match expected format for {}", saksmappe.getTittel(), resource.getClass());
+                //FIXME throw new InvalidCaseType(resource.getClass().getSimpleName());
+            }
+            additionalFieldService.setFieldsForResource(caseProperties.getField(), resource,
                     ofNullable(saksmappe.getTilleggsinformasjon())
                             .map(TilleggsinformasjonListe::getListe)
                             .map(List::stream)
@@ -101,6 +106,15 @@ public class SaksmappeMapper {
 
             return resource;
         };
+    }
+
+    private static KlasseResource klasse(Klasse klasse) {
+        final KlasseResource resource = new KlasseResource();
+        ifPresent(klasse.getKlasseID(), resource::setKlasseId);
+        ifPresent(klasse.getTittel(), resource::setTittel);
+        ifPresent(klasse.getRekkefoelge(), resource::setRekkefolge, Integer::parseInt);
+        ifPresent(klasse.getKlassifikasjonssystem(), resource::addKlassifikasjonssystem, linkTo(KlassifikasjonssystemResource.class, "systemid"));
+        return resource;
     }
 
     /*

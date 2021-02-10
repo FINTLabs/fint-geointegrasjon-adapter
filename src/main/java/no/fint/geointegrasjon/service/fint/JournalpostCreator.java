@@ -2,9 +2,7 @@ package no.fint.geointegrasjon.service.fint;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.geointegrasjon.service.geointegrasjon.OppdateringServiceFacade;
-import no.geointegrasjon.arkiv.oppdatering.Dokument;
-import no.geointegrasjon.arkiv.oppdatering.Journalpost;
-import no.geointegrasjon.arkiv.oppdatering.Saksmappe;
+import no.geointegrasjon.arkiv.oppdatering.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,5 +24,13 @@ public class JournalpostCreator {
 
     public Saksmappe createSaksmappe(Saksmappe saksmappe) {
         return oppdateringService.nySaksmappe(saksmappe, null);
+    }
+
+    public void oppdaterJournalpostStatus(Journalstatus journalstatus, String id) {
+        SystemID systemID = new SystemID();
+        systemID.setId(id);
+        JournpostSystemID journpostSystemID = new JournpostSystemID();
+        journpostSystemID.setSystemID(systemID);
+        oppdateringService.oppdaterJournalpostStatus(journalstatus, journpostSystemID, null);
     }
 }

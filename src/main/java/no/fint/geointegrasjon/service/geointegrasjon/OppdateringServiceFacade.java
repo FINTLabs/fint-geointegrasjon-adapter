@@ -75,4 +75,22 @@ public class OppdateringServiceFacade {
             throw FaultHandler.handleFault(e.getFaultInfo());
         }
     }
+
+    public void oppdaterJournalpostStatus(Journalstatus journalstatus, Journpostnoekkel journalpostnokkel, ArkivKontekst kontekst)  {
+        try {
+            sakArkivOppdatering.oppdaterJournalpostStatus(journalstatus, journalpostnokkel, kontekst);
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        }
+    }
 }

@@ -1,15 +1,15 @@
-package no.fint.geointegrasjon.handler.noark;
+package no.fint.geointegrasjon.handler.kulturminne;
 
-import lombok.extern.slf4j.Slf4j;
+import no.fint.arkiv.CaseDefaults;
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.handler.Handler;
+import no.fint.geointegrasjon.model.kulturminne.TilskuddFredaBygningPrivatEieImporter;
 import no.fint.geointegrasjon.model.noark.SaksmappeMapper;
 import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostService;
-import no.fint.model.administrasjon.arkiv.ArkivActions;
+import no.fint.model.arkiv.kulturminnevern.KulturminnevernActions;
 import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.administrasjon.arkiv.SakResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +17,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Set;
 
-@Slf4j
 @Service
-public class GetSakHandler implements Handler {
+public class GetTilskuddFredaBygningPrivatEieHandler implements Handler {
+
+    @Autowired
+    private CaseQueryService caseQueryService;
 
     @Autowired
     private SaksmappeMapper saksmappeMapper;
@@ -28,7 +30,10 @@ public class GetSakHandler implements Handler {
     private JournalpostService journalpostService;
 
     @Autowired
-    private CaseQueryService caseQueryService;
+    private TilskuddFredaBygningPrivatEieImporter tilskuddFredaBygningPrivatEieImporter;
+
+    @Autowired
+    private CaseDefaults caseDefaults;
 
     @Override
     public void accept(Event<FintLinks> response) {
@@ -40,13 +45,16 @@ public class GetSakHandler implements Handler {
             return;
         }
         response.setData(new LinkedList<>());
-        caseQueryService.query(query).map(saksmappeMapper.toFintResource(SakResource::new, (a,b) -> {})).peek(journalpostService::addJournalpost).forEach(response::addData);
+        caseQueryService
+                .query(query)
+                .map(saksmappeMapper.toFintResource(caseDefaults.getTilskuddfredabygningprivateie(), tilskuddFredaBygningPrivatEieImporter, tilskuddFredaBygningPrivatEieImporter))
+                .peek(journalpostService::addJournalpost)
+                .forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
 
     @Override
     public Set<String> actions() {
-        return Collections.singleton(ArkivActions.GET_SAK.name());
+        return Collections.singleton(KulturminnevernActions.GET_TILSKUDDFREDABYGNINGPRIVATEIE.name());
     }
-
 }

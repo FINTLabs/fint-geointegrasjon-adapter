@@ -57,11 +57,16 @@ dependencies {
     compile('com.google.guava:guava:28.0-jre')
     compile('org.apache.commons:commons-lang3:3.9')
     compile('org.apache.jena:jena-arq:3.12.0')
-    compile('org.apache.tika:tika-core:1.22')
     compile('org.glassfish.jersey.core:jersey-client:2.29')
     compile('org.glassfish.jersey.core:jersey-common:2.29')
     compile('org.jooq:jool-java-8:0.9.14')
     compile('org.projectlombok:lombok:1.18.8')
+
+    // Spring adds validation-api 1.x and hibernate-validator 5.x by default, all three dependencies needed to override.
+    // Version 6.1.0 does not work :(
+    compile 'javax.validation:validation-api:2.0.1.Final'
+    compile 'org.hibernate.validator:hibernate-validator:6.0.17.Final'
+    compile 'org.hibernate.validator:hibernate-validator-annotation-processor:6.0.17.Final'
 
     compile 'no.fint:fint-model-resource:0.3.3'
     compile('no.fint:fint-event-model:3.0.0')
@@ -69,8 +74,9 @@ dependencies {
     compile('no.fint:fint-spring-secrets:0.1.0')
     compile('no.fint:fint-sse:2.0.0-rc-1')
 
-    compile("no.fint:fint-arkiv-model-java:${apiVersion}")
-    compile('no.fint:fint-arkiv-case-defaults:1.0.0-beta-11')
+    compile('no.fint:fint-arkiv-case-defaults:2.2.0')
+    compile("no.fint:fint-arkiv-resource-model-java:${apiVersion}")
+    compile("no.fint:fint-administrasjon-resource-model-java:${apiVersion}")
 
     compile('org.springframework.hateoas:spring-hateoas')
     runtime('org.springframework.plugin:spring-plugin-core')
@@ -78,7 +84,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-devtools')
     compile('org.springframework.boot:spring-boot-starter-hateoas')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 
     compile('com.azure:azure-storage-blob:12.1.0')
     compile 'io.projectreactor:reactor-core:3.3.1.RELEASE'
