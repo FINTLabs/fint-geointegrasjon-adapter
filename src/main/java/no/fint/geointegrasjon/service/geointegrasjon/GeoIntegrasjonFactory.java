@@ -130,11 +130,13 @@ public class GeoIntegrasjonFactory {
 
     private Korrespondansepart newInternKorrespondansepart(JournalpostResource resource) {
         Korrespondansepart korrespondansepart = objectFactory.createKorrespondansepart();
-        //setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
-        setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhet);
+        setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
         setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, korrespondansepart::setJournalenhet);
         setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandlerInit);
-        setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandler);
+
+        // Should not be set according to 4.4.8
+        // setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhet);
+        // setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandler);
 
         Kontakt kontakt = objectFactory.createKontakt();
         setKodeverdiFromLink(resource.getSaksbehandler(), kontakt::setNavn);
