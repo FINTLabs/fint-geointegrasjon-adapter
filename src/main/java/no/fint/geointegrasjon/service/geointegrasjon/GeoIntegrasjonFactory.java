@@ -114,10 +114,12 @@ public class GeoIntegrasjonFactory {
         Optional.ofNullable(resource.getKorrespondansepart())
                 .map(List::stream)
                 .orElse(Stream.empty())
-                .map(this::newKorrespondansepart)
+                .map(k -> newKorrespondansepart(resource, k))
                 .forEach(korrespondansepartListe.getListe()::add);
 
-        korrespondansepartListe.getListe().add(newInternKorrespondansepart(resource));
+        if (korrespondansepartListe.getListe().stream().noneMatch(p -> StringUtils.equals("1", p.getBehandlingsansvarlig()))) {
+            korrespondansepartListe.getListe().add(newInternKorrespondansepart(journalpost.getJournalposttype().getKodeverdi(), resource));
+        }
 
         journalpost.setKorrespondansepart(korrespondansepartListe);
 
@@ -128,13 +130,15 @@ public class GeoIntegrasjonFactory {
         return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
     }
 
-    private Korrespondansepart newInternKorrespondansepart(JournalpostResource resource) {
+    private Korrespondansepart newInternKorrespondansepart(String journalposttype, JournalpostResource resource) {
         Korrespondansepart korrespondansepart = objectFactory.createKorrespondansepart();
-        //setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
-        setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhet);
+        setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
         setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, korrespondansepart::setJournalenhet);
         setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandlerInit);
-        setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandler);
+
+        // Should not be set according to 4.4.8
+        // setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhet);
+        // setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandler);
 
         Kontakt kontakt = objectFactory.createKontakt();
         setKodeverdiFromLink(resource.getSaksbehandler(), kontakt::setNavn);
@@ -143,26 +147,46 @@ public class GeoIntegrasjonFactory {
         korrespondansepart.setKontakt(kontakt);
 
         final Korrespondanseparttype korrespondanseparttype = objectFactory.createKorrespondanseparttype();
-        korrespondanseparttype.setKodeverdi("IA"); // TODO
+        switch (StringUtils.upperCase(journalposttype)) {
+            case "I":
+                korrespondanseparttype.setKodeverdi("IM");
+                break;
+            case "U":
+                korrespondanseparttype.setKodeverdi("IA");
+                break;
+            default: // TODO
+                korrespondanseparttype.setKodeverdi("IK");
+        }
         korrespondansepart.setKorrespondanseparttype(korrespondanseparttype);
         return korrespondansepart;
     }
 
-    private Korrespondansepart newKorrespondansepart(KorrespondansepartResource resource) {
+    private Korrespondansepart newKorrespondansepart(
+            JournalpostResource journalpostResource,
+            KorrespondansepartResource korrespondansepartResource) {
         Korrespondansepart result = objectFactory.createKorrespondansepart();
 
-        setKodeverdiFromLink(resource.getKorrespondanseparttype(), objectFactory::createKorrespondanseparttype, result::setKorrespondanseparttype);
+        setKodeverdiFromLink(korrespondansepartResource.getKorrespondanseparttype(), objectFactory::createKorrespondanseparttype, result::setKorrespondanseparttype);
+
+        if (result.getKorrespondanseparttype() != null &&
+                StringUtils.equalsAnyIgnoreCase(result.getKorrespondanseparttype().getKodeverdi(), "IA", "IM")) {
+            setKodeverdiFromLink(journalpostResource.getAdministrativEnhet(), result::setAdministrativEnhetInit);
+            setKodeverdiFromLink(journalpostResource.getJournalenhet(), objectFactory::createJournalenhet, result::setJournalenhet);
+            setKodeverdiFromLink(journalpostResource.getSaksbehandler(), result::setSaksbehandlerInit);
+            result.setBehandlingsansvarlig("1"); // Ref 4.1.11 in the standard
+        }
+
         final Kontakt kontakt;
-        if (isNotBlank(resource.getOrganisasjonsnummer())) {
-            kontakt = createOrganisasjon(resource);
-        } else if (isNotBlank(resource.getFodselsnummer())) {
-            kontakt = createPerson(resource);
+        if (isNotBlank(korrespondansepartResource.getOrganisasjonsnummer())) {
+            kontakt = createOrganisasjon(korrespondansepartResource);
+        } else if (isNotBlank(korrespondansepartResource.getFodselsnummer())) {
+            kontakt = createPerson(korrespondansepartResource);
         } else {
             kontakt = objectFactory.createKontakt();
         }
-        kontakt.setNavn(resource.getKorrespondansepartNavn());
-        kontakt.setAdresser(createAdresser(resource.getAdresse()));
-        kontakt.setElektroniskeAdresser(createElektroniskeAdresser(resource.getKontaktinformasjon()));
+        kontakt.setNavn(korrespondansepartResource.getKorrespondansepartNavn());
+        kontakt.setAdresser(createAdresser(korrespondansepartResource.getAdresse()));
+        kontakt.setElektroniskeAdresser(createElektroniskeAdresser(korrespondansepartResource.getKontaktinformasjon()));
 
         result.setKontakt(kontakt);
         return result;
