@@ -118,7 +118,7 @@ public class GeoIntegrasjonFactory {
                 .forEach(korrespondansepartListe.getListe()::add);
 
         if (korrespondansepartListe.getListe().stream().noneMatch(p -> StringUtils.equals("1", p.getBehandlingsansvarlig()))) {
-            korrespondansepartListe.getListe().add(newInternKorrespondansepart(journalpost.getJournalposttype().getKodeverdi(), resource));
+            korrespondansepartListe.getListe().add(newInternKorrespondansepart(journalpost.getJournalposttype(), resource));
         }
 
         journalpost.setKorrespondansepart(korrespondansepartListe);
@@ -130,7 +130,7 @@ public class GeoIntegrasjonFactory {
         return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
     }
 
-    private Korrespondansepart newInternKorrespondansepart(String journalposttype, JournalpostResource resource) {
+    private Korrespondansepart newInternKorrespondansepart(Journalposttype journalposttype, JournalpostResource resource) {
         Korrespondansepart korrespondansepart = objectFactory.createKorrespondansepart();
         setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
         setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, korrespondansepart::setJournalenhet);
@@ -146,19 +146,28 @@ public class GeoIntegrasjonFactory {
         korrespondansepart.setBehandlingsansvarlig("1"); // Ref 4.1.11 in the standard
         korrespondansepart.setKontakt(kontakt);
 
-        final Korrespondanseparttype korrespondanseparttype = objectFactory.createKorrespondanseparttype();
-        switch (StringUtils.upperCase(journalposttype)) {
-            case "I":
-                korrespondanseparttype.setKodeverdi("IM");
-                break;
-            case "U":
-                korrespondanseparttype.setKodeverdi("IA");
-                break;
-            default: // TODO
-                korrespondanseparttype.setKodeverdi("IK");
-        }
-        korrespondansepart.setKorrespondanseparttype(korrespondanseparttype);
+        korrespondansepart.setKorrespondanseparttype(korrespondanseparttypeFromJournalposttype(journalposttype));
         return korrespondansepart;
+    }
+
+    private Korrespondanseparttype korrespondanseparttypeFromJournalposttype(Journalposttype journalposttype) {
+        final Korrespondanseparttype korrespondanseparttype = objectFactory.createKorrespondanseparttype();
+        if (journalposttype == null || journalposttype.getKodeverdi() == null) {
+            // TODO
+            korrespondanseparttype.setKodeverdi("IK");
+        } else {
+            switch (StringUtils.upperCase(journalposttype.getKodeverdi())) {
+                case "I":
+                    korrespondanseparttype.setKodeverdi("IM");
+                    break;
+                case "U":
+                    korrespondanseparttype.setKodeverdi("IA");
+                    break;
+                default: // TODO
+                    korrespondanseparttype.setKodeverdi("IK");
+            }
+        }
+        return korrespondanseparttype;
     }
 
     private Korrespondansepart newKorrespondansepart(
