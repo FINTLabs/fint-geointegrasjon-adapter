@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static no.fint.geointegrasjon.utils.FintUtils.toXmlDate;
+import static no.fint.geointegrasjon.utils.StringUtils.endsWith;
+import static no.fint.geointegrasjon.utils.StringUtils.stringEquals;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -118,7 +120,7 @@ public class GeoIntegrasjonFactory {
                 .map(k -> newKorrespondansepart(resource, k))
                 .forEach(korrespondansepartListe.getListe()::add);
 
-        if (korrespondansepartListe.getListe().stream().noneMatch(p -> StringUtils.equals("1", p.getBehandlingsansvarlig()))) {
+        if (korrespondansepartListe.getListe().stream().map(Korrespondansepart::getBehandlingsansvarlig).noneMatch(stringEquals("1"))) {
             korrespondansepartListe.getListe().add(newInternKorrespondansepart(journalpost.getJournalposttype(), resource));
         }
 
@@ -128,7 +130,9 @@ public class GeoIntegrasjonFactory {
         setKodeverdiFromLink(resource.getJournalstatus(), objectFactory::createJournalstatus, journalpost::setJournalstatus);
         //setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, journalpost::setReferanseArkivdel);
 
-        journalpost.setReferanseAvskrivninger(newAvskrivninger("AF"));
+        if (UrlUtils.getHrefsFromLinks(resource.getJournalposttype()).anyMatch(endsWith("/I"))) {
+            journalpost.setReferanseAvskrivninger(newAvskrivninger("AF"));
+        }
 
         return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
     }
