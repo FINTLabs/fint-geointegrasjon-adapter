@@ -36,17 +36,19 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class GeoIntegrasjonFactory {
 
     private final ObjectFactory objectFactory = new ObjectFactory();
-    private final String fagsystem, tilleggstype;
+    private final String fagsystem, tilleggstype, avskrivingsmate;
     private final TitleService titleService;
     private final AdditionalFieldService additionalFieldService;
 
     public GeoIntegrasjonFactory(
             @Value("${fint.geointegrasjon.fagsystem}") String fagsystem,
             @Value("${fint.geointegrasjon.tilleggstype}") String tilleggstype,
+            @Value("${fint.geointegrasjon.avskrivningsmate:}") String avskrivningsmate,
             TitleService titleService,
             AdditionalFieldService additionalFieldService) {
         this.fagsystem = fagsystem;
         this.tilleggstype = tilleggstype;
+        this.avskrivingsmate = avskrivningsmate;
         this.titleService = titleService;
         this.additionalFieldService = additionalFieldService;
     }
@@ -130,8 +132,8 @@ public class GeoIntegrasjonFactory {
         setKodeverdiFromLink(resource.getJournalstatus(), objectFactory::createJournalstatus, journalpost::setJournalstatus);
         //setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, journalpost::setReferanseArkivdel);
 
-        if (UrlUtils.getHrefsFromLinks(resource.getJournalposttype()).anyMatch(endsWith("/I"))) {
-            journalpost.setReferanseAvskrivninger(newAvskrivninger("AF"));
+        if (StringUtils.isNotBlank(avskrivingsmate) && UrlUtils.getHrefsFromLinks(resource.getJournalposttype()).anyMatch(endsWith("/I"))) {
+            journalpost.setReferanseAvskrivninger(newAvskrivninger(avskrivingsmate));
         }
 
         return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
