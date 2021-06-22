@@ -69,8 +69,7 @@ dependencies {
     compile 'no.fint:fint-model-resource:0.4.1'
     compile('no.fint:fint-event-model:3.0.1')
     compile('no.fint:fint-relation-model:1.1.6')
-    // TODO Remove comment below to include fint-spring-secrets again when repo.fintlabs.no is up to date
-    //compile('no.fint:fint-spring-secrets:x.x.x')
+    compile('no.fint:fint-spring-secrets:0.2.2')
     compile('no.fint:fint-sse:2.0.0')
 
     compile('no.fint:fint-arkiv-case-defaults:3.1.0')
