@@ -20,11 +20,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static no.fint.geointegrasjon.utils.FintUtils.toXmlDate;
+import static no.fint.geointegrasjon.utils.StringUtils.endsWith;
+import static no.fint.geointegrasjon.utils.StringUtils.stringEquals;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -33,17 +36,19 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class GeoIntegrasjonFactory {
 
     private final ObjectFactory objectFactory = new ObjectFactory();
-    private final String fagsystem, tilleggstype;
+    private final String fagsystem, tilleggstype, avskrivingsmate;
     private final TitleService titleService;
     private final AdditionalFieldService additionalFieldService;
 
     public GeoIntegrasjonFactory(
             @Value("${fint.geointegrasjon.fagsystem}") String fagsystem,
             @Value("${fint.geointegrasjon.tilleggstype}") String tilleggstype,
+            @Value("${fint.geointegrasjon.avskrivningsmate:}") String avskrivningsmate,
             TitleService titleService,
             AdditionalFieldService additionalFieldService) {
         this.fagsystem = fagsystem;
         this.tilleggstype = tilleggstype;
+        this.avskrivingsmate = avskrivningsmate;
         this.titleService = titleService;
         this.additionalFieldService = additionalFieldService;
     }
@@ -117,7 +122,7 @@ public class GeoIntegrasjonFactory {
                 .map(k -> newKorrespondansepart(resource, k))
                 .forEach(korrespondansepartListe.getListe()::add);
 
-        if (korrespondansepartListe.getListe().stream().noneMatch(p -> StringUtils.equals("1", p.getBehandlingsansvarlig()))) {
+        if (korrespondansepartListe.getListe().stream().map(Korrespondansepart::getBehandlingsansvarlig).noneMatch(stringEquals("1"))) {
             korrespondansepartListe.getListe().add(newInternKorrespondansepart(journalpost.getJournalposttype(), resource));
         }
 
@@ -127,7 +132,23 @@ public class GeoIntegrasjonFactory {
         setKodeverdiFromLink(resource.getJournalstatus(), objectFactory::createJournalstatus, journalpost::setJournalstatus);
         //setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, journalpost::setReferanseArkivdel);
 
+        if (StringUtils.isNotBlank(avskrivingsmate) && UrlUtils.getHrefsFromLinks(resource.getJournalposttype()).anyMatch(endsWith("/I"))) {
+            journalpost.setReferanseAvskrivninger(newAvskrivninger(avskrivingsmate));
+        }
+
         return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
+    }
+
+    private AvskrivningListe newAvskrivninger(String... values) {
+        AvskrivningListe liste = objectFactory.createAvskrivningListe();
+        Arrays.stream(values)
+                .map(setKodeverdi(objectFactory::createAvskrivningsmaate))
+                .map(it -> {
+                    Avskrivning avskrivning = objectFactory.createAvskrivning();
+                    avskrivning.setAvskrivningsmaate(it);
+                    return avskrivning;
+                }).forEach(liste.getListe()::add);
+        return liste;
     }
 
     private Korrespondansepart newInternKorrespondansepart(Journalposttype journalposttype, JournalpostResource resource) {
@@ -315,6 +336,10 @@ public class GeoIntegrasjonFactory {
 
     private void setKodeverdiFromLink(List<Link> links, Consumer<String> consumer) {
         links.stream().map(Link::getHref).map(UrlUtils::getFileIdFromUri).filter(StringUtils::isNotBlank).forEach(consumer);
+    }
+
+    private <T extends Kode> Function<String, T> setKodeverdi(Supplier<T> supplier) {
+        return kodeverdi -> setKodeverdi(supplier, kodeverdi);
     }
 
     private <T extends Kode> T setKodeverdi(Supplier<T> supplier, String kodeverdi) {
