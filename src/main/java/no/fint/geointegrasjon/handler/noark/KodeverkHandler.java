@@ -106,6 +106,12 @@ public class KodeverkHandler implements Handler {
                                 begrep(VariantformatResource::new)
                                         .andThen(FintLinks.class::cast))));
 
+        suppliers.put(GET_ALL_FORMAT,
+                merge(noarkMetadataService::getFormat,
+                        kodeverk("Format",
+                                begrep(FormatResource::new)
+                                        .andThen(FintLinks.class::cast))));
+
         // TODO suppliers.put(GET_ALL_MERKNADSTYPE, kodeverkRepository::getMerknadstype);
         // TODO suppliers.put(GET_ALL_KLASSIFIKASJONSSYSTEM, kodeverk("Klassifikasjonssystem", KlassifikasjonssystemResource::new));
         // TODO suppliers.put(GET_ALL_KLASSE, kodeverkRepository::getKlasse);

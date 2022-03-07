@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Slf4j
 @Configuration
 public class GeoIntegrasjonConfiguration {
@@ -92,7 +94,7 @@ public class GeoIntegrasjonConfiguration {
                                             WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT,
                                             WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler(password)
                                     )));
-        } else if (!adapterProps.getApikey().isEmpty()) {
+        } else if (isNotBlank(adapterProps.getApikey())) {
             log.info("Using the newly added API key authentication feature!");
             Map<String, List<String>> headers = new HashMap<String, List<String>>();
             headers.put(API_KEY, Arrays.asList(adapterProps.getApikey()));
