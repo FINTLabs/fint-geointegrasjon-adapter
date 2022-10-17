@@ -72,7 +72,7 @@ dependencies {
     compile('no.fint:fint-spring-secrets:0.2.2')
     compile('no.fint:fint-sse:2.0.0')
 
-    compile('no.fint:fint-arkiv-case-defaults:4.1.0')
+    compile('no.fintlabs:fint-arkiv-case-defaults:4.2.0')
     compile("no.fint:fint-arkiv-resource-model-java:${apiVersion}")
     compile("no.fint:fint-administrasjon-resource-model-java:${apiVersion}")
 
@@ -94,7 +94,7 @@ dependencies {
     testCompile('de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0')
 
     compile 'commons-beanutils:commons-beanutils:1.9.4'
-    compile 'org.apache.commons:commons-text:1.8'
+    compile 'org.apache.commons:commons-text:1.10.0'
 }
 
 task copyExternalDependencies(type: Copy) {
@@ -162,5 +162,3 @@ test {
         events 'passed', 'skipped', 'failed'
     }
 }
-
-apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/master/dependencyReport.gradle'

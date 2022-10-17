@@ -154,7 +154,8 @@ public class KodeverkHandler implements Handler {
         };
     }
 
-    private Supplier<Stream<? extends FintLinks>> merge(Supplier<Stream<? extends FintLinks>>... suppliers) {
+    @SafeVarargs
+    private final Supplier<Stream<? extends FintLinks>> merge(Supplier<Stream<? extends FintLinks>>... suppliers) {
         return () -> Stream.of(suppliers).flatMap(Supplier::get);
     }
 }
