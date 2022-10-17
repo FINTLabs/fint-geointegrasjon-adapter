@@ -48,13 +48,17 @@ public class GeoIntegrasjonFactory {
         this.additionalFieldService = additionalFieldService;
     }
 
-    public <T extends SaksmappeResource> Saksmappe newSak(CaseProperties caseProperties, T resource, String externalID, Consumer2<T, Saksmappe> consumer) {
+    public <T extends SaksmappeResource> Saksmappe newSak(CaseProperties caseProperties,
+                                                          T resource,
+                                                          String externalID,
+                                                          Consumer2<T, Saksmappe> consumer) {
         Saksmappe saksmappe = objectFactory.createSaksmappe();
 
         saksmappe.setTittel(titleService.getCaseTitle(caseProperties.getTitle(), resource));
         addTilleggsinformasjon(saksmappe,
                 additionalFieldService.getFieldsForResource(caseProperties.getField(), resource)
-                        .map(f -> newTilleggsinformasjon(tilleggstype, String.format("%s: %s", f.getName(), f.getValue())))
+                        .map(f -> newTilleggsinformasjon(tilleggstype,
+                                String.format("%s: %s", f.getName(), f.getValue())))
                         .toArray(Tilleggsinformasjon[]::new));
         saksmappe.setOffentligTittel(resource.getOffentligTittel());
 
@@ -93,12 +97,15 @@ public class GeoIntegrasjonFactory {
         klasse.setKlasseID(resource.getKlasseId());
         klasse.setTittel(resource.getTittel());
         klasse.setRekkefoelge(String.valueOf(resource.getRekkefolge()));
-        setKodeverdiFromLink(resource.getKlassifikasjonssystem(), objectFactory::createKlassifikasjonssystem, klasse::setKlassifikasjonssystem);
+        setKodeverdiFromLink(resource.getKlassifikasjonssystem(),
+                objectFactory::createKlassifikasjonssystem,
+                klasse::setKlassifikasjonssystem);
         return klasse;
     }
 
 
-    public Tuple2<Journalpost, List<Tuple2<Dokument, String>>> newJournalpost(String caseId, JournalpostResource resource) {
+    public Tuple2<Journalpost, List<Tuple2<Dokument, String>>> newJournalpost(String caseId,
+                                                                              JournalpostResource resource) {
         Journalpost journalpost = objectFactory.createJournalpost();
         journalpost.setReferanseSakSystemID(newSakSystemId(caseId));
 
@@ -117,23 +124,48 @@ public class GeoIntegrasjonFactory {
                 .map(k -> newKorrespondansepart(resource, k))
                 .forEach(korrespondansepartListe.getListe()::add);
 
-        if (korrespondansepartListe.getListe().stream().noneMatch(p -> StringUtils.equals("1", p.getBehandlingsansvarlig()))) {
-            korrespondansepartListe.getListe().add(newInternKorrespondansepart(journalpost.getJournalposttype(), resource));
+        if (korrespondansepartListe.getListe()
+                .stream()
+                .noneMatch(p -> StringUtils.equals("1", p.getBehandlingsansvarlig()))) {
+            korrespondansepartListe.getListe()
+                    .add(newInternKorrespondansepart(journalpost.getJournalposttype(), resource));
         }
 
         journalpost.setKorrespondansepart(korrespondansepartListe);
 
-        setKodeverdiFromLink(resource.getJournalposttype(), objectFactory::createJournalposttype, journalpost::setJournalposttype);
-        setKodeverdiFromLink(resource.getJournalstatus(), objectFactory::createJournalstatus, journalpost::setJournalstatus);
+        Optional.ofNullable(resource.getAvskrivning())
+                .map(it -> {
+                    Avskrivning avskrivning = objectFactory.createAvskrivning();
+                    Avskrivningsmaate avskrivningsmaate = objectFactory.createAvskrivningsmaate();
+                    avskrivningsmaate.setKodeverdi(it.getAvskrivningsmate());
+                    avskrivning.setAvskrivningsmaate(avskrivningsmaate);
+                    avskrivning.setAvskrivningsdato(toXmlDate(it.getAvskrivningsdato()));
+                    avskrivning.setAvskrevetAv(it.getAvskrevetAv());
+                    AvskrivningListe avskrivningListe = objectFactory.createAvskrivningListe();
+                    avskrivningListe.getListe().add(avskrivning);
+                    return avskrivningListe;
+                })
+                .ifPresent(journalpost::setReferanseAvskrivninger);
+
+        setKodeverdiFromLink(resource.getJournalposttype(),
+                objectFactory::createJournalposttype,
+                journalpost::setJournalposttype);
+        setKodeverdiFromLink(resource.getJournalstatus(),
+                objectFactory::createJournalstatus,
+                journalpost::setJournalstatus);
         //setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, journalpost::setReferanseArkivdel);
 
-        return Tuple.tuple(journalpost, resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
+        return Tuple.tuple(journalpost,
+                resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
     }
 
-    private Korrespondansepart newInternKorrespondansepart(Journalposttype journalposttype, JournalpostResource resource) {
+    private Korrespondansepart newInternKorrespondansepart(Journalposttype journalposttype,
+                                                           JournalpostResource resource) {
         Korrespondansepart korrespondansepart = objectFactory.createKorrespondansepart();
         setKodeverdiFromLink(resource.getAdministrativEnhet(), korrespondansepart::setAdministrativEnhetInit);
-        setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, korrespondansepart::setJournalenhet);
+        setKodeverdiFromLink(resource.getJournalenhet(),
+                objectFactory::createJournalenhet,
+                korrespondansepart::setJournalenhet);
         setKodeverdiFromLink(resource.getSaksbehandler(), korrespondansepart::setSaksbehandlerInit);
 
         // Should not be set according to 4.4.8
@@ -175,12 +207,16 @@ public class GeoIntegrasjonFactory {
             KorrespondansepartResource korrespondansepartResource) {
         Korrespondansepart result = objectFactory.createKorrespondansepart();
 
-        setKodeverdiFromLink(korrespondansepartResource.getKorrespondanseparttype(), objectFactory::createKorrespondanseparttype, result::setKorrespondanseparttype);
+        setKodeverdiFromLink(korrespondansepartResource.getKorrespondanseparttype(),
+                objectFactory::createKorrespondanseparttype,
+                result::setKorrespondanseparttype);
 
         if (result.getKorrespondanseparttype() != null &&
                 StringUtils.equalsAnyIgnoreCase(result.getKorrespondanseparttype().getKodeverdi(), "IA", "IM")) {
             setKodeverdiFromLink(journalpostResource.getAdministrativEnhet(), result::setAdministrativEnhetInit);
-            setKodeverdiFromLink(journalpostResource.getJournalenhet(), objectFactory::createJournalenhet, result::setJournalenhet);
+            setKodeverdiFromLink(journalpostResource.getJournalenhet(),
+                    objectFactory::createJournalenhet,
+                    result::setJournalenhet);
             setKodeverdiFromLink(journalpostResource.getSaksbehandler(), result::setSaksbehandlerInit);
             result.setBehandlingsansvarlig("1"); // Ref 4.1.11 in the standard
         }
@@ -260,7 +296,9 @@ public class GeoIntegrasjonFactory {
         Person person = objectFactory.createPerson();
         Personidentifikator personidentifikator = objectFactory.createPersonidentifikator();
         personidentifikator.setPersonidentifikatorNr(resource.getFodselsnummer());
-        setKodeverdi(objectFactory::createPersonidentifikatorType, "F", personidentifikator::setPersonidentifikatorType);
+        setKodeverdi(objectFactory::createPersonidentifikatorType,
+                "F",
+                personidentifikator::setPersonidentifikatorType);
         person.setPersonid(personidentifikator);
 
         if (isNotBlank(resource.getKontaktperson())) {
@@ -289,32 +327,54 @@ public class GeoIntegrasjonFactory {
     }
 
     private Stream<Tuple2<Dokument, String>> newDokument(DokumentbeskrivelseResource db) {
-        return db.getDokumentobjekt().stream().flatMap(dobj -> dobj.getReferanseDokumentfil().stream().map(Link::getHref).map(UrlUtils::getFileIdFromUri).map(fileId -> {
-            Dokument dokument = objectFactory.createDokument();
+        return db.getDokumentobjekt()
+                .stream()
+                .flatMap(dobj -> dobj.getReferanseDokumentfil()
+                        .stream()
+                        .map(Link::getHref)
+                        .map(UrlUtils::getFileIdFromUri)
+                        .map(fileId -> {
+                            Dokument dokument = objectFactory.createDokument();
 
-            dokument.setTittel(db.getTittel());
-            FintUtils.ifPresent(db.getDokumentnummer(), dokument::setDokumentnummer, String::valueOf);
-            dokument.setFormat(setKodeverdi(objectFactory::createFormat, dobj.getFormat()));
+                            dokument.setTittel(db.getTittel());
+                            FintUtils.ifPresent(db.getDokumentnummer(), dokument::setDokumentnummer, String::valueOf);
+                            dokument.setFormat(setKodeverdi(objectFactory::createFormat, dobj.getFormat()));
 
-            setKodeverdiFromLink(db.getDokumentType(), objectFactory::createDokumenttype, dokument::setDokumenttype);
-            setKodeverdiFromLink(db.getDokumentstatus(), objectFactory::createDokumentstatus, dokument::setDokumentstatus);
-            setKodeverdiFromLink(db.getTilknyttetRegistreringSom(), objectFactory::createTilknyttetRegistreringSom, dokument::setTilknyttetRegistreringSom);
-            setKodeverdiFromLink(dobj.getVariantFormat(), objectFactory::createVariantformat, dokument::setVariantformat);
+                            setKodeverdiFromLink(db.getDokumentType(),
+                                    objectFactory::createDokumenttype,
+                                    dokument::setDokumenttype);
+                            setKodeverdiFromLink(db.getDokumentstatus(),
+                                    objectFactory::createDokumentstatus,
+                                    dokument::setDokumentstatus);
+                            setKodeverdiFromLink(db.getTilknyttetRegistreringSom(),
+                                    objectFactory::createTilknyttetRegistreringSom,
+                                    dokument::setTilknyttetRegistreringSom);
+                            setKodeverdiFromLink(dobj.getVariantFormat(),
+                                    objectFactory::createVariantformat,
+                                    dokument::setVariantformat);
 
-            return Tuple.tuple(dokument, fileId);
-        }));
+                            return Tuple.tuple(dokument, fileId);
+                        }));
     }
 
     private <T extends Kode> void setKodeverdiFromLink(List<Link> links, Supplier<T> supplier, Consumer<T> consumer) {
-        links.stream().map(Link::getHref).map(UrlUtils::getFileIdFromUri).filter(StringUtils::isNotBlank).forEach(id -> {
-            T item = supplier.get();
-            item.setKodeverdi(id);
-            consumer.accept(item);
-        });
+        links.stream()
+                .map(Link::getHref)
+                .map(UrlUtils::getFileIdFromUri)
+                .filter(StringUtils::isNotBlank)
+                .forEach(id -> {
+                    T item = supplier.get();
+                    item.setKodeverdi(id);
+                    consumer.accept(item);
+                });
     }
 
     private void setKodeverdiFromLink(List<Link> links, Consumer<String> consumer) {
-        links.stream().map(Link::getHref).map(UrlUtils::getFileIdFromUri).filter(StringUtils::isNotBlank).forEach(consumer);
+        links.stream()
+                .map(Link::getHref)
+                .map(UrlUtils::getFileIdFromUri)
+                .filter(StringUtils::isNotBlank)
+                .forEach(consumer);
     }
 
     private <T extends Kode> T setKodeverdi(Supplier<T> supplier, String kodeverdi) {
