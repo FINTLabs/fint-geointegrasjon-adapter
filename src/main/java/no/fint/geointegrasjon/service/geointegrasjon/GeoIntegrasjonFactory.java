@@ -18,12 +18,16 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Optional.ofNullable;
 import static no.fint.geointegrasjon.utils.FintUtils.toXmlDate;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -69,6 +73,10 @@ public class GeoIntegrasjonFactory {
         setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, saksmappe::setJournalenhet);
         setKodeverdiFromLink(resource.getSaksstatus(), objectFactory::createSaksstatus, saksmappe::setSaksstatus);
 
+        ofNullable(resource.getSkjerming())
+                .map(this::mapSkjerming)
+                .ifPresent(saksmappe::setSkjerming);
+
         if (isNoneBlank(fagsystem, externalID)) {
             EksternNoekkel eksternNoekkel = objectFactory.createEksternNoekkel();
             eksternNoekkel.setFagsystem(fagsystem);
@@ -81,6 +89,15 @@ public class GeoIntegrasjonFactory {
         consumer.accept(resource, saksmappe);
 
         return saksmappe;
+    }
+
+    private Skjerming mapSkjerming(SkjermingResource it) {
+        Skjerming skjerming = objectFactory.createSkjerming();
+        setKodeverdiFromLink(it.getTilgangsrestriksjon(),
+                objectFactory::createTilgangsrestriksjon,
+                skjerming::setTilgangsrestriksjon);
+        setKodeverdiFromLink(it.getSkjermingshjemmel(), skjerming::setSkjermingshjemmel);
+        return skjerming;
     }
 
     private KlasseListe newKlasseListe(List<KlasseResource> resources) {
@@ -118,7 +135,7 @@ public class GeoIntegrasjonFactory {
         journalpost.setTittel(resource.getTittel());
 
         final KorrespondansepartListe korrespondansepartListe = objectFactory.createKorrespondansepartListe();
-        Optional.ofNullable(resource.getKorrespondansepart())
+        ofNullable(resource.getKorrespondansepart())
                 .map(List::stream)
                 .orElse(Stream.empty())
                 .map(k -> newKorrespondansepart(resource, k))
@@ -133,7 +150,11 @@ public class GeoIntegrasjonFactory {
 
         journalpost.setKorrespondansepart(korrespondansepartListe);
 
-        Optional.ofNullable(resource.getAvskrivning())
+        ofNullable(resource.getSkjerming())
+                .map(this::mapSkjerming)
+                .ifPresent(journalpost::setSkjerming);
+
+        ofNullable(resource.getAvskrivning())
                 .map(it -> {
                     Avskrivning avskrivning = objectFactory.createAvskrivning();
                     Avskrivningsmaate avskrivningsmaate = objectFactory.createAvskrivningsmaate();
