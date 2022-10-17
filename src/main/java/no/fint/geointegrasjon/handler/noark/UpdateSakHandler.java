@@ -12,7 +12,7 @@ import no.fint.geointegrasjon.service.fint.*;
 import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonFactory;
 import no.fint.model.arkiv.noark.NoarkActions;
 import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.arkiv.noark.SaksmappeResource;
+import no.fint.model.resource.arkiv.noark.SakResource;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import org.springframework.stereotype.Service;
 
@@ -64,31 +64,31 @@ public class UpdateSakHandler implements Handler {
 
         Operation operation = response.getOperation();
 
-        SaksmappeResource saksmappeResource = objectMapper.convertValue(response.getData().get(0),
-                SaksmappeResource.class);
+        SakResource sakResource = objectMapper.convertValue(response.getData().get(0),
+                SakResource.class);
 
         if (operation == Operation.CREATE) {
-            caseDefaultsService.applyDefaultsForCreation(new CaseProperties(), saksmappeResource);
-            log.info("Case: {}", saksmappeResource);
-            if (!validationService.validate(response, saksmappeResource)) {
+            caseDefaultsService.applyDefaultsForCreation(new CaseProperties(), sakResource);
+            log.info("Case: {}", sakResource);
+            if (!validationService.validate(response, sakResource)) {
                 return;
             }
-            createCase(response, saksmappeResource);
+            createCase(response, sakResource);
         } else if (operation == Operation.UPDATE) {
-            caseDefaultsService.applyDefaultsForUpdate(new CaseProperties(), saksmappeResource);
-            if (!validationService.validate(response, saksmappeResource.getJournalpost())) {
+            caseDefaultsService.applyDefaultsForUpdate(new CaseProperties(), sakResource);
+            if (!validationService.validate(response, sakResource.getJournalpost())) {
                 return;
             }
-            updateCase(response, response.getQuery(), saksmappeResource);
+            updateCase(response, response.getQuery(), sakResource);
         } else {
             throw new IllegalArgumentException("Invalid operation: " + operation);
         }
 
         response.setResponseStatus(ResponseStatus.ACCEPTED);
-        response.setData(Collections.singletonList(saksmappeResource));
+        response.setData(Collections.singletonList(sakResource));
     }
 
-    private void updateCase(Event<FintLinks> event, String query, SaksmappeResource resource) {
+    private void updateCase(Event<FintLinks> event, String query, SakResource resource) {
         if (!caseQueryService.isValidQuery(query)) {
             event.setStatusCode("BAD_REQUEST");
             event.setResponseStatus(ResponseStatus.REJECTED);
@@ -110,7 +110,7 @@ public class UpdateSakHandler implements Handler {
         journalpostService.createJournalpostForCase(caseId, resource);
     }
 
-    private void createCase(Event<FintLinks> event, SaksmappeResource resource) {
+    private void createCase(Event<FintLinks> event, SakResource resource) {
 
         final String caseId = journalpostCreator.createSaksmappe(geoIntegrasjonFactory.newSak(new CaseProperties(),
                 resource,
