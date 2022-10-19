@@ -6,6 +6,7 @@ import no.fint.arkiv.CaseProperties;
 import no.fint.arkiv.TitleService;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.model.arkiv.kodeverk.Merknadstype;
+import no.fint.model.arkiv.kodeverk.Saksmappetype;
 import no.fint.model.arkiv.kodeverk.Saksstatus;
 import no.fint.model.arkiv.noark.AdministrativEnhet;
 import no.fint.model.arkiv.noark.Arkivdel;
@@ -105,6 +106,9 @@ public class SaksmappeMapper {
             ifPresent(saksmappe.getSaksstatus(),
                     resource::addSaksstatus,
                     Link.apply(Saksstatus.class, "systemid").compose(Kode::getKodeverdi));
+            ifPresent(saksmappe.getMappetype(),
+                    resource::addSaksmappetype,
+                    Link.apply(Saksmappetype.class, "systemid").compose(Kode::getKodeverdi));
             ifPresent(saksmappe.getReferanseArkivdel(),
                     resource::addArkivdel,
                     Link.apply(Arkivdel.class, "systemid").compose(Kode::getKodeverdi));

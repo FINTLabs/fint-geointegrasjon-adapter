@@ -73,6 +73,7 @@ public class GeoIntegrasjonFactory {
         setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, saksmappe::setReferanseArkivdel);
         setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, saksmappe::setJournalenhet);
         setKodeverdiFromLink(resource.getSaksstatus(), objectFactory::createSaksstatus, saksmappe::setSaksstatus);
+        setKodeverdiFromLink(resource.getSaksmappetype(), objectFactory::createMappetype, saksmappe::setMappetype);
 
         ofNullable(resource.getSkjerming())
                 .map(this::mapSkjerming)
