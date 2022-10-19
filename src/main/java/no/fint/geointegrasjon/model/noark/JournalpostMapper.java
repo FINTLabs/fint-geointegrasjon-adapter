@@ -78,7 +78,7 @@ public class JournalpostMapper {
                     resource::setKorrespondansepart,
                     p -> p.getListe().stream().map(it -> {
                         KorrespondansepartResource part = part(it);
-                        if (it.isSkjermetKorrespondansepart() && hasTilgangsrestriksjon(resource.getSkjerming())) {
+                        if (it.isSkjermetKorrespondansepart() == Boolean.TRUE && hasTilgangsrestriksjon(resource.getSkjerming())) {
                             part.setSkjerming(resource.getSkjerming());
                         }
                         return part;
