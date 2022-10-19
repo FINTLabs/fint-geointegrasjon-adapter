@@ -16,7 +16,6 @@ import no.fint.model.resource.arkiv.noark.KorrespondansepartResource;
 import no.fint.model.resource.felles.kompleksedatatyper.AdresseResource;
 import no.geointegrasjon.arkiv.innsyn.*;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -35,16 +34,24 @@ import static no.fint.geointegrasjon.utils.FintUtils.linkTo;
 @Slf4j
 public class JournalpostMapper {
 
-    @Autowired
-    private InnsynServiceFacade innsynServiceFacade;
+    private final InnsynServiceFacade innsynServiceFacade;
+    private final DokumentbeskrivelseMapper dokumentbeskrivelseMapper;
+    private final SkjermingMapper skjermingMapper;
 
-    @Autowired
-    private DokumentbeskrivelseMapper dokumentbeskrivelseMapper;
+    public JournalpostMapper(InnsynServiceFacade innsynServiceFacade,
+                             DokumentbeskrivelseMapper dokumentbeskrivelseMapper,
+                             SkjermingMapper skjermingMapper) {
+        this.innsynServiceFacade = innsynServiceFacade;
+        this.dokumentbeskrivelseMapper = dokumentbeskrivelseMapper;
+        this.skjermingMapper = skjermingMapper;
+    }
 
     public Function<Journalpost, JournalpostResource> toFintResource(Supplier<JournalpostResource> supplier) {
         return journalpost -> {
             JournalpostResource resource = supplier.get();
-            log.info("Journalpost SystemID {} for sak {}", journalpost.getSystemID(), journalpost.getReferanseSakSystemID().getSystemID().getId());
+            log.info("Journalpost SystemID {} for sak {}",
+                    journalpost.getSystemID(),
+                    journalpost.getReferanseSakSystemID().getSystemID().getId());
             ifPresent(journalpost.getTittel(), resource::setTittel);
             ifPresent(journalpost.getOffentligTittel(), resource::setOffentligTittel);
 
@@ -55,22 +62,33 @@ public class JournalpostMapper {
             ifPresent(journalpost.getAntallVedlegg(), resource::setAntallVedlegg, Long::valueOf);
 
             ifPresent(journalpost.getJournalnummer(), resource::setJournalAr, j -> j.getJournalaar().toString());
-            ifPresent(journalpost.getJournalnummer(), resource::setJournalSekvensnummer, j -> j.getJournalsekvensnummer().longValueExact());
+            ifPresent(journalpost.getJournalnummer(),
+                    resource::setJournalSekvensnummer,
+                    j -> j.getJournalsekvensnummer().longValueExact());
             ifPresent(journalpost.getJournalpostnummer(), resource::setJournalPostnummer, Long::valueOf);
 
             ifPresent(journalpost.getAntallVedlegg(), resource::setAntallVedlegg, Long::valueOf);
 
-            ifPresent(journalpost.getMerknader(), resource::setMerknad, l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
+            ifPresent(journalpost.getMerknader(),
+                    resource::setMerknad,
+                    l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
 
-            ifPresent(journalpost.getKorrespondansepart(), resource::setKorrespondansepart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
+            ifPresent(journalpost.getKorrespondansepart(),
+                    resource::setKorrespondansepart,
+                    p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
 
-            ifPresent(journalpost.getJournalposttype(), resource::addJournalposttype, Link.apply(JournalpostType.class, "systemid").compose(Kode::getKodeverdi));
-            ifPresent(journalpost.getJournalstatus(), resource::addJournalstatus, Link.apply(JournalStatus.class, "systemid").compose(Kode::getKodeverdi));
+            ifPresent(journalpost.getJournalposttype(),
+                    resource::addJournalposttype,
+                    Link.apply(JournalpostType.class, "systemid").compose(Kode::getKodeverdi));
+            ifPresent(journalpost.getJournalstatus(),
+                    resource::addJournalstatus,
+                    Link.apply(JournalStatus.class, "systemid").compose(Kode::getKodeverdi));
+
+            ifPresent(journalpost.getSkjerming(), resource::setSkjerming, skjermingMapper);
 
             resource.setDokumentbeskrivelse(new LinkedList<>());
             try {
-                innsynServiceFacade
-                        .finnDokumenterGittJournalSystemID(journalpost.getSystemID())
+                innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID())
                         .getListe()
                         .stream()
                         .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
@@ -79,19 +97,15 @@ public class JournalpostMapper {
                 log.debug("No documents found for {}", journalpost.getSystemID());
             }
 
-            ofNullable(journalpost.getMerknader())
-                    .map(MerknadListe::getListe)
+            ofNullable(journalpost.getMerknader()).map(MerknadListe::getListe)
                     .map(List::stream)
                     .orElse(Stream.empty())
-                    .forEach(m ->
-                            log.debug("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
+                    .forEach(m -> log.debug("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
 
-            ofNullable(journalpost.getTilleggsinformasjon())
-                    .map(TilleggsinformasjonListe::getListe)
+            ofNullable(journalpost.getTilleggsinformasjon()).map(TilleggsinformasjonListe::getListe)
                     .map(List::stream)
                     .orElse(Stream.empty())
-                    .forEach(t ->
-                            log.debug("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
+                    .forEach(t -> log.debug("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
 
 
             return resource;
@@ -100,7 +114,9 @@ public class JournalpostMapper {
 
     private KorrespondansepartResource part(Korrespondansepart korrespondansepart) {
         KorrespondansepartResource r = new KorrespondansepartResource();
-        ifPresent(korrespondansepart.getKorrespondanseparttype(), r::addKorrespondanseparttype, linkTo(Link.apply(KorrespondansepartType.class, "systemid")));
+        ifPresent(korrespondansepart.getKorrespondanseparttype(),
+                r::addKorrespondanseparttype,
+                linkTo(Link.apply(KorrespondansepartType.class, "systemid")));
         final Kontakt kontakt = korrespondansepart.getKontakt();
         ifPresent(kontakt.getNavn(), r::setKorrespondansepartNavn);
 
@@ -110,16 +126,14 @@ public class JournalpostMapper {
             updateKorrespondansepartOrganisasjon(r, (Organisasjon) kontakt);
         }
 
-        ofNullable(kontakt.getAdresser())
-                .map(EnkelAdresseListe::getListe)
+        ofNullable(kontakt.getAdresser()).map(EnkelAdresseListe::getListe)
                 .map(List::stream)
                 .orElse(Stream.empty())
                 .forEach(setAdresse(r));
 
         Kontaktinformasjon k = new Kontaktinformasjon();
 
-        ofNullable(kontakt.getElektroniskeAdresser())
-                .map(ElektroniskAdresseListe::getListe)
+        ofNullable(kontakt.getElektroniskeAdresser()).map(ElektroniskAdresseListe::getListe)
                 .map(List::stream)
                 .orElse(Stream.empty())
                 .forEach(kontaktinformasjon(k));
@@ -131,9 +145,9 @@ public class JournalpostMapper {
     private Consumer<? super ElektroniskAdresse> kontaktinformasjon(Kontaktinformasjon k) {
         return ea -> {
             if (ea instanceof Epost) {
-                epostAdresse((Epost)ea, k);
+                epostAdresse((Epost) ea, k);
             } else if (ea instanceof Telefon) {
-                telefonnummer((Telefon)ea, k);
+                telefonnummer((Telefon) ea, k);
             }
         };
     }

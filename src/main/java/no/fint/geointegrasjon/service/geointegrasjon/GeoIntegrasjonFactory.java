@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
+import static no.fint.geointegrasjon.utils.FintUtils.hasTilgangsrestriksjon;
 import static no.fint.geointegrasjon.utils.FintUtils.toXmlDate;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -255,6 +256,9 @@ public class GeoIntegrasjonFactory {
         kontakt.setElektroniskeAdresser(createElektroniskeAdresser(korrespondansepartResource.getKontaktinformasjon()));
 
         result.setKontakt(kontakt);
+
+        result.setSkjermetKorrespondansepart(hasTilgangsrestriksjon(journalpostResource.getSkjerming()) && hasTilgangsrestriksjon(
+                korrespondansepartResource.getSkjerming()));
         return result;
     }
 

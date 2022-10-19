@@ -38,74 +38,16 @@ public class SaksmappeMapper {
     private final String tilleggstype;
     private final TitleService titleService;
     private final AdditionalFieldService additionalFieldService;
+    private final SkjermingMapper skjermingMapper;
 
-    public SaksmappeMapper(
-            @Value("${fint.geointegrasjon.tilleggstype}") String tilleggstype,
-            TitleService titleService,
-            AdditionalFieldService additionalFieldService) {
+    public SaksmappeMapper(@Value("${fint.geointegrasjon.tilleggstype}") String tilleggstype,
+                           TitleService titleService,
+                           AdditionalFieldService additionalFieldService,
+                           SkjermingMapper skjermingMapper) {
         this.tilleggstype = tilleggstype;
         this.titleService = titleService;
         this.additionalFieldService = additionalFieldService;
-    }
-
-    public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(CaseProperties caseProperties, Supplier<R> supplier, BiConsumer<Saksmappe, R> consumer) {
-        return saksmappe -> {
-            R resource = supplier.get();
-            log.info("Sak SystemID {}", saksmappe.getSystemID());
-
-            ifPresent(saksmappe.getTittel(), resource::setTittel);
-            ifPresent(saksmappe.getOffentligTittel(), resource::setOffentligTittel);
-            ifPresent(saksmappe.getSaksdato(), resource::setSaksdato, FintUtils::fromXmlDate);
-            setIdentifikator(saksmappe.getSystemID(), resource::setSystemId);
-            setIdentifikator(saksmappe.getSaksnr(), resource::setMappeId, s -> String.format("%d/%d", s.getSaksaar(), s.getSakssekvensnummer()));
-            ifPresent(saksmappe.getSaksnr(), resource::setSaksaar, s -> s.getSaksaar().toString());
-            ifPresent(saksmappe.getSaksnr(), resource::setSakssekvensnummer, s -> s.getSakssekvensnummer().toString());
-
-            ifPresent(saksmappe.getAdministrativEnhet(), resource::addAdministrativEnhet, Link.apply(AdministrativEnhet.class, "systemid"));
-            ifPresent(saksmappe.getSaksstatus(), resource::addSaksstatus, Link.apply(Saksstatus.class, "systemid").compose(Kode::getKodeverdi));
-            ifPresent(saksmappe.getReferanseArkivdel(), resource::addArkivdel, Link.apply(Arkivdel.class, "systemid").compose(Kode::getKodeverdi));
-
-            ifPresent(saksmappe.getMerknader(), resource::setMerknad, l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
-            //ifPresent(saksmappe.getSakspart(), resource::setPart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
-
-            ifPresent(saksmappe.getKlasse(), resource::setKlasse, l -> l.getListe().stream().map(SaksmappeMapper::klasse).collect(Collectors.toList()));
-
-            if (!titleService.parseCaseTitle(caseProperties.getTitle(), resource, saksmappe.getTittel())) {
-                log.warn("Title {} does not match expected format for {}", saksmappe.getTittel(), resource.getClass());
-                //FIXME throw new InvalidCaseType(resource.getClass().getSimpleName());
-            }
-            additionalFieldService.setFieldsForResource(caseProperties.getField(), resource,
-                    ofNullable(saksmappe.getTilleggsinformasjon())
-                            .map(TilleggsinformasjonListe::getListe)
-                            .map(List::stream)
-                            .orElse(Stream.empty())
-                            .filter(t -> tilleggstype.equals(t.getInformasjonstype().getKodeverdi()))
-                            .map(Tilleggsinformasjon::getInformasjon)
-                            .filter(s -> s.contains(": "))
-                            .peek(s -> log.debug("{}", s))
-                            .map(s -> new AdditionalFieldService.Field(
-                                    substringBefore(s, ":"),
-                                    substringAfter(s, ": ")))
-                            .collect(Collectors.toList()));
-
-            consumer.accept(saksmappe, resource);
-
-            ofNullable(saksmappe.getMerknader())
-                    .map(MerknadListe::getListe)
-                    .map(List::stream)
-                    .orElse(Stream.empty())
-                    .forEach(m ->
-                            log.info("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
-
-            ofNullable(saksmappe.getTilleggsinformasjon())
-                    .map(TilleggsinformasjonListe::getListe)
-                    .map(List::stream)
-                    .orElse(Stream.empty())
-                    .forEach(t ->
-                            log.info("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
-
-            return resource;
-        };
+        this.skjermingMapper = skjermingMapper;
     }
 
     private static KlasseResource klasse(Klasse klasse) {
@@ -113,8 +55,21 @@ public class SaksmappeMapper {
         ifPresent(klasse.getKlasseID(), resource::setKlasseId);
         ifPresent(klasse.getTittel(), resource::setTittel);
         ifPresent(klasse.getRekkefoelge(), resource::setRekkefolge, Integer::parseInt);
-        ifPresent(klasse.getKlassifikasjonssystem(), resource::addKlassifikasjonssystem, linkTo(KlassifikasjonssystemResource.class, "systemid"));
+        ifPresent(klasse.getKlassifikasjonssystem(),
+                resource::addKlassifikasjonssystem,
+                linkTo(KlassifikasjonssystemResource.class, "systemid"));
         return resource;
+    }
+
+    public static MerknadResource merknad(Merknad merknad) {
+        MerknadResource r = new MerknadResource();
+        ifPresent(merknad.getMerknadRegistrertAv(),
+                r::addMerknadRegistrertAv,
+                Link.apply(Arkivressurs.class, "systemid"));
+        ifPresent(merknad.getMerknadstype(), r::addMerknadstype, Link.apply(Merknadstype.class, "systemid"));
+        ifPresent(merknad.getMerknadstekst(), r::setMerknadstekst);
+        ifPresent(merknad.getMerknadsdato(), r::setMerknadsdato, FintUtils::fromXmlDate);
+        return r;
     }
 
     /*
@@ -127,12 +82,74 @@ public class SaksmappeMapper {
 
      */
 
-    public static MerknadResource merknad(Merknad merknad) {
-        MerknadResource r = new MerknadResource();
-        ifPresent(merknad.getMerknadRegistrertAv(), r::addMerknadRegistrertAv, Link.apply(Arkivressurs.class, "systemid"));
-        ifPresent(merknad.getMerknadstype(), r::addMerknadstype, Link.apply(Merknadstype.class, "systemid"));
-        ifPresent(merknad.getMerknadstekst(), r::setMerknadstekst);
-        ifPresent(merknad.getMerknadsdato(), r::setMerknadsdato, FintUtils::fromXmlDate);
-        return r;
+    public <R extends SaksmappeResource> Function<Saksmappe, R> toFintResource(CaseProperties caseProperties,
+                                                                               Supplier<R> supplier,
+                                                                               BiConsumer<Saksmappe, R> consumer) {
+        return saksmappe -> {
+            R resource = supplier.get();
+            log.info("Sak SystemID {}", saksmappe.getSystemID());
+
+            ifPresent(saksmappe.getTittel(), resource::setTittel);
+            ifPresent(saksmappe.getOffentligTittel(), resource::setOffentligTittel);
+            ifPresent(saksmappe.getSaksdato(), resource::setSaksdato, FintUtils::fromXmlDate);
+            setIdentifikator(saksmappe.getSystemID(), resource::setSystemId);
+            setIdentifikator(saksmappe.getSaksnr(),
+                    resource::setMappeId,
+                    s -> String.format("%d/%d", s.getSaksaar(), s.getSakssekvensnummer()));
+            ifPresent(saksmappe.getSaksnr(), resource::setSaksaar, s -> s.getSaksaar().toString());
+            ifPresent(saksmappe.getSaksnr(), resource::setSakssekvensnummer, s -> s.getSakssekvensnummer().toString());
+
+            ifPresent(saksmappe.getAdministrativEnhet(),
+                    resource::addAdministrativEnhet,
+                    Link.apply(AdministrativEnhet.class, "systemid"));
+            ifPresent(saksmappe.getSaksstatus(),
+                    resource::addSaksstatus,
+                    Link.apply(Saksstatus.class, "systemid").compose(Kode::getKodeverdi));
+            ifPresent(saksmappe.getReferanseArkivdel(),
+                    resource::addArkivdel,
+                    Link.apply(Arkivdel.class, "systemid").compose(Kode::getKodeverdi));
+
+            ifPresent(saksmappe.getMerknader(),
+                    resource::setMerknad,
+                    l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
+            //ifPresent(saksmappe.getSakspart(), resource::setPart, p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
+
+            ifPresent(saksmappe.getKlasse(),
+                    resource::setKlasse,
+                    l -> l.getListe().stream().map(SaksmappeMapper::klasse).collect(Collectors.toList()));
+
+            ifPresent(saksmappe.getSkjerming(), resource::setSkjerming, skjermingMapper);
+
+            if (!titleService.parseCaseTitle(caseProperties.getTitle(), resource, saksmappe.getTittel())) {
+                log.warn("Title {} does not match expected format for {}", saksmappe.getTittel(), resource.getClass());
+                //FIXME throw new InvalidCaseType(resource.getClass().getSimpleName());
+            }
+            additionalFieldService.setFieldsForResource(caseProperties.getField(),
+                    resource,
+                    ofNullable(saksmappe.getTilleggsinformasjon()).map(TilleggsinformasjonListe::getListe)
+                            .map(List::stream)
+                            .orElse(Stream.empty())
+                            .filter(t -> tilleggstype.equals(t.getInformasjonstype().getKodeverdi()))
+                            .map(Tilleggsinformasjon::getInformasjon)
+                            .filter(s -> s.contains(": "))
+                            .peek(s -> log.debug("{}", s))
+                            .map(s -> new AdditionalFieldService.Field(substringBefore(s, ":"),
+                                    substringAfter(s, ": ")))
+                            .collect(Collectors.toList()));
+
+            consumer.accept(saksmappe, resource);
+
+            ofNullable(saksmappe.getMerknader()).map(MerknadListe::getListe)
+                    .map(List::stream)
+                    .orElse(Stream.empty())
+                    .forEach(m -> log.info("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
+
+            ofNullable(saksmappe.getTilleggsinformasjon()).map(TilleggsinformasjonListe::getListe)
+                    .map(List::stream)
+                    .orElse(Stream.empty())
+                    .forEach(t -> log.info("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
+
+            return resource;
+        };
     }
 }
