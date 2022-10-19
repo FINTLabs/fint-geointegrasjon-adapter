@@ -27,8 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
-import static no.fint.geointegrasjon.utils.FintUtils.ifPresent;
-import static no.fint.geointegrasjon.utils.FintUtils.linkTo;
+import static no.fint.geointegrasjon.utils.FintUtils.*;
 
 @Service
 @Slf4j
@@ -73,9 +72,17 @@ public class JournalpostMapper {
                     resource::setMerknad,
                     l -> l.getListe().stream().map(SaksmappeMapper::merknad).collect(Collectors.toList()));
 
+            ifPresent(journalpost.getSkjerming(), resource::setSkjerming, skjermingMapper);
+
             ifPresent(journalpost.getKorrespondansepart(),
                     resource::setKorrespondansepart,
-                    p -> p.getListe().stream().map(this::part).collect(Collectors.toList()));
+                    p -> p.getListe().stream().map(it -> {
+                        KorrespondansepartResource part = part(it);
+                        if (it.isSkjermetKorrespondansepart() && hasTilgangsrestriksjon(resource.getSkjerming())) {
+                            part.setSkjerming(resource.getSkjerming());
+                        }
+                        return part;
+                    }).collect(Collectors.toList()));
 
             ifPresent(journalpost.getJournalposttype(),
                     resource::addJournalposttype,
@@ -84,7 +91,6 @@ public class JournalpostMapper {
                     resource::addJournalstatus,
                     Link.apply(JournalStatus.class, "systemid").compose(Kode::getKodeverdi));
 
-            ifPresent(journalpost.getSkjerming(), resource::setSkjerming, skjermingMapper);
 
             resource.setDokumentbeskrivelse(new LinkedList<>());
             try {
