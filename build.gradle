@@ -84,7 +84,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 
-    compile('com.azure:azure-storage-blob:12.7.0')
+    compile('com.azure:azure-storage-blob:12.20.0')
     compile 'io.projectreactor:reactor-core:3.3.1.RELEASE'
 
     testCompile('cglib:cglib-nodep:3.2.12')
