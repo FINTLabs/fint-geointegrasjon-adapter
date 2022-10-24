@@ -6,6 +6,7 @@ import no.fint.model.FintMainObject;
 import no.fint.model.felles.kompleksedatatyper.Identifikator;
 import no.fint.model.resource.FintLinks;
 import no.fint.model.resource.Link;
+import no.fint.model.resource.arkiv.noark.SkjermingResource;
 import no.geointegrasjon.arkiv.innsyn.Kode;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,9 +15,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -64,7 +63,7 @@ public enum FintUtils {
         Optional.ofNullable(value).ifPresent(setter);
     }
 
-    public static <T,U> void ifPresent(T value, Consumer<U> setter, Function<T,U> mapper) {
+    public static <T, U> void ifPresent(T value, Consumer<U> setter, Function<T, U> mapper) {
         Optional.ofNullable(value).map(mapper).ifPresent(setter);
     }
 
@@ -90,4 +89,21 @@ public enum FintUtils {
         }
         return identifikator.getIdentifikatorverdi();
     }
+
+    public static boolean hasTilgangsrestriksjon(SkjermingResource skjermingResource) {
+        if (skjermingResource == null || skjermingResource.getTilgangsrestriksjon() == null) {
+            return false;
+        }
+        return getIdFromLink(skjermingResource.getTilgangsrestriksjon()).isPresent();
+    }
+
+    public static Optional<String> getIdFromLink(List<Link> links) {
+        return links.stream()
+                .filter(Objects::nonNull)
+                .map(Link::getHref)
+                .filter(StringUtils::isNotBlank)
+                .map(s -> StringUtils.substringAfterLast(s, "/"))
+                .findFirst();
+    }
+
 }

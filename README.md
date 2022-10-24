@@ -21,6 +21,7 @@ This adapter integrates with [GeoIntegrasjon Arkiv](https://geointegrasjon.no/ar
 | `fint.geointegrasjon.username`| Service username | |
 | `fint.geointegrasjon.password` | Service password | |
 | `fint.geointegrasjon.use-wss` | Use WS-Security instead of Basic Auth | `false` |
+| `fint.geointegrasjon.apikey` | Make use of this API key (passed as a HTTP header) instead of Basic Auth or WS-Security | |
 | `fint.geointegrasjon.tracing` | Log trace of SOAP requests and responses | `false` |
 | `fint.geointegrasjon.fagsystem` | System name for external key (EksternNoekkel) | |
 | `fint.geointegrasjon.tilleggstype` | Name of Tilleggsinformasjon attribute used for custom fields | |

@@ -122,5 +122,4 @@ public class CachedFileService extends CacheLoader<String, Path> implements Remo
 
         throw new IllegalArgumentException(fil.getClass().getCanonicalName());
     }
-
 }
