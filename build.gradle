@@ -85,7 +85,7 @@ dependencies {
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 
     compile('com.azure:azure-storage-blob:12.7.0')
-    compile 'io.projectreactor:reactor-core:3.3.1.RELEASE'
+    compile 'io.projectreactor:reactor-core:3.5.0'
 
     testCompile('cglib:cglib-nodep:3.2.12')
     testCompile('org.spockframework:spock-spring:1.1-groovy-2.4')
