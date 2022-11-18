@@ -48,7 +48,7 @@ dependencies {
     compile('org.apache.cxf:cxf-rt-frontend-jaxws:3.3.3')
     compile('org.apache.cxf:cxf-rt-transports-http:3.3.3')
     compile('org.apache.cxf:cxf-rt-ws-security:3.3.3')
-    compile('org.bouncycastle:bcpkix-jdk15on:1.50')
+    compile('org.bouncycastle:bcpkix-jdk15on:1.70')
     compile('org.bouncycastle:bcprov-jdk15on:1.50')
     compile('commons-io:commons-io:2.11.0')
 
