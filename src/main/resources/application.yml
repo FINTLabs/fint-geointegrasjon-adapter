@@ -23,3 +23,15 @@ fint:
 security:
   basic:
     enabled: false
+management:
+  security:
+    enabled: false
+
+endpoints:
+  enabled: false
+  health:
+    enabled: true
+  prometheus:
+    enabled: true
+  metrics:
+    enabled: true
