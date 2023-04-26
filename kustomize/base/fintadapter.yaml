@@ -1,0 +1,23 @@
+apiVersion: fintlabs.no/v1alpha1
+kind: FintAdapter
+metadata:
+  name: geointegrasjon-adapter
+  namespace: fintlabs-no
+  labels:
+    app.kubernetes.io/name: geointegrasjon-adapter
+    app.kubernetes.io/instance: geointegrasjon-adapter_bym-oslo_no
+    app.kubernetes.io/version: latest
+    app.kubernetes.io/component: adapter
+    app.kubernetes.io/part-of: arkiv
+    fintlabs.no/team: arkiv
+    fintlabs.no/org-id: fintlabs.no
+
+spec:
+  orgId: fintlabs.no
+  note: Dette er FLAIS, folkens!
+  components:
+    - arkiv_kodeverk
+    - arkiv_noark
+    - arkiv_kulturminnevern
+    - arkiv_samferdsel
+    - arkiv_personal
