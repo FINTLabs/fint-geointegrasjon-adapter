@@ -65,7 +65,7 @@ public class JournalpostService {
             boolean updateJournalpost = noark_3_2 && journalpost.getJournalstatus().getKodeverdi().equals("J");
             if (updateJournalpost) {
                 journalpost.setJournalstatus(noark32Status(journalpost.getJournalposttype().getKodeverdi().toUpperCase(Locale.ROOT)));
-                log.info("NOARK avsnitt 3.2: Setter journalstatus til {}", journalpost.getJournalstatus());
+                log.debug("NOARK avsnitt 3.2: Setter journalstatus til {}", journalpost.getJournalstatus());
             }
 
             final Journalpost createdJournalpost = journalpostCreator.createJournalpost(journalpost);
@@ -84,7 +84,7 @@ public class JournalpostService {
             }
 
             if (updateJournalpost) {
-                log.info("NOARK avsnitt 3.2: Oppdaterer journalstatus til J");
+                log.debug("NOARK avsnitt 3.2: Oppdaterer journalstatus til J");
                 Journalstatus journalstatus = new Journalstatus();
                 journalstatus.setKodeverdi("J");
                 journalpostCreator.oppdaterJournalpostStatus(journalstatus, createdJournalpost.getSystemID());
