@@ -15,9 +15,9 @@ public class OppdateringServiceFacade {
 
     public Saksmappe nySaksmappe(Saksmappe mappe, ArkivKontekst kontekst) {
         try {
-            log.info("Ny saksmappe: {}", mappe);
+            log.debug("Ny saksmappe: {}", mappe);
             final Saksmappe result = sakArkivOppdatering.nySaksmappe(mappe, kontekst);
-            log.info("Resultat: {}", result);
+            log.debug("Resultat: {}", result);
             return result;
         } catch (ApplicationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
@@ -36,9 +36,9 @@ public class OppdateringServiceFacade {
 
     public Journalpost nyJournalpost(Journalpost journalpost, ArkivKontekst kontekst) {
         try {
-            log.info("Ny journalpost: {}", journalpost);
+            log.debug("Ny journalpost: {}", journalpost);
             final Journalpost result = sakArkivOppdatering.nyJournalpost(journalpost, kontekst);
-            log.info("Resultat: {}", result);
+            log.debug("Resultat: {}", result);
             return result;
         } catch (ApplicationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
@@ -57,9 +57,9 @@ public class OppdateringServiceFacade {
 
     public Dokument nyDokument(Dokument dokument, Boolean returnerFil, ArkivKontekst kontekst) {
         try {
-            //log.info("Nytt dokument: {}", dokument);
+            log.debug("Nytt dokument: {}", dokument);
             final Dokument result = sakArkivOppdatering.nyDokument(dokument, returnerFil, kontekst);
-            log.info("Resultat: {}", result);
+            log.debug("Resultat: {}", result);
             return result;
         } catch (ApplicationException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());

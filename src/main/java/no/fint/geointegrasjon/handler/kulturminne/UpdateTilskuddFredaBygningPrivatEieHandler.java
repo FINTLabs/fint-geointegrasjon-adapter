@@ -61,7 +61,7 @@ public class UpdateTilskuddFredaBygningPrivatEieHandler implements Handler {
 
         if (operation == Operation.CREATE) {
             caseDefaultsService.applyDefaultsForCreation(caseDefaults.getTilskuddfredabygningprivateie(), tilskuddFredaBygningPrivatEieResource);
-            log.info("Case: {}", tilskuddFredaBygningPrivatEieResource);
+            log.debug("Case: {}", tilskuddFredaBygningPrivatEieResource);
             if (!validationService.validate(response, tilskuddFredaBygningPrivatEieResource)) {
                 return;
             }

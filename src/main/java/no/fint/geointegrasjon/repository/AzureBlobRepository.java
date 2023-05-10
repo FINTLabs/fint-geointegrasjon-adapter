@@ -49,7 +49,7 @@ public class AzureBlobRepository extends InternalRepository {
         if (!blobContainerClient.exists()) {
             blobContainerClient.create();
         }
-        log.info("Connected to {} ({})", blobServiceClient.getAccountName(), blobContainerClient.getBlobContainerName());
+        log.debug("Connected to {} ({})", blobServiceClient.getAccountName(), blobContainerClient.getBlobContainerName());
     }
 
     @Override

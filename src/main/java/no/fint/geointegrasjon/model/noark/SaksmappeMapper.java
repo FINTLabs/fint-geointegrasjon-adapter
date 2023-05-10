@@ -146,12 +146,12 @@ public class SaksmappeMapper {
             ofNullable(saksmappe.getMerknader()).map(MerknadListe::getListe)
                     .map(List::stream)
                     .orElse(Stream.empty())
-                    .forEach(m -> log.info("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
+                    .forEach(m -> log.debug("{} : {}", m.getMerknadstype(), m.getMerknadstekst()));
 
             ofNullable(saksmappe.getTilleggsinformasjon()).map(TilleggsinformasjonListe::getListe)
                     .map(List::stream)
                     .orElse(Stream.empty())
-                    .forEach(t -> log.info("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
+                    .forEach(t -> log.debug("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
 
             return resource;
         };
