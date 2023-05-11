@@ -49,7 +49,7 @@ public class AzureBlobRepository extends InternalRepository {
         if (!blobContainerClient.exists()) {
             blobContainerClient.create();
         }
-        log.info("Connected to {}", blobServiceClient.getAccountName());
+        log.debug("Connected to {} ({})", blobServiceClient.getAccountName(), blobContainerClient.getBlobContainerName());
     }
 
     @Override
@@ -68,6 +68,10 @@ public class AzureBlobRepository extends InternalRepository {
                 .put("client", event.getClient())
                 .put("corrId", event.getCorrId())
                 .build());
+
+        log.debug("AzureBlobs Metadata Dept: {} (format), {} (filnavn), {} (filnavn, encoded)",
+                resource.getFormat(), resource.getFilnavn(),
+                URLEncoder.encode(resource.getFilnavn(), StandardCharsets.UTF_8.name()));
     }
 
     @Override

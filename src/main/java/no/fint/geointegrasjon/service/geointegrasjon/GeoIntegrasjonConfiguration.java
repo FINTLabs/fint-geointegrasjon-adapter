@@ -26,10 +26,17 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import javax.security.auth.callback.CallbackHandler;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Configuration
 public class GeoIntegrasjonConfiguration {
+
+    private static final String API_KEY = "apikey";
 
     @Autowired
     private AdapterProps adapterProps;
@@ -87,10 +94,16 @@ public class GeoIntegrasjonConfiguration {
                                             WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT,
                                             WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler(password)
                                     )));
+        } else if (isNotBlank(adapterProps.getApikey())) {
+            log.info("Using the newly added API key authentication feature!");
+            Map<String, List<String>> headers = new HashMap<String, List<String>>();
+            headers.put(API_KEY, Arrays.asList(adapterProps.getApikey()));
+            client.getRequestContext().put(Message.PROTOCOL_HEADERS, headers);
         } else {
             HTTPConduit conduit = (HTTPConduit) client.getConduit();
             conduit.setAuthorization(basicAuthorization(username, password));
         }
+
         if (tracing) {
             client.getInInterceptors().add(new LoggingInInterceptor());
             client.getOutInterceptors().add(new LoggingOutInterceptor());

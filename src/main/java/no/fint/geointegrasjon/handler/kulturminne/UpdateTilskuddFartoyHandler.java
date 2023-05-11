@@ -62,7 +62,7 @@ public class UpdateTilskuddFartoyHandler implements Handler {
 
         if (operation == Operation.CREATE) {
             caseDefaultsService.applyDefaultsForCreation(caseDefaults.getTilskuddfartoy(), tilskuddFartoyResource);
-            log.info("Case: {}", tilskuddFartoyResource);
+            log.debug("Case: {}", tilskuddFartoyResource);
             if (!validationService.validate(response, tilskuddFartoyResource)) {
                 return;
             }

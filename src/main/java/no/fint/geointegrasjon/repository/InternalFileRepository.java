@@ -32,7 +32,7 @@ public class InternalFileRepository extends InternalRepository {
         resource.setSystemId(FintUtils.createIdentifikator(systemId));
         Path path = rootDirectory.resolve(systemId + ".json");
         objectMapper.writeValue(Files.newOutputStream(path), resource);
-        log.info("File saved as {}", path);
+        log.debug("File saved as {}", path);
     }
 
     @Override

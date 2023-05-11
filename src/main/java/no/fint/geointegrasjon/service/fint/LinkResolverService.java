@@ -28,7 +28,7 @@ public class LinkResolverService implements LinkResolver {
         if (StringUtils.contains(href, "/felles/kodeverk/kommune/")) {
             try {
                 final KommuneResource kommune = restTemplate.getForObject(href, KommuneResource.class);
-                log.info("Found {}", kommune);
+                log.debug("Found {}", kommune);
                 return kommune;
             } catch (HttpStatusCodeException e) {
                 throw new IllegalArgumentException("HTTP status " + e.getStatusCode() + " when resolving link " + href);
@@ -37,7 +37,7 @@ public class LinkResolverService implements LinkResolver {
         if (StringUtils.contains(href, "/felles/kodeverk/fylke/")) {
             try {
                 final FylkeResource fylke = restTemplate.getForObject(href, FylkeResource.class);
-                log.info("Found {}", fylke);
+                log.debug("Found {}", fylke);
                 return fylke;
             } catch (HttpStatusCodeException e) {
                 throw new IllegalArgumentException("HTTP status " + e.getStatusCode() + " when resolving link " + href);

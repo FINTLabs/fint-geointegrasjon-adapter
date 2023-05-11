@@ -13,11 +13,14 @@ public class AdapterProps {
     @Value("${fint.geointegrasjon.service-url}")
     private String serviceUrl;
 
-    @Value("${fint.geointegrasjon.username}")
+    @Value("${fint.geointegrasjon.username:}")
     private String username;
 
-    @Value("${fint.geointegrasjon.password}")
+    @Value("${fint.geointegrasjon.password:}")
     private String password;
+
+    @Value("${fint.geointegrasjon.apikey:}")
+    private String apikey;
 
     @Value("${fint.geointegrasjon.connection-timeout:120000}")
     private long connectionTimeout;
