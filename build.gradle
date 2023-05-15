@@ -87,7 +87,7 @@ dependencies {
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 
     compile('com.azure:azure-storage-blob:12.22.0')
-    compile 'io.projectreactor:reactor-core:3.5.2'
+    compile 'io.projectreactor:reactor-core:3.5.6'
     
     compile('com.fasterxml.jackson.core:jackson-annotations:2.14.2')
     compile('com.fasterxml.jackson.core:jackson-core:2.14.2')
