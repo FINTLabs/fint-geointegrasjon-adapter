@@ -5,13 +5,11 @@ import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.model.kulturminne.DispensasjonAutomatiskFredaKulturminneImporter;
-import no.fint.geointegrasjon.model.kulturminne.TilskuddFredaBygningPrivatEieImporter;
 import no.fint.geointegrasjon.model.noark.SaksmappeMapper;
 import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostService;
 import no.fint.model.arkiv.kulturminnevern.KulturminnevernActions;
 import no.fint.model.resource.FintLinks;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
