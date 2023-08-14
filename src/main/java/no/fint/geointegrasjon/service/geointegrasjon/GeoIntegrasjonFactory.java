@@ -23,6 +23,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,6 +31,8 @@ import java.util.stream.Stream;
 import static java.util.Optional.ofNullable;
 import static no.fint.geointegrasjon.utils.FintUtils.hasTilgangsrestriksjon;
 import static no.fint.geointegrasjon.utils.FintUtils.toXmlDate;
+import static no.fint.geointegrasjon.utils.StringUtils.endsWith;
+import static no.fint.geointegrasjon.utils.StringUtils.stringEquals;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -38,17 +41,19 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class GeoIntegrasjonFactory {
 
     private final ObjectFactory objectFactory = new ObjectFactory();
-    private final String fagsystem, tilleggstype;
+    private final String fagsystem, tilleggstype, avskrivingsmate;
     private final TitleService titleService;
     private final AdditionalFieldService additionalFieldService;
 
     public GeoIntegrasjonFactory(
             @Value("${fint.geointegrasjon.fagsystem}") String fagsystem,
             @Value("${fint.geointegrasjon.tilleggstype}") String tilleggstype,
+            @Value("${fint.geointegrasjon.avskrivningsmate:}") String avskrivningsmate,
             TitleService titleService,
             AdditionalFieldService additionalFieldService) {
         this.fagsystem = fagsystem;
         this.tilleggstype = tilleggstype;
+        this.avskrivingsmate = avskrivningsmate;
         this.titleService = titleService;
         this.additionalFieldService = additionalFieldService;
     }
@@ -99,6 +104,7 @@ public class GeoIntegrasjonFactory {
                 objectFactory::createTilgangsrestriksjon,
                 skjerming::setTilgangsrestriksjon);
         setKodeverdiFromLink(it.getSkjermingshjemmel(), skjerming::setSkjermingshjemmel);
+
         return skjerming;
     }
 
@@ -108,6 +114,7 @@ public class GeoIntegrasjonFactory {
         }
         final KlasseListe liste = new KlasseListe();
         resources.stream().map(this::newKlasse).forEach(liste.getListe()::add);
+
         return liste;
     }
 
@@ -119,6 +126,7 @@ public class GeoIntegrasjonFactory {
         setKodeverdiFromLink(resource.getKlassifikasjonssystem(),
                 objectFactory::createKlassifikasjonssystem,
                 klasse::setKlassifikasjonssystem);
+
         return klasse;
     }
 
@@ -145,7 +153,7 @@ public class GeoIntegrasjonFactory {
 
         if (korrespondansepartListe.getListe()
                 .stream()
-                .noneMatch(p -> StringUtils.equals("1", p.getBehandlingsansvarlig()))) {
+                .map(Korrespondansepart::getBehandlingsansvarlig).noneMatch(stringEquals("1"))) {
             korrespondansepartListe.getListe()
                     .add(newInternKorrespondansepart(journalpost.getJournalposttype(), resource));
         }
@@ -173,13 +181,32 @@ public class GeoIntegrasjonFactory {
         setKodeverdiFromLink(resource.getJournalposttype(),
                 objectFactory::createJournalposttype,
                 journalpost::setJournalposttype);
+
         setKodeverdiFromLink(resource.getJournalstatus(),
                 objectFactory::createJournalstatus,
                 journalpost::setJournalstatus);
+
         //setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, journalpost::setReferanseArkivdel);
+
+        if (StringUtils.isNotBlank(avskrivingsmate) && UrlUtils.getHrefsFromLinks(resource.getJournalposttype()).anyMatch(endsWith("/I"))) {
+            journalpost.setReferanseAvskrivninger(newAvskrivninger(avskrivingsmate));
+        }
 
         return Tuple.tuple(journalpost,
                 resource.getDokumentbeskrivelse().stream().flatMap(this::newDokument).collect(Collectors.toList()));
+    }
+
+    private AvskrivningListe newAvskrivninger(String... values) {
+        AvskrivningListe avskrivninger = objectFactory.createAvskrivningListe();
+        Arrays.stream(values)
+                .map(setKodeverdi(objectFactory::createAvskrivningsmaate))
+                .map(it -> {
+                    Avskrivning avskrivning = objectFactory.createAvskrivning();
+                    avskrivning.setAvskrivningsmaate(it);
+                    return avskrivning;
+                }).forEach(avskrivninger.getListe()::add);
+
+        return avskrivninger;
     }
 
     private Korrespondansepart newInternKorrespondansepart(Journalposttype journalposttype,
@@ -202,14 +229,14 @@ public class GeoIntegrasjonFactory {
         korrespondansepart.setKontakt(kontakt);
 
         korrespondansepart.setKorrespondanseparttype(korrespondanseparttypeFromJournalposttype(journalposttype));
+
         return korrespondansepart;
     }
 
     private Korrespondanseparttype korrespondanseparttypeFromJournalposttype(Journalposttype journalposttype) {
         final Korrespondanseparttype korrespondanseparttype = objectFactory.createKorrespondanseparttype();
         if (journalposttype == null || journalposttype.getKodeverdi() == null) {
-            // TODO
-            korrespondanseparttype.setKodeverdi("IK");
+            korrespondanseparttype.setKodeverdi("IK"); // Intern Kopimottaker
         } else {
             switch (StringUtils.upperCase(journalposttype.getKodeverdi())) {
                 case "I":
@@ -218,10 +245,11 @@ public class GeoIntegrasjonFactory {
                 case "U":
                     korrespondanseparttype.setKodeverdi("IA");
                     break;
-                default: // TODO
+                default:
                     korrespondanseparttype.setKodeverdi("IK");
             }
         }
+
         return korrespondanseparttype;
     }
 
@@ -260,6 +288,7 @@ public class GeoIntegrasjonFactory {
 
         result.setSkjermetKorrespondansepart(hasTilgangsrestriksjon(journalpostResource.getSkjerming()) && hasTilgangsrestriksjon(
                 korrespondansepartResource.getSkjerming()));
+
         return result;
     }
 
@@ -349,6 +378,7 @@ public class GeoIntegrasjonFactory {
     private Organisasjon createOrganisasjon(KorrespondansepartResource resource) {
         Organisasjon organisasjon = objectFactory.createOrganisasjon();
         organisasjon.setOrganisasjonsnummer(resource.getOrganisasjonsnummer());
+
         return organisasjon;
     }
 
@@ -401,6 +431,10 @@ public class GeoIntegrasjonFactory {
                 .map(UrlUtils::getFileIdFromUri)
                 .filter(StringUtils::isNotBlank)
                 .forEach(consumer);
+    }
+
+    private <T extends Kode> Function<String, T> setKodeverdi(Supplier<T> supplier) {
+        return kodeverdi -> setKodeverdi(supplier, kodeverdi);
     }
 
     private <T extends Kode> T setKodeverdi(Supplier<T> supplier, String kodeverdi) {
