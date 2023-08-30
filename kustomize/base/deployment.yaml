@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adapter-arkiv-bym-oslo-acos
+spec:
+  selector:
+    matchLabels:
+      app: adapter-arkiv-bym-oslo-acos
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: adapter-arkiv-bym-oslo-acos
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8091"
+        prometheus.io/path: "prometheus"
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: adapter-arkiv-bym-oslo-acos
+          image: fintlabsacr.azurecr.io/fint-geointegrasjon-adapter:latest
+          resources:
+            limits:
+              memory: "3Gi"
+              cpu: "2"
+            requests:
+              memory: "2Gi"
+              cpu: "250m"
+          ports:
+            - containerPort: 8091
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8091
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          envFrom:
+            - secretRef:
+                name: bym-oslo-arkiv-acos
+          env:
+            - {name: TZ, value: Europe/Oslo}
+            - name: JAVA_TOOL_OPTIONS
+              value: >-
+                -Xmx2G -verbose:gc
+                -XX:+ExitOnOutOfMemoryError
+                -Dfile.encoding=UTF-8
+            - {name: springfox.title, value: "Oslo BYM ACOS GeoIntegrasjon"}
+            - {name: security.basic.enabled, value: "false"}
+            - {name: endpoints.enabled, value: "false"}
+            - {name: endpoints.sensitive, value: "false"}
+            - {name: endpoints.health.enabled, value: "true" }
+            - {name: endpoints.prometheus.enabled, value: "true" }
+            - {name: endpoints.metrics.enabled, value: "true" }
+            - {name: fint.adapter.reject-unknown-events, value: 'false'}
+            - {name: fint.case.coding.korrespondanseparttype.EA, value: A}
+            - {name: fint.case.coding.korrespondanseparttype.EM, value: M}
+            - {name: fint.case.coding.filformat.RA-JPEG, value: 'JPG'}
+            - {name: fint.case.coding.filformat.RA-PDF, value: 'PDF'}
+            - {name: fint.case.coding.filformat.RA-TEKST, value: 'TXT'}
+            - {name: fint.case.coding.filformat.RA-TIFF6, value: 'TIF'}
+            - {name: fint.internal-files.type, value: 'BLOB'}
+            - {name: fint.geointegrasjon.innsyn, value: '/InnsynService' }
+            - {name: fint.geointegrasjon.oppdatering, value: '/OppdateringService' }
+            - {name: fint.geointegrasjon.tracing, value: 'true' }
+            - {name: fint.geointegrasjon.use-wss, value: 'false' }
+            - {name: fint.geointegrasjon.fagsystem, value: ''}
+            - {name: fint.geointegrasjon.tilleggstype, value: ''}
+
