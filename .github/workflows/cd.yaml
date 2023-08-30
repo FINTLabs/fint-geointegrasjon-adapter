@@ -53,7 +53,7 @@ jobs:
           - cluster: aks-beta-fint-2021-11-23
             deploy-every-branch: true
 
-          - org: samediggi.no
+          - org: samediggi-no
             cluster: aks-beta-fint-2021-11-23
             deploy-every-branch: true
 
