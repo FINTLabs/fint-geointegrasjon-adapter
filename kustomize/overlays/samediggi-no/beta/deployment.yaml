@@ -65,3 +65,5 @@ spec:
             - {name: fint.geointegrasjon.use-wss, value: 'true' }
             - {name: fint.geointegrasjon.fagsystem, value: 'DIGISAK'}
             - {name: fint.geointegrasjon.tilleggstype, value: 'TILLEGG'}
+            - {name: fint.geointegrasjon.innsyn, value: '/InnsynService'}
+            - {name: fint.geointegrasjon.oppdatering, value: '/OppdateringService'}

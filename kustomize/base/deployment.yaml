@@ -58,8 +58,6 @@ spec:
             - {name: fint.case.coding.filformat.RA-TEKST, value: 'TXT'}
             - {name: fint.case.coding.filformat.RA-TIFF6, value: 'TIF'}
             - {name: fint.internal-files.type, value: 'BLOB'}
-            - {name: fint.geointegrasjon.innsyn, value: '/InnsynService' }
-            - {name: fint.geointegrasjon.oppdatering, value: '/OppdateringService' }
             - {name: fint.geointegrasjon.tracing, value: 'true' }
             - {name: fint.geointegrasjon.use-wss, value: 'false' }
             - {name: fint.geointegrasjon.fagsystem, value: ''}

@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adapter-arkiv-acos
+spec:
+  template:
+    spec:
+      containers:
+        - name: adapter-arkiv-acos
+          image: fintlabsacr.azurecr.io/fint-geointegrasjon-adapter:2023-08-14-fdd3f57
+          envFrom:
+            - secretRef:
+                name: nordland-arkiv-acos
+          env:
+            - { name: TZ, value: Europe/Oslo }
+            - name: JAVA_TOOL_OPTIONS
+              value: >-
+                -Xmx2G -verbose:gc
+                -XX:+ExitOnOutOfMemoryError
+                -Dfile.encoding=UTF-8
+            - { name: springfox.title, value: "Nordland ACOS GeoIntegrasjon" }
+            - { name: fint.adapter.organizations, value: nfk.no }
+            - { name: fint.adapter.reject-unknown-events, value: 'false' }
+            - { name: fint.case.defaults.tilskuddfartoy.title.cases, value: 'Tilskudd - fartøyvern - ${kallesignal} ${fartoyNavn}' }
+            - { name: fint.case.defaults.tilskuddfartoy.title.records, value: '#{tittel.replaceFirst("Digisak - ","")}' }
+            - { name: fint.case.defaults.tilskuddfartoy.field.fartoy, value: '${kallesignal} ${fartoyNavn}' }
+            - { name: fint.case.defaults.tilskuddfartoy.field.kulturminneid, value: '${kulturminneId}' }
+            - { name: fint.case.defaults.tilskuddfartoy.saksmappeType, value: 'TISK' }
+            - { name: fint.case.defaults.tilskuddfartoy.arkivdel, value: SA }
+            - { name: fint.case.defaults.tilskuddfartoy.journalpostType, value: I }
+            - { name: fint.case.defaults.tilskuddfartoy.saksstatus, value: B }
+            - { name: fint.case.defaults.tilskuddfartoy.journalstatus, value: J }
+            - { name: fint.case.defaults.tilskuddfartoy.dokumentstatus, value: F }
+            - { name: fint.case.defaults.tilskuddfartoy.administrativEnhet, value: SUPREKM }
+            - { name: fint.case.defaults.tilskuddfartoy.journalenhet, value: PM }
+            - { name: fint.case.defaults.tilskuddfartoy.saksansvarlig, value: GEIDAV }
+            - { name: fint.case.defaults.tilskuddfartoy.saksbehandler, value: GEIDAV }
+            - { name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.ordning, value: 'FE' }
+            - { name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.verdi, value: '243' }
+            - { name: fint.case.defaults.tilskuddfartoy.klassifikasjon.2.ordning, value: 'FA' }
+            - { name: fint.case.defaults.tilskuddfartoy.klassifikasjon.2.verdi, value: 'C54' }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.title.cases, value: 'Tilskudd - fredete bygninger i privat eie - gnr ${matrikkelnummer.gardsnummer} bnr ${matrikkelnummer.bruksnummer} - ${bygningsnavn}' }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.field.matrikkel, value: '${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer}' }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.field.kulturminneid, value: '${kulturminneId}' }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.arkivdel, value: SA }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.journalpostType, value: I }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.saksmappeType, value: 'TISK' }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.saksstatus, value: B }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.journalstatus, value: J }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.dokumentstatus, value: F }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.administrativEnhet, value: SUPREKM }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.journalenhet, value: PM }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.saksansvarlig, value: GEIDAV }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.saksbehandler, value: GEIDAV }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.ordning, value: 'FE' }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.verdi, value: '243' }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.2.ordning, value: 'FA' }
+            - { name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.2.verdi, value: 'C53' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.administrativEnhet, value: 'SUPREKM' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.arkivdel, value: 'SA' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.dokumentstatus, value: 'F' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.field.matrikkel, value: '${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer}' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.field.kulturminneid, value: '${kulturminneId}' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.journalenhet, value: 'PM' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.journalstatus, value: 'J' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksmappeType, value: 'DISP' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksstatus, value: 'B' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.title.cases, value: 'Dispensasjon fra kulturminnelovens § 8 1. ledd - ${link$matrikkelnummer.kommunenummer#navn} kommune - ${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer} - ${kulturminneId}' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.1.ordning, value: 'FA' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.1.verdi, value: 'C51' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.2.ordning, value: 'TI' }
+            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.2.verdi, value: '&18' }
+            - { name: fint.case.coding.korrespondanseparttype.EA, value: A }
+            - { name: fint.case.coding.korrespondanseparttype.EM, value: M }
+            - { name: fint.case.coding.filformat.RA-JPEG, value: 'JPG' }
+            - { name: fint.case.coding.filformat.RA-PDF, value: 'PDF' }
+            - { name: fint.case.coding.filformat.RA-TEKST, value: 'TXT' }
+            - { name: fint.case.coding.filformat.RA-TIFF6, value: 'TIF' }
+            - { name: fint.internal-files.type, value: 'BLOB' }
+            - { name: fint.adapter.endpoints.providers.kodeverk, value: https://api.felleskomponent.no/arkiv/kodeverk/provider }
+            - { name: fint.adapter.endpoints.providers.noark, value: https://api.felleskomponent.no/arkiv/noark/provider }
+            - { name: fint.adapter.endpoints.providers.kulturminne, value: https://api.felleskomponent.no/arkiv/kulturminnevern/provider }
+            - { name: fint.geointegrasjon.tracing, value: 'false' }
+            - { name: fint.geointegrasjon.use-wss, value: 'true' }
+            - { name: fint.geointegrasjon.fagsystem, value: 'FAGSYS' }
+            - { name: fint.geointegrasjon.tilleggstype, value: 'TILLEGG' }
+            - { name: fint.geointegrasjon.avskrivningsmate, value: 'AF' }
