@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: adapter-arkiv-bym-oslo-acos
+  name: adapter-arkiv-acos
 spec:
   selector:
     matchLabels:
-      app: adapter-arkiv-bym-oslo-acos
+      app: adapter-arkiv-acos
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: adapter-arkiv-bym-oslo-acos
+        app: adapter-arkiv-acos
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "8091"
@@ -19,7 +19,7 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - name: adapter-arkiv-bym-oslo-acos
+        - name: adapter-arkiv-acos
           image: fintlabsacr.azurecr.io/fint-geointegrasjon-adapter:latest
           resources:
             limits:
@@ -36,9 +36,6 @@ spec:
               port: 8091
             initialDelaySeconds: 10
             timeoutSeconds: 5
-          envFrom:
-            - secretRef:
-                name: bym-oslo-arkiv-acos
           env:
             - {name: TZ, value: Europe/Oslo}
             - name: JAVA_TOOL_OPTIONS

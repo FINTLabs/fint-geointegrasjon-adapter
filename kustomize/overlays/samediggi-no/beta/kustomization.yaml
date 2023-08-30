@@ -24,14 +24,13 @@ patches:
     patch: |-
       - op: replace
         path: "/metadata/name"
-        value: "adapter-arkiv-bym-oslo-acos"
+        value: "adapter-arkiv-samediggi-acos"
       - op: replace
         path: "/spec/selector/matchLabels/app"
-        value: "adapter-arkiv-bym-oslo-acos"
+        value: "adapter-arkiv-samediggi-acos"
       - op: replace
         path: "/spec/template/metadata/labels/app"
-        value: "adapter-arkiv-bym-oslo-acos"
+        value: "adapter-arkiv-samediggi-acos"
       - op: replace
         path: /spec/template/spec/containers/0/name
-        value: "adapter-arkiv-bym-oslo-acos"
-
+        value: "adapter-arkiv-samediggi-acos"

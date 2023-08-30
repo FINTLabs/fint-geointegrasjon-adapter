@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: adapter-arkiv-bym-oslo-acos
+  name: adapter-arkiv-acos
 spec:
   template:
     spec:
       containers:
-        - name: adapter-arkiv-bym-oslo-acos
+        - name: adapter-arkiv-acos
           image: fintlabsacr.azurecr.io/fint-geointegrasjon-adapter:disp-8.1-7849323
           envFrom:
             - secretRef:
