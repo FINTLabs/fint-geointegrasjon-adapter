@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adapter-arkiv-acos
+spec:
+  template:
+    spec:
+      containers:
+        - name: adapter-arkiv-acos
+          image: fintlabsacr.azurecr.io/fint-geointegrasjon-adapter:disp-8.1-7849323
+          envFrom:
+            - secretRef:
+                name: bym-oslo-arkiv-acos
+          env:
+            - {name: springfox.title, value: "Oslo BYM ACOS GeoIntegrasjon"}
+            - {name: fint.adapter.reject-unknown-events, value: 'false'}
+            - {name: fint.case.coding.korrespondanseparttype.EA, value: A}
+            - {name: fint.case.coding.korrespondanseparttype.EM, value: M}
+            - {name: fint.case.coding.filformat.RA-JPEG, value: 'JPG'}
+            - {name: fint.case.coding.filformat.RA-PDF, value: 'PDF'}
+            - {name: fint.case.coding.filformat.RA-TEKST, value: 'TXT'}
+            - {name: fint.case.coding.filformat.RA-TIFF6, value: 'TIF'}
+            - {name: fint.internal-files.type, value: 'BLOB'}
+            - {name: fint.adapter.endpoints.providers.kodeverk, value: https://beta.felleskomponent.no/arkiv/kodeverk/provider}
+            - {name: fint.adapter.endpoints.providers.noark, value: https://beta.felleskomponent.no/arkiv/noark/provider}
+            - {name: fint.adapter.endpoints.providers.samferdsel, value: https://beta.felleskomponent.no/arkiv/samferdsel/provider}
+            - {name: fint.geointegrasjon.innsyn, value: '/InnsynService' }
+            - {name: fint.geointegrasjon.oppdatering, value: '/OppdateringService' }
+            - {name: fint.geointegrasjon.tracing, value: 'true' }
+            - {name: fint.geointegrasjon.use-wss, value: 'false' }
+            - {name: fint.geointegrasjon.fagsystem, value: ''}
+            - {name: fint.geointegrasjon.tilleggstype, value: ''}
+            - {name: fint.case.defaults.soknaddrosjeloyve.title.cases, value: 'Søknad om drosjeløyve - ${organisasjonsnavn}'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.administrativEnhet, value: 'LØYVE'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.arkivdel, value: 'LØYVE'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.dokumentstatus, value: 'F'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.journalenhet, value: 'DS'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.journalstatus, value: 'J'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.ordning, value: 'OKA'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.verdi, value: 'G2-01'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.ordning, value: 'OFFNR'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.verdi, value: '${organisasjonsnummer}'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.tittel, value: 'Organisasjonsnummer'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.noekkelord, value: ''}
+            - {name: fint.case.defaults.soknaddrosjeloyve.saksmappeType, value: 'LØYV'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.saksstatus, value: 'B'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.tilgangsrestriksjon, value: 'ISK'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.skjermingshjemmel, value: '§ 13 1. ledd, jf. fvl. § 13 1. ledd nr. 1'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.skjermingskontekst, value: 'SAK,JOURNALPOST,DOKUMENT'}
