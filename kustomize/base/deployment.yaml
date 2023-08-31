@@ -20,7 +20,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: adapter-arkiv-acos
-          image: fintlabsacr.azurecr.io/fint-geointegrasjon-adapter:latest
+          image: ghcr.io/fintlabs/fint-geointegrasjon-adapter:latest
           resources:
             limits:
               memory: "3Gi"

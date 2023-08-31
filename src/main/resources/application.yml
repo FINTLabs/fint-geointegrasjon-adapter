@@ -16,6 +16,10 @@ fint:
     enabled: true
     access-token-uri: https://idp.felleskomponent.no/nidp/oauth/nam/token
     scope: fint-client
+    username: ${fint.core.oauth2.username}
+    password: ${fint.core.oauth2.password}
+    client-id: ${fint.core.oauth2.client-id}
+    client-secret: ${fint.core.oauth2.client-secret}
 
   internal-files:
     directory: file-cache

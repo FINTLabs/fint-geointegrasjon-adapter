@@ -8,7 +8,6 @@ spec:
     spec:
       containers:
         - name: adapter-arkiv-acos
-          image: fintlabsacr.azurecr.io/fint-geointegrasjon-adapter:2023-08-14-fdd3f57
           envFrom:
             - secretRef:
                 name: arkiv-acos-onepassword
