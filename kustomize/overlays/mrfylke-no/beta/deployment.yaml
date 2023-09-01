@@ -32,6 +32,8 @@ spec:
             - {name: fint.geointegrasjon.use-wss, value: 'true' }
             - {name: fint.geointegrasjon.fagsystem, value: ''}
             - {name: fint.geointegrasjon.tilleggstype, value: ''}
+            - {name: fint.case.defaults.sak.journalenhet, value: 'DLØYVE'}
+            - {name: fint.case.defaults.sak.dokumentType, value: 'B'}
             - {name: fint.case.defaults.soknaddrosjeloyve.title.cases, value: 'Søknad om drosjeløyve - ${organisasjonsnavn}'}
             - {name: fint.case.defaults.soknaddrosjeloyve.administrativEnhet, value: 'LØYVE'}
             - {name: fint.case.defaults.soknaddrosjeloyve.arkivdel, value: 'LØYVE'}
