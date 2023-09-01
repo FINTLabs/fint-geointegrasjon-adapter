@@ -36,20 +36,20 @@ spec:
             - {name: fint.case.defaults.sak.arkivdel, value: 'DLØYVE'}
             - {name: fint.case.defaults.sak.dokumentType, value: 'B'}
             - {name: fint.case.defaults.soknaddrosjeloyve.title.cases, value: 'Søknad om drosjeløyve - ${organisasjonsnavn}'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.administrativEnhet, value: 'LØYVE'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.arkivdel, value: 'LØYVE'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.dokumentstatus, value: 'F'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.journalenhet, value: 'DS'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.journalstatus, value: 'J'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.ordning, value: 'OKA'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.verdi, value: 'G2-01'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.ordning, value: 'OFFNR'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.verdi, value: '${organisasjonsnummer}'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.tittel, value: 'Organisasjonsnummer'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.noekkelord, value: ''}
-            - {name: fint.case.defaults.soknaddrosjeloyve.saksmappeType, value: 'LØYV'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.saksstatus, value: 'B'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.tilgangsrestriksjon, value: 'ISK'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.skjermingshjemmel, value: '§ 13 1. ledd, jf. fvl. § 13 1. ledd nr. 1'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.skjermingskontekst, value: 'SAK,JOURNALPOST,DOKUMENT'}
-            - {name: logging.level.no.fint, value: debug}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.administrativEnhet, value: 'LØYVE'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.arkivdel, value: 'DLØYVE'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.dokumentstatus, value: 'F'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.journalenhet, value: 'DS'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.journalstatus, value: 'J'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.ordning, value: 'OKA'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.verdi, value: 'G2-01'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.ordning, value: 'OFFNR'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.verdi, value: '${organisasjonsnummer}'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.tittel, value: 'Organisasjonsnummer'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.noekkelord, value: ''}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.saksmappeType, value: 'LØYV'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.saksstatus, value: 'B'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.tilgangsrestriksjon, value: 'ISK'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.skjermingshjemmel, value: '§ 13 1. ledd, jf. fvl. § 13 1. ledd nr. 1'}
+#            - {name: fint.case.defaults.soknaddrosjeloyve.skjermingskontekst, value: 'SAK,JOURNALPOST,DOKUMENT'}
+#            - {name: logging.level.no.fint, value: debug}
