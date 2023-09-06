@@ -55,4 +55,19 @@ spec:
             - {name: fint.case.defaults.soknaddrosjeloyve.saksstatus, value: 'B'}
             - {name: fint.case.defaults.soknaddrosjeloyve.saksmappeType, value: 'DLØ'}
 
+            - {name: fint.case.defaults.tilskuddfartoy.administrativEnhet, value: 'KUA' }
+            - {name: fint.case.defaults.tilskuddfartoy.arkivdel, value: 'KULTUR' }
+            - {name: fint.case.defaults.tilskuddfartoy.avskrivningsmaate, value: 'TE' } #NOT_IMPLEMENTED_YET
+            - {name: fint.case.defaults.tilskuddfartoy.dokumentstatus, value: 'F' }
+            - {name: fint.case.defaults.tilskuddfartoy.dokumentType, value: 'DOK' }
+            - {name: fint.case.defaults.tilskuddfartoy.journalenhet, value: 'PM' }
+            - {name: fint.case.defaults.tilskuddfartoy.journalstatus, value: 'J' }
+            - {name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.ordning, value: 'FE' }
+            - {name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.verdi, value: '243' }
+            - {name: fint.case.defaults.tilskuddfartoy.saksstatus, value: 'B' }
+            #- {name: fint.case.defaults.tilskuddfartoy.saksansvarlig, value: '4834' } # AEE
+            #- {name: fint.case.defaults.tilskuddfartoy.saksbehandler, value: '4834' } # AEE
+            - {name: fint.case.defaults.tilskuddfartoy.title.cases, value: 'Post 74 - ${kallesignal} - ${kulturminneId} - ${fartoyNavn} - ${soknadsnummer.identifikatorverdi}' }
+            - {name: fint.case.defaults.tilskuddfartoy.title.records, value: '#{tittel}' }
+
             - {name: logging.level.no.fint, value: debug}
