@@ -30,8 +30,8 @@ spec:
             - {name: fint.adapter.endpoints.providers.kulturminne, value: https://beta.felleskomponent.no/arkiv/kulturminnevern/provider}
             - {name: fint.geointegrasjon.tracing, value: 'true' }
             - {name: fint.geointegrasjon.use-wss, value: 'true' }
-            - {name: fint.geointegrasjon.fagsystem, value: ''} # FAGSYS
-            - {name: fint.geointegrasjon.tilleggstype, value: ''} # TILLEGG
+            - {name: fint.geointegrasjon.fagsystem, value: 'FAGSYS'} # FAGSYS
+            - {name: fint.geointegrasjon.tilleggstype, value: 'FAGSYS'} # TILLEGG
 
             - {name: fint.case.defaults.sak.journalenhet, value: 'PM'}
             - {name: fint.case.defaults.sak.arkivdel, value: 'DLØYVE'}
