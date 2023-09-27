@@ -101,6 +101,6 @@ spec:
             - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksstatus, value: 'B'}
             - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.title.cases, value: '${link$matrikkelnummer.kommunenummer#navn} kommune - tillatelse til inngrep i automatisk fredet arkeologisk kulturminne - KML §8.1 - ${kulturminneId} - ${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer} - ${soknadsnummer.identifikatorverdi}'}
             - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.title.records, value: '#{tittel}'}
-            #- {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksmappeType, value: 'KUA'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksmappeType, value: 'KUA'}
 
             - {name: logging.level.no.fint, value: debug}
