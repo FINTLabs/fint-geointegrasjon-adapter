@@ -13,6 +13,6 @@ public class SoknadDrosjeloyveImporter implements Consumer2<Saksmappe, SoknadDro
 
     @Override
     public void accept(Saksmappe saksmappe, SoknadDrosjeloyveResource resource) {
-        ifPresent(saksmappe.getReferanseEksternNoekkel(), resource::setSystemId, r -> createIdentifikator(r.getNoekkel()));
+        //ifPresent(saksmappe.getReferanseEksternNoekkel(), resource::setSystemId, r -> createIdentifikator(r.getNoekkel()));
     }
 }
