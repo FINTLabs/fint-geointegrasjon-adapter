@@ -74,6 +74,7 @@ public class GeoIntegrasjonFactory {
 
         setKodeverdiFromLink(resource.getAdministrativEnhet(), saksmappe::setAdministrativEnhetInit);
         setKodeverdiFromLink(resource.getSaksansvarlig(), saksmappe::setSaksansvarligInit);
+        log.debug("Saksansvarlig (saksansvarlig, saksansvarligInit): {}, {}", resource.getSaksansvarlig(), saksmappe.getSaksansvarligInit());
 
         setKodeverdiFromLink(resource.getArkivdel(), objectFactory::createArkivdel, saksmappe::setReferanseArkivdel);
         setKodeverdiFromLink(resource.getJournalenhet(), objectFactory::createJournalenhet, saksmappe::setJournalenhet);

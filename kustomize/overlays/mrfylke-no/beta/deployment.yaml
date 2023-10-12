@@ -8,7 +8,6 @@ spec:
     spec:
       containers:
         - name: adapter-arkiv-acos
-          image: ghcr.io/fintlabs/fint-geointegrasjon-adapter:ARKIV-146-mrfylke-beta-1cde3ad
           envFrom:
             - secretRef:
                 name: arkiv-acos-onepassword
@@ -50,8 +49,8 @@ spec:
             - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.verdi, value: 'N12'}
             - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.3.ordning, value: 'TI'}
             - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.3.verdi, value: '&18'}
-            #- {name: fint.case.defaults.soknaddrosjeloyve.saksansvarlig, value: '6285' } #SHBR NOT_IMPLEMENTED_YET
-            #- {name: fint.case.defaults.soknaddrosjeloyve.saksbehandler, value: '6285' } #SHBR NOT_IMPLEMENTED_YET
+            - {name: fint.case.defaults.soknaddrosjeloyve.saksansvarlig, value: 'SHBR' } #SHBR | 258
+            - {name: fint.case.defaults.soknaddrosjeloyve.saksbehandler, value: 'SHBR' } #SHBR | 258
             - {name: fint.case.defaults.soknaddrosjeloyve.saksstatus, value: 'B'}
             - {name: fint.case.defaults.soknaddrosjeloyve.saksmappeType, value: 'DLØ'}
 
@@ -65,8 +64,8 @@ spec:
             - {name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.ordning, value: 'FE'}
             - {name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.verdi, value: '243'}
             - {name: fint.case.defaults.tilskuddfartoy.saksstatus, value: 'B'}
-            #- {name: fint.case.defaults.tilskuddfartoy.saksansvarlig, value: '4834'} #AEE NOT_IMPLEMENTED_YET
-            #- {name: fint.case.defaults.tilskuddfartoy.saksbehandler, value: '4834'} #AEE NOT_IMPLEMENTED_YET
+            - {name: fint.case.defaults.tilskuddfartoy.saksansvarlig, value: 'AEE'} #AEE | 353
+            - {name: fint.case.defaults.tilskuddfartoy.saksbehandler, value: 'AEE'} #AEE | 353
             - {name: fint.case.defaults.tilskuddfartoy.title.cases, value: 'Post 74 - ${kallesignal} - ${kulturminneId} - ${fartoyNavn} - ${soknadsnummer.identifikatorverdi}'}
             - {name: fint.case.defaults.tilskuddfartoy.title.records, value: '#{tittel}'}
             - {name: fint.case.defaults.tilskuddfartoy.saksmappeType, value: 'KUA'}
@@ -81,26 +80,26 @@ spec:
             - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.ordning, value: 'FE'}
             - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.verdi, value: '243'}
             - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksstatus, value: 'B'}
-            #- {name: fint.case.defaults.tilskuddfredabygningprivateie.saksansvarlig, value: '5758'} #OHJ NOT_IMPLEMENTED_YET
-            #- {name: fint.case.defaults.tilskuddfredabygningprivateie.saksbehandler, value: '5758'} #OHJ NOT_IMPLEMENTED_YET
+            - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksansvarlig, value: 'OHJ'} #OHJ | 360
+            - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksbehandler, value: 'OHJ'} #OHJ | 360
             - {name: fint.case.defaults.tilskuddfredabygningprivateie.title.cases, value: 'Post 71 - ${kulturminneId} - ${bygningsnavn} - ${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer} - ${soknadsnummer.identifikatorverdi}' }
             - {name: fint.case.defaults.tilskuddfredabygningprivateie.title.records, value: '#{tittel}' }
             - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksmappeType, value: 'KUA'}
 
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.administrativEnhet, value: 'KUA'}
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.arkivdel, value: 'KULTUR'}
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.avskrivningsmaate, value: 'TE'} #NOT_IMPLEMENTED_YET
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.dokumentstatus, value: 'F'}
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.dokumentType, value: 'DOK'}
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.journalenhet, value: 'PM'}
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.journalstatus, value: 'J'}
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.1.ordning, value: 'FE'}
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.1.verdi, value: '243'}
-            #- { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksansvarlig, value: '5758'} #OHJ NOT_IMPLEMENTED_YET
-            #- { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksbehandler, value: '5758'} #OHJ NOT_IMPLEMENTED_YET
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksstatus, value: 'B'}
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.title.cases, value: '${link$matrikkelnummer.kommunenummer#navn} kommune - tillatelse til inngrep i automatisk fredet arkeologisk kulturminne - KML §8.1 - ${kulturminneId} - ${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer} - ${soknadsnummer.identifikatorverdi}'}
-            - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.title.records, value: '#{tittel}'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.administrativEnhet, value: 'KUA'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.arkivdel, value: 'KULTUR'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.avskrivningsmaate, value: 'TE'} #NOT_IMPLEMENTED_YET
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.dokumentstatus, value: 'F'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.dokumentType, value: 'DOK'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.journalenhet, value: 'PM'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.journalstatus, value: 'J'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.1.ordning, value: 'FE'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.1.verdi, value: '243'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksansvarlig, value: 'HATY'} #HATY | 358
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksbehandler, value: 'HATY'} #HATY | 358
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksstatus, value: 'B'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.title.cases, value: '${link$matrikkelnummer.kommunenummer#navn} kommune - tillatelse til inngrep i automatisk fredet arkeologisk kulturminne - KML §8.1 - ${kulturminneId} - ${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer} - ${soknadsnummer.identifikatorverdi}'}
+            - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.title.records, value: '#{tittel}'}
             - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksmappeType, value: 'KUA'}
 
             - {name: logging.level.no.fint, value: debug}
