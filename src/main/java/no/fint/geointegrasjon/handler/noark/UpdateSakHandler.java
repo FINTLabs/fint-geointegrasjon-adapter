@@ -70,6 +70,7 @@ public class UpdateSakHandler implements Handler {
         if (operation == Operation.CREATE) {
             caseDefaultsService.applyDefaultsForCreation(new CaseProperties(), sakResource);
             log.debug("Case: {}", sakResource);
+
             if (!validationService.validate(response, sakResource)) {
                 return;
             }

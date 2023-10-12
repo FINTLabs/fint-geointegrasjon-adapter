@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: adapter-arkiv-acos
-          image: fintlabsacr.azurecr.io/fint-geointegrasjon-adapter:disp-8.1-7849323
+          image: ghcr.io/fintlabs/fint-geointegrasjon-adapter:ARKIV-146-mrfylke-beta-1cde3ad
           envFrom:
             - secretRef:
                 name: bym-oslo-arkiv-acos
