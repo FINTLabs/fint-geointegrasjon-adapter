@@ -94,7 +94,7 @@ public class UpdateSoknadDrosjeloyveHandler implements Handler {
                         .newSak(caseDefaults.getSoknaddrosjeloyve(),
                                 resource,
                                 resource.getOrganisasjonsnummer(),
-                                soknadDrosjeloyveExporter))
+                                soknadDrosjeloyveExporter));
 
         final String caseId = saksmappe.getSystemID();
         resource.setSystemId(createIdentifikator(caseId));
