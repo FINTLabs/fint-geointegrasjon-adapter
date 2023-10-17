@@ -1,11 +1,11 @@
 apiVersion: fintlabs.no/v1alpha1
 kind: FintAdapter
 metadata:
-  name: acos-arkiv-beta
+  name: acos-arkiv-api
   namespace: mrfylke-no
   labels:
-    app.kubernetes.io/name: acos-arkiv-beta
-    app.kubernetes.io/instance: acos-arkiv-beta_mrfylke-no
+    app.kubernetes.io/name: acos-arkiv-api
+    app.kubernetes.io/instance: acos-arkiv-api_mrfylke-no
     app.kubernetes.io/version: latest
     app.kubernetes.io/component: acos-arkiv-adapter
     app.kubernetes.io/part-of: arkiv

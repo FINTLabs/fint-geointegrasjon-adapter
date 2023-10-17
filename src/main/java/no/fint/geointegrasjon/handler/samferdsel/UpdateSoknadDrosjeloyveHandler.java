@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static no.fint.geointegrasjon.utils.FintUtils.createIdentifikator;
+import static no.fint.geointegrasjon.utils.FintUtils.fromXmlDate;
 
 @Service
 @Slf4j
@@ -88,16 +89,20 @@ public class UpdateSoknadDrosjeloyveHandler implements Handler {
     }
 
     private void createCase(Event<FintLinks> event, SoknadDrosjeloyveResource resource) {
-        final String caseId = journalpostCreator
+        final no.geointegrasjon.arkiv.oppdatering.Saksmappe saksmappe = journalpostCreator
                 .createSaksmappe(geoIntegrasjonFactory
                         .newSak(caseDefaults.getSoknaddrosjeloyve(),
                                 resource,
                                 resource.getOrganisasjonsnummer(),
-                                soknadDrosjeloyveExporter))
-                .getSystemID();
-        log.info("Case ID: {}", caseId);
+                                soknadDrosjeloyveExporter));
+
+        final String caseId = saksmappe.getSystemID();
         resource.setSystemId(createIdentifikator(caseId));
-        log.info("System ID: {}", resource.getSystemId());
+        resource.setSaksaar(String.valueOf(saksmappe.getSaksnr().getSaksaar()));
+        resource.setSakssekvensnummer(String.valueOf(saksmappe.getSaksnr().getSakssekvensnummer()));
+        resource.setMappeId(createIdentifikator(String.format("%d/%d", saksmappe.getSaksnr().getSaksaar(), saksmappe.getSaksnr().getSakssekvensnummer())));
+        resource.setSaksdato(fromXmlDate(saksmappe.getSaksdato()));
+        log.info("System ID: {}, MappeID: {}", resource.getSystemId(), resource.getMappeId());
 
         if (resource.getJournalpost() != null) {
             journalpostService.createJournalpostForCase(caseId, resource);
