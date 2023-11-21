@@ -1,15 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# namespace: nfk-no
+namespace: nfk-no
 
 resources:
   - ../../../base
   - onepassword.yaml
 
-#commonLabels:
-#  app.kubernetes.io/instance: adapter-sikri-arkiv_nfk-no
-#  fintlabs.no/org-id: nfk.no
+commonLabels:
+  app.kubernetes.io/instance: adapter-arkiv-acos_nfk-no
+  fintlabs.no/org-id: nfk.no
 
 patches:
   
@@ -17,21 +17,3 @@ patches:
       kind: Deployment
       name: adapter-arkiv-acos
     path: deployment.yaml
-
-  - target:
-      kind: Deployment
-      name: adapter-arkiv-acos
-    patch: |-
-      - op: replace
-        path: "/metadata/name"
-        value: "adapter-arkiv-nordland-acos"
-      - op: replace
-        path: "/spec/selector/matchLabels/app"
-        value: "adapter-arkiv-nordland-acos"
-      - op: replace
-        path: "/spec/template/metadata/labels/app"
-        value: "adapter-arkiv-nordland-acos"
-      - op: replace
-        path: /spec/template/spec/containers/0/name
-        value: "adapter-arkiv-nordland-acos"
-

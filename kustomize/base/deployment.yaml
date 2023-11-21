@@ -23,10 +23,10 @@ spec:
           image: ghcr.io/fintlabs/fint-geointegrasjon-adapter:latest
           resources:
             limits:
-              memory: "3Gi"
+              memory: "4Gi"
               cpu: "2"
             requests:
-              memory: "2Gi"
+              memory: "3Gi"
               cpu: "250m"
           ports:
             - containerPort: 8091
@@ -40,10 +40,9 @@ spec:
             - {name: TZ, value: Europe/Oslo}
             - name: JAVA_TOOL_OPTIONS
               value: >-
-                -Xmx2G -verbose:gc
+                -Xmx3G -verbose:gc
                 -XX:+ExitOnOutOfMemoryError
                 -Dfile.encoding=UTF-8
-            - {name: springfox.title, value: "Oslo BYM ACOS GeoIntegrasjon"}
             - {name: security.basic.enabled, value: "false"}
             - {name: endpoints.enabled, value: "false"}
             - {name: endpoints.sensitive, value: "false"}
@@ -62,4 +61,3 @@ spec:
             - {name: fint.geointegrasjon.use-wss, value: 'false' }
             - {name: fint.geointegrasjon.fagsystem, value: ''}
             - {name: fint.geointegrasjon.tilleggstype, value: ''}
-

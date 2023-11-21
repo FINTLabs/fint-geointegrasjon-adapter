@@ -7,12 +7,12 @@ spec:
     spec:
       containers:
         - name: adapter-arkiv-acos
-          image: fintlabsacr.azurecr.io/fint-geointegrasjon-adapter:2023-08-14-fdd3f57
           envFrom:
             - secretRef:
-                name: nordland-arkiv-acos
+                name: arkiv-acos-onepassword
+            #- secretRef:
+            #    name: acos-arkiv-api # fint-adapter
           env:
-            - { name: TZ, value: Europe/Oslo }
             - name: JAVA_TOOL_OPTIONS
               value: >-
                 -Xmx2G -verbose:gc
@@ -21,6 +21,7 @@ spec:
             - { name: springfox.title, value: "Nordland ACOS GeoIntegrasjon" }
             - { name: fint.adapter.organizations, value: nfk.no }
             - { name: fint.adapter.reject-unknown-events, value: 'false' }
+
             - { name: fint.case.defaults.tilskuddfartoy.title.cases, value: 'Tilskudd - fartøyvern - ${kallesignal} ${fartoyNavn}' }
             - { name: fint.case.defaults.tilskuddfartoy.title.records, value: '#{tittel.replaceFirst("Digisak - ","")}' }
             - { name: fint.case.defaults.tilskuddfartoy.field.fartoy, value: '${kallesignal} ${fartoyNavn}' }
@@ -39,6 +40,7 @@ spec:
             - { name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.verdi, value: '243' }
             - { name: fint.case.defaults.tilskuddfartoy.klassifikasjon.2.ordning, value: 'FA' }
             - { name: fint.case.defaults.tilskuddfartoy.klassifikasjon.2.verdi, value: 'C54' }
+
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.title.cases, value: 'Tilskudd - fredete bygninger i privat eie - gnr ${matrikkelnummer.gardsnummer} bnr ${matrikkelnummer.bruksnummer} - ${bygningsnavn}' }
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.field.matrikkel, value: '${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer}' }
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.field.kulturminneid, value: '${kulturminneId}' }
@@ -56,6 +58,7 @@ spec:
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.verdi, value: '243' }
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.2.ordning, value: 'FA' }
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.2.verdi, value: 'C53' }
+
             - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.administrativEnhet, value: 'SUPREKM' }
             - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.arkivdel, value: 'SA' }
             - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.dokumentstatus, value: 'F' }
@@ -70,6 +73,7 @@ spec:
             - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.1.verdi, value: 'C51' }
             - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.2.ordning, value: 'TI' }
             - { name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.klassifikasjon.2.verdi, value: '&18' }
+
             - { name: fint.case.coding.korrespondanseparttype.EA, value: A }
             - { name: fint.case.coding.korrespondanseparttype.EM, value: M }
             - { name: fint.case.coding.filformat.RA-JPEG, value: 'JPG' }
@@ -77,11 +81,15 @@ spec:
             - { name: fint.case.coding.filformat.RA-TEKST, value: 'TXT' }
             - { name: fint.case.coding.filformat.RA-TIFF6, value: 'TIF' }
             - { name: fint.internal-files.type, value: 'BLOB' }
+
             - { name: fint.adapter.endpoints.providers.kodeverk, value: https://api.felleskomponent.no/arkiv/kodeverk/provider }
             - { name: fint.adapter.endpoints.providers.noark, value: https://api.felleskomponent.no/arkiv/noark/provider }
             - { name: fint.adapter.endpoints.providers.kulturminne, value: https://api.felleskomponent.no/arkiv/kulturminnevern/provider }
+
             - { name: fint.geointegrasjon.tracing, value: 'false' }
             - { name: fint.geointegrasjon.use-wss, value: 'true' }
             - { name: fint.geointegrasjon.fagsystem, value: 'FAGSYS' }
             - { name: fint.geointegrasjon.tilleggstype, value: 'TILLEGG' }
             - { name: fint.geointegrasjon.avskrivningsmate, value: 'AF' }
+
+            - {name: logging.level.no.fint, value: trace}
