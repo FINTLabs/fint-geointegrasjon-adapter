@@ -151,7 +151,13 @@ public class SaksmappeMapper {
             ofNullable(saksmappe.getTilleggsinformasjon()).map(TilleggsinformasjonListe::getListe)
                     .map(List::stream)
                     .orElse(Stream.empty())
-                    .forEach(t -> log.debug("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
+                    .forEach(t -> {
+                        log.debug("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon());
+                        if ("NS".equalsIgnoreCase(t.getInformasjonstype().getKodeverdi())) {
+                            ifPresent(t.getRegistrertDato(), resource::setOpprettetDato, FintUtils::fromXmlDate);
+                            log.debug("We're just set the opprettetDato to: {}", resource.getOpprettetDato());
+                        }
+                    });
 
             return resource;
         };
