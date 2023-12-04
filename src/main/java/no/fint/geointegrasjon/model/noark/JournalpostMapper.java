@@ -111,8 +111,13 @@ public class JournalpostMapper {
             ofNullable(journalpost.getTilleggsinformasjon()).map(TilleggsinformasjonListe::getListe)
                     .map(List::stream)
                     .orElse(Stream.empty())
-                    .forEach(t -> log.debug("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon()));
-
+                    .forEach(t -> {
+                        log.debug("{} : \"{}\"", t.getInformasjonstype().getKodeverdi(), t.getInformasjon());
+                        if ("NJ".equalsIgnoreCase(t.getInformasjonstype().getKodeverdi())) {
+                            ifPresent(t.getRegistrertDato(), resource::setOpprettetDato, FintUtils::fromXmlDate);
+                            log.debug("We're just set the opprettetDato to: {}", resource.getOpprettetDato());
+                        }
+                    });
 
             return resource;
         };
