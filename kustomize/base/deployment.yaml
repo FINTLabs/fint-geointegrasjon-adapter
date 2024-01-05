@@ -23,11 +23,11 @@ spec:
           image: ghcr.io/fintlabs/fint-geointegrasjon-adapter:latest
           resources:
             limits:
-              memory: "4Gi"
+              memory: "6Gi"
               cpu: "2"
             requests:
-              memory: "3Gi"
-              cpu: "250m"
+              memory: "5Gi"
+              cpu: "500m"
           ports:
             - containerPort: 8091
           readinessProbe:
@@ -40,7 +40,7 @@ spec:
             - {name: TZ, value: Europe/Oslo}
             - name: JAVA_TOOL_OPTIONS
               value: >-
-                -Xmx3G -verbose:gc
+                -Xmx5G -verbose:gc
                 -XX:+ExitOnOutOfMemoryError
                 -Dfile.encoding=UTF-8
             - {name: security.basic.enabled, value: "false"}
