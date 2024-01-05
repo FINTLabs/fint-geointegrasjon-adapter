@@ -92,4 +92,4 @@ spec:
             - { name: fint.geointegrasjon.tilleggstype, value: 'TILLEGG' }
             - { name: fint.geointegrasjon.avskrivningsmate, value: 'AF' }
 
-            - {name: logging.level.no.fint, value: trace}
+            - {name: logging.level.no.fint, value: info}
