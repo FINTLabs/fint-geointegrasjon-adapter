@@ -1,6 +1,7 @@
 package no.fint.geointegrasjon.service.geointegrasjon;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fint.geointegrasjon.utils.ODataFilterUtils;
 import no.geointegrasjon.arkiv.innsyn.*;
 import org.springframework.stereotype.Service;
 
@@ -142,6 +143,12 @@ public class InnsynServiceFacade {
         } catch (OperationalException e) {
             throw FaultHandler.handleFault(e.getFaultInfo());
         }
+    }
+
+    public SaksmappeListe finnSaksmapperGittOdataFilter(String query) {
+        ODataFilterUtils oDataFilterUtils = new ODataFilterUtils();
+
+        return finnSaksmapperGittTittel(query);
     }
 
     public JournalpostListe finnJournalposterGittSaksnummer(String saksaar, String sakssekvensnummer) {

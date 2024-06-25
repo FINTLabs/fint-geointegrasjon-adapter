@@ -17,7 +17,6 @@ public class CaseQueryService {
 
     private final ImmutableMap<String, Function<String, Stream<Saksmappe>>> queryMap;
     private final String[] validQueries;
-
     private final InnsynServiceFacade innsynServiceFacade;
 
     public CaseQueryService(
@@ -28,6 +27,7 @@ public class CaseQueryService {
                 .put("soknadsnummer/", finnSaksmapperGittEksternNokkel(fagsystem))
                 .put("mappeid/", this::finnSaksmapperGittSaksnummer)
                 .put("systemid/", this::finnSaksmapperGittSystemId)
+                .put("$filter=", this::finnSaksmapperGittODataFilter)
                 .put("?", this::finnSaksmapperGittTittel)
                 .build();
         validQueries = queryMap.keySet().toArray(new String[0]);
@@ -55,11 +55,21 @@ public class CaseQueryService {
         return innsynServiceFacade.finnSaksmapperGittSaksnummer(strings[0], strings[1]).getListe().stream();
     }
 
+    @Deprecated
     public Stream<Saksmappe> finnSaksmapperGittTittel(String tittel) {
+        log.warn("..so you want to use this old deprecated stuff ({})?! We recommend the new fancy OData way.", tittel);
+
         return innsynServiceFacade.finnSaksmapperGittTittel(tittel).getListe().stream();
     }
 
     public Function<String, Stream<Saksmappe>> finnSaksmapperGittEksternNokkel(String fagsystem) {
         return noekkel -> innsynServiceFacade.finnSaksmapperGittEksternNokkel(fagsystem, noekkel).getListe().stream();
     }
+
+    public Stream<Saksmappe> finnSaksmapperGittODataFilter(String query) {
+        log.debug("The Odata filtered case query, proudly present to you by Paperboiz: {}", query);
+
+        return innsynServiceFacade.finnSaksmapperGittOdataFilter(query).getListe().stream();
+    }
+
 }
