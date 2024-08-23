@@ -90,6 +90,6 @@ spec:
             - { name: fint.geointegrasjon.use-wss, value: 'true' }
             - { name: fint.geointegrasjon.fagsystem, value: 'FAGSYS' }
             - { name: fint.geointegrasjon.tilleggstype, value: 'TILLEGG' }
-            - { name: fint.geointegrasjon.avskrivningsmate, value: 'AF' }
+            #- { name: fint.geointegrasjon.avskrivningsmate, value: 'AF' }
 
             - {name: logging.level.no.fint, value: info}
