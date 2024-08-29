@@ -34,8 +34,6 @@ spec:
             - { name: fint.case.defaults.tilskuddfartoy.dokumentstatus, value: F }
             - { name: fint.case.defaults.tilskuddfartoy.administrativEnhet, value: SUPREKM }
             - { name: fint.case.defaults.tilskuddfartoy.journalenhet, value: PM }
-            #- { name: fint.case.defaults.tilskuddfartoy.saksansvarlig, value: GUNNOR1 }
-            #- { name: fint.case.defaults.tilskuddfartoy.saksbehandler, value: GUNNOR1 }
             - { name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.ordning, value: 'FE' }
             - { name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.verdi, value: '243' }
             - { name: fint.case.defaults.tilskuddfartoy.klassifikasjon.2.ordning, value: 'FA' }
@@ -52,8 +50,6 @@ spec:
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.dokumentstatus, value: F }
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.administrativEnhet, value: SUPREKM }
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.journalenhet, value: PM }
-            #- { name: fint.case.defaults.tilskuddfredabygningprivateie.saksansvarlig, value: GUNNOR1 }
-            #- { name: fint.case.defaults.tilskuddfredabygningprivateie.saksbehandler, value: GUNNOR1 }
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.ordning, value: 'FE' }
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.verdi, value: '243' }
             - { name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.2.ordning, value: 'FA' }
@@ -90,6 +86,5 @@ spec:
             - { name: fint.geointegrasjon.use-wss, value: 'true' }
             - { name: fint.geointegrasjon.fagsystem, value: 'FAGSYS' }
             - { name: fint.geointegrasjon.tilleggstype, value: 'TILLEGG' }
-            #- { name: fint.geointegrasjon.avskrivningsmate, value: 'AF' }
 
             - {name: logging.level.no.fint, value: info}

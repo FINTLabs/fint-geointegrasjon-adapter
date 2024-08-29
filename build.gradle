@@ -90,7 +90,8 @@ dependencies {
 
     compile('com.azure:azure-storage-blob:12.22.0')
     compile 'io.projectreactor:reactor-core:3.5.8'
-    
+
+    // 2.14.2 is the last version without the inbuilt 20 MB size limit
     compile('com.fasterxml.jackson.core:jackson-annotations:2.14.2')
     compile('com.fasterxml.jackson.core:jackson-core:2.14.2')
     compile('com.fasterxml.jackson.core:jackson-databind:2.14.2')
