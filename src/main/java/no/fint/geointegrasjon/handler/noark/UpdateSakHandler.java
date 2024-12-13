@@ -2,7 +2,7 @@ package no.fint.geointegrasjon.handler.noark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.arkiv.CaseProperties;
+import no.fint.arkiv.CaseDefaults;
 import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
 import no.fint.event.model.ResponseStatus;
@@ -35,6 +35,7 @@ public class UpdateSakHandler implements Handler {
     private final JournalpostService journalpostService;
     private final GeointegrasjonCaseDefaultsService caseDefaultsService;
     private final SakExporter sakExporter;
+    private CaseDefaults caseDefaults;
 
     public UpdateSakHandler(ObjectMapper objectMapper,
                             ValidationService validationService,
@@ -43,7 +44,8 @@ public class UpdateSakHandler implements Handler {
                             JournalpostCreator journalpostCreator,
                             JournalpostService journalpostService,
                             GeointegrasjonCaseDefaultsService caseDefaultsService,
-                            SakExporter sakExporter) {
+                            SakExporter sakExporter,
+                            CaseDefaults caseDefaults) {
         this.objectMapper = objectMapper;
         this.validationService = validationService;
         this.caseQueryService = caseQueryService;
@@ -52,6 +54,7 @@ public class UpdateSakHandler implements Handler {
         this.journalpostService = journalpostService;
         this.caseDefaultsService = caseDefaultsService;
         this.sakExporter = sakExporter;
+        this.caseDefaults = caseDefaults;
     }
 
     @Override
@@ -68,7 +71,7 @@ public class UpdateSakHandler implements Handler {
                 SakResource.class);
 
         if (operation == Operation.CREATE) {
-            caseDefaultsService.applyDefaultsForCreation(new CaseProperties(), sakResource);
+            caseDefaultsService.applyDefaultsForCreation(caseDefaults.getSak(), sakResource);
             log.debug("Case: {}", sakResource);
 
             if (!validationService.validate(response, sakResource)) {
@@ -76,7 +79,7 @@ public class UpdateSakHandler implements Handler {
             }
             createCase(response, sakResource);
         } else if (operation == Operation.UPDATE) {
-            caseDefaultsService.applyDefaultsForUpdate(new CaseProperties(), sakResource);
+            caseDefaultsService.applyDefaultsForUpdate(caseDefaults.getSak(), sakResource);
             if (!validationService.validate(response, sakResource.getJournalpost())) {
                 return;
             }
@@ -113,10 +116,11 @@ public class UpdateSakHandler implements Handler {
 
     private void createCase(Event<FintLinks> event, SakResource resource) {
 
-        final String caseId = journalpostCreator.createSaksmappe(geoIntegrasjonFactory.newSak(new CaseProperties(),
-                resource,
-                null,
-                sakExporter)).getSystemID();
+        final String caseId = journalpostCreator.createSaksmappe(geoIntegrasjonFactory
+                .newSak(caseDefaults.getSak(),
+                        resource,
+                        null,
+                        sakExporter)).getSystemID();
         resource.setSystemId(createIdentifikator(caseId));
         log.info("Case ID: {}", caseId);
 
