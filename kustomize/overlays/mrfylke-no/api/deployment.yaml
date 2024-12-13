@@ -34,7 +34,6 @@ spec:
 
             - {name: fint.case.defaults.sak.journalenhet, value: 'PM'}
             - {name: fint.case.defaults.sak.arkivdel, value: 'SAK'}
-            - {name: fint.case.defaults.sak.dokumentType, value: 'B'}
 
             - {name: fint.case.defaults.soknaddrosjeloyve.title.cases, value: 'Drosjeløyve - ${organisasjonsnavn} - ${organisasjonsnummer}'}
             - {name: fint.case.defaults.soknaddrosjeloyve.administrativEnhet, value: 'FRAMD'}
