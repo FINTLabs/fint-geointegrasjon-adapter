@@ -51,8 +51,11 @@ public class JournalpostMapper {
             log.info("Journalpost SystemID {} for sak {}",
                     journalpost.getSystemID(),
                     journalpost.getReferanseSakSystemID().getSystemID().getId());
+
             ifPresent(journalpost.getTittel(), resource::setTittel);
             ifPresent(journalpost.getOffentligTittel(), resource::setOffentligTittel);
+
+
 
             ifPresent(journalpost.getJournaldato(), resource::setJournalDato, FintUtils::fromXmlDate);
             ifPresent(journalpost.getDokumentetsDato(), resource::setDokumentetsDato, FintUtils::fromXmlDate);
