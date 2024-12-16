@@ -146,6 +146,7 @@ public class InnsynServiceFacade {
     }
 
     public SaksmappeListe finnSaksmapperGittOdataFilter(String query) {
+        log.debug("OData query {}", query);
         ODataFilterUtils oDataFilterUtils = new ODataFilterUtils();
 
         return finnSaksmapperGittTittel(query);
