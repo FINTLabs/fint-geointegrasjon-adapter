@@ -1,19 +1,28 @@
 package no.fint.geointegrasjon.service.geointegrasjon;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.geointegrasjon.utils.ODataFilterUtils;
 import no.geointegrasjon.arkiv.innsyn.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.util.Map;
 
 @Service
 @Slf4j
 public class InnsynServiceFacade {
     private final ArkivInnsynPort arkivInnsyn;
 
+    private final ImmutableMap<String, String> odataFIlterFieldMapper;
+
     public InnsynServiceFacade(ArkivInnsynPort arkivInnsyn) {
         this.arkivInnsyn = arkivInnsyn;
+        this.odataFIlterFieldMapper = new ImmutableMap.Builder<String, String>()
+                .put("klassifikasjon/primar/verdi", "klasse.klasseID")
+                .put("tittel", "tittel")
+                .put("saksdato", "saksmappe.saksdato")
+                .build();
     }
 
     public KodeListe hentKodeliste(String kodelistenavn) {
@@ -146,10 +155,39 @@ public class InnsynServiceFacade {
     }
 
     public SaksmappeListe finnSaksmapperGittOdataFilter(String query) {
-        log.debug("OData query {}", query);
+        log.debug("OData query: {}", query);
         ODataFilterUtils oDataFilterUtils = new ODataFilterUtils();
+        Map<String, String> odataFilterMap = oDataFilterUtils.parseQuery(query);
 
-        return finnSaksmapperGittTittel(query);
+        final ObjectFactory objectFactory = new ObjectFactory();
+
+        SoekskriterieListe sok = objectFactory.createSoekskriterieListe();
+
+        odataFilterMap.forEach((key, value) -> {
+            Soekskriterie soekskriterie = objectFactory.createSoekskriterie();
+            soekskriterie.setOperator(SoekeOperatorEnum.EQ);
+            Soekefelt soekefelt = objectFactory.createSoekefelt();
+            soekefelt.setFeltnavn(odataFIlterFieldMapper.get(key));
+            soekefelt.setFeltverdi(value);
+            soekskriterie.setKriterie(soekefelt);
+            sok.getListe().add(soekskriterie);
+        });
+
+        try {
+            return arkivInnsyn.finnSaksmapper(sok, false, false, false, false, null);
+        } catch (ApplicationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (ValidationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (SystemException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (FinderException e) {
+            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
+        } catch (ImplementationException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        } catch (OperationalException e) {
+            throw FaultHandler.handleFault(e.getFaultInfo());
+        }
     }
 
     public JournalpostListe finnJournalposterGittSaksnummer(String saksaar, String sakssekvensnummer) {

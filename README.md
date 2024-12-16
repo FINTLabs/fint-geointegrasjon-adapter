@@ -28,9 +28,7 @@ This adapter integrates with [GeoIntegrasjon Arkiv](https://geointegrasjon.no/ar
 | `fint.case.defaults.*`                  | Defaults for various case types                                            |                                                        |
 | `fint.case.format.*`                    | Formats for titles and custom fields for various case types                |                                                        |
 
-###
-
-Supported provider endpoints
+### Supported provider endpoints
 
 - `kodeverk`
 - `noark`
@@ -46,3 +44,32 @@ Supported provider endpoints
 ## Developer guide
 
 https://geointegrasjon.no/arkiv/veileder-arkiv/veileder-arkiv-for-leverandor-av-klientsystem/veileder-for-gi-arkiv-integrasjon/
+
+# OData filter support
+
+This adapter have support for OData filtering of cases. That means it's now possible to
+get cases based on a OData filter, not only `mappeid`, `systemid` and `soknadsnummer`.
+The old filter (query param `title`) is now deprecated, use `$filter=tittel eq 'Tittel'` instead!
+FYI: The title filter is by nature a contains so you don't need a complete title.
+
+We support `saksdato`, `tittel`, and primary `klassifikasjon`.
+
+### Examples
+- `$filter=saksdato eq '31-12-1999'`
+- `$filter=tittel eq 'Drosjeløyvesøknad'`
+- `$filter=klassifikasjon/primar/verdi eq '123456789'`
+
+PS! It's _not_ possible to filter on both primary and secondary classification in the same filtered query.
+
+# Shielded titles
+
+Parts of titles can be shielded. To shield content, use `@...@`. It is only possible to shield the last part of the title.
+
+## When content is marked with '@'...
+
+* title: `Kompetansemappe Ola Normann 01.01.1970`
+* publicTitle: `Kompetansemappe @Ola Normann 01.01.1970@`
+
+## Result
+
+Everything between ‘@’ will be shielded, publicTitle will be `Kompetansemappe`.

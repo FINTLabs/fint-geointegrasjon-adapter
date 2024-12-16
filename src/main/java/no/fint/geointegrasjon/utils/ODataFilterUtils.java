@@ -15,7 +15,8 @@ public class ODataFilterUtils {
 
     // Due to Java 8, in Java 9+ you would use List.of()
     private final List<String> supportedODataProperties = Collections.unmodifiableList(Arrays.asList("mappeid",
-            "saksaar", "sakssekvensnummer", "systemid", "tittel"));
+            "saksaar", "sakssekvensnummer", "systemid", "tittel",
+            "klassifikasjon/primar/verdi", "saksdato"));
 
     public Object methodName(String query) {
         Map<String, String> oDataFilter = parseQuery(query);
@@ -23,7 +24,7 @@ public class ODataFilterUtils {
         return "OData";
     }
 
-    private Map<String, String> parseQuery(String query) {
+    public Map<String, String> parseQuery(String query) {
         ODataLexer lexer = new ODataLexer(CharStreams.fromString(query));
         CommonTokenStream commonToken = new CommonTokenStream(lexer);
         ODataParser oDataParser = new ODataParser(commonToken);
