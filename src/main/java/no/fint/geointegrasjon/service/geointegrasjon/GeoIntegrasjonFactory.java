@@ -18,13 +18,11 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,12 +63,23 @@ public class GeoIntegrasjonFactory {
         Saksmappe saksmappe = objectFactory.createSaksmappe();
 
         saksmappe.setTittel(titleService.getCaseTitle(caseProperties.getTitle(), resource));
+
+        Optional.ofNullable(resource.getOffentligTittel()).ifPresent(title -> {
+            saksmappe.setOffentligTittel(title
+                    .replaceAll("@.*@", "")
+                    .trim());
+
+            boolean isTitleShielded = Pattern.compile("@(.*?)@").matcher(title).find();
+            if (isTitleShielded) {
+                saksmappe.setSkjermetTittel(true);
+            }
+        });
+
         addTilleggsinformasjon(saksmappe,
                 additionalFieldService.getFieldsForResource(caseProperties.getField(), resource)
                         .map(f -> newTilleggsinformasjon(tilleggstype,
                                 String.format("%s: %s", f.getName(), f.getValue())))
                         .toArray(Tilleggsinformasjon[]::new));
-        saksmappe.setOffentligTittel(resource.getOffentligTittel());
 
         setKodeverdiFromLink(resource.getAdministrativEnhet(), saksmappe::setAdministrativEnhetInit);
         setKodeverdiFromLink(resource.getSaksansvarlig(), saksmappe::setSaksansvarligInit);
@@ -142,8 +151,19 @@ public class GeoIntegrasjonFactory {
         journalpost.setForfallsdato(toXmlDate(resource.getForfallsDato()));
         journalpost.setJournaldato(toXmlDate(resource.getJournalDato()));
         journalpost.setJournalpostnummer(String.valueOf(resource.getJournalPostnummer()));
-        journalpost.setOffentligTittel(resource.getOffentligTittel());
+
         journalpost.setTittel(resource.getTittel());
+
+        Optional.ofNullable(resource.getOffentligTittel()).ifPresent(title -> {
+            journalpost.setOffentligTittel(title
+                    .replaceAll("@.*@", "")
+                    .trim());
+
+            boolean isTitleShielded = Pattern.compile("@(.*?)@").matcher(title).find();
+            if (isTitleShielded) {
+                journalpost.setSkjermetTittel(true);
+            }
+        });
 
         final KorrespondansepartListe korrespondansepartListe = objectFactory.createKorrespondansepartListe();
         ofNullable(resource.getKorrespondansepart())

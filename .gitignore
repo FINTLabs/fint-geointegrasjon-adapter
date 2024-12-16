@@ -20,3 +20,4 @@ trustStore
 cert
 internal-files/
 src/test/java/Scratch.java
+/.java-version
