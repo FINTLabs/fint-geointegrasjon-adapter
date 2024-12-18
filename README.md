@@ -28,9 +28,7 @@ This adapter integrates with [GeoIntegrasjon Arkiv](https://geointegrasjon.no/ar
 | `fint.case.defaults.*`                  | Defaults for various case types                                            |                                                        |
 | `fint.case.format.*`                    | Formats for titles and custom fields for various case types                |                                                        |
 
-###
-
-Supported provider endpoints
+### Supported provider endpoints
 
 - `kodeverk`
 - `noark`
@@ -46,3 +44,28 @@ Supported provider endpoints
 ## Developer guide
 
 https://geointegrasjon.no/arkiv/veileder-arkiv/veileder-arkiv-for-leverandor-av-klientsystem/veileder-for-gi-arkiv-integrasjon/
+
+# OData filter support
+
+This adapter have support for OData filtering of cases. That means it's now possible to
+get cases based on a OData filter, not only `mappeid`, `systemid` and `soknadsnummer`.
+
+We currently only support `saksdato` and primary `klassifikasjon`. More will come. Maybe.
+
+### Examples
+- `$filter=saksdato eq '1999-12-31'`
+- `$filter=klassifikasjon/primar/verdi eq '123456789'`
+
+# Shielded titles
+
+Parts of titles can be shielded. To shield content, use `@...@`. It is only possible to shield the last part of the title.
+
+### Examples
+
+* Title: `Opplæringsmappe Kari Nordmann 01.01.1970`
+* Public title: `Opplæringsmappe @Kari Nordmann 01.01.1970@`
+
+### Result
+
+Everything between the two `@` will be shielded, resulting in an `offentligTittel` in ACOS WebSak `Opplæringsmappe` and
+the field `skjermetTittel` set to `true`.
