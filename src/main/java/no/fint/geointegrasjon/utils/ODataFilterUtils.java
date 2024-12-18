@@ -15,7 +15,7 @@ public class ODataFilterUtils {
 
     // Due to Java 8, in Java 9+ you would use List.of()
     private final List<String> supportedODataProperties = Collections.unmodifiableList(Arrays.asList("mappeid",
-            "saksaar", "sakssekvensnummer", "systemid", "tittel",
+            "saksaar", "sakssekvensnummer", "systemid",
             "klassifikasjon/primar/verdi", "saksdato"));
 
     public Object methodName(String query) {

@@ -47,7 +47,6 @@ class InnsynServiceFacadeODataFilterSpec extends Specification {
 
         where:
         odataFilter                                  || websakFilterFeltnnavn || websakFilterFeltverdi
-        "tittel eq 'Opplæringsmappe Ola Nordmann'"   || "tittel"              || "Opplæringsmappe Ola Nordmann"
         "klassifikasjon/primar/verdi eq '123456789'" || "klasse.klasseID"     || "123456789"
         "saksdato eq '31-12-1999'"                   || "saksdato"            || "31-12-1999"
     }

@@ -49,14 +49,11 @@ https://geointegrasjon.no/arkiv/veileder-arkiv/veileder-arkiv-for-leverandor-av-
 
 This adapter have support for OData filtering of cases. That means it's now possible to
 get cases based on a OData filter, not only `mappeid`, `systemid` and `soknadsnummer`.
-The old filter (query param `title`) is now deprecated, use `$filter=tittel eq 'Tittel'` instead!
-FYI: The title filter is by nature a contains so you don't need a complete title.
 
-We currently support `saksdato`, `tittel` and primary `klassifikasjon`. More will come. Soon.
+We currently only support `saksdato` and primary `klassifikasjon`. More will come. Maybe.
 
 ### Examples
-- `$filter=saksdato eq '31-12-1999'`
-- `$filter=tittel eq 'Drosjeløyvesøknad'`
+- `$filter=saksdato eq '1999-12-31'`
 - `$filter=klassifikasjon/primar/verdi eq '123456789'`
 
 # Shielded titles
