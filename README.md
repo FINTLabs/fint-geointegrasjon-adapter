@@ -52,24 +52,23 @@ get cases based on a OData filter, not only `mappeid`, `systemid` and `soknadsnu
 The old filter (query param `title`) is now deprecated, use `$filter=tittel eq 'Tittel'` instead!
 FYI: The title filter is by nature a contains so you don't need a complete title.
 
-We support `saksdato`, `tittel`, and primary `klassifikasjon`.
+We currently support `saksdato`, `tittel` and primary `klassifikasjon`. More will come. Soon.
 
 ### Examples
 - `$filter=saksdato eq '31-12-1999'`
 - `$filter=tittel eq 'Drosjeløyvesøknad'`
 - `$filter=klassifikasjon/primar/verdi eq '123456789'`
 
-PS! It's _not_ possible to filter on both primary and secondary classification in the same filtered query.
-
 # Shielded titles
 
 Parts of titles can be shielded. To shield content, use `@...@`. It is only possible to shield the last part of the title.
 
-## When content is marked with '@'...
+### Examples
 
-* title: `Kompetansemappe Ola Normann 01.01.1970`
-* publicTitle: `Kompetansemappe @Ola Normann 01.01.1970@`
+* Title: `Opplæringsmappe Kari Nordmann 01.01.1970`
+* Public title: `Opplæringsmappe @Kari Nordmann 01.01.1970@`
 
-## Result
+### Result
 
-Everything between ‘@’ will be shielded, publicTitle will be `Kompetansemappe`.
+Everything between the two `@` will be shielded, resulting in an `offentligTittel` in ACOS WebSak `Opplæringsmappe` and
+the field `skjermetTittel` set to `true`.
