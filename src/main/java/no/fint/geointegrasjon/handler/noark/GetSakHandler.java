@@ -51,7 +51,11 @@ public class GetSakHandler implements Handler {
         response.setData(new LinkedList<>());
         caseQueryService.query(query)
                 .map(saksmappeMapper.toFintResource(new CaseProperties(), SakResource::new, sakImporter))
-                .peek(journalpostService::addJournalpost)
+                .peek(sak -> {
+                    if (!query.contains("$filter")) {
+                        journalpostService.addJournalpost(sak);
+                    }
+                })
                 .forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
