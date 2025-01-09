@@ -12,8 +12,6 @@ buildscript {
 
 plugins {
     id 'com.github.ben-manes.versions' version '0.27.0'
-    id "no.nils.wsdl2java" version "0.10"
-
 }
 
 apply plugin: 'java'
@@ -42,10 +40,6 @@ ext['groovy.version'] = '2.5.0'
 
 dependencies {
     compile 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1'
-
-    // enable extension support for wsdl2java
-    wsdl2java 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1'
-    wsdl2java 'org.jvnet.jaxb2_commons:jaxb2-basics:1.11.1'
 
     // Version 3.5.6 is the latest we got to run with Java 8
     compile('org.apache.cxf:cxf-rt-frontend-jaxws:3.5.6')
@@ -149,21 +143,6 @@ afterEvaluate {
             filter(ReplaceTokens, tokens: [version: jar.version, title: jar.baseName])
         }
     }
-}
-
-wsdl2java {
-    generatedWsdlDir(file('generated-sources'))
-    wsdlDir(file("$projectDir/src/main/resources/"))
-    locale = Locale.ENGLISH
-    wsdlsToGenerate = [
-            ['-xjc-XtoString', '-client', '-p', 'no.geointegrasjon.arkiv.innsyn', "http://rep.geointegrasjon.no/Arkiv/Innsyn/xml.wsdl/2012.01.31/giArkivInnsyn20120131.wsdl"],
-            ['-xjc-XtoString', '-client', '-p', 'no.geointegrasjon.arkiv.oppdatering', "http://rep.geointegrasjon.no/Arkiv/Oppdatering/xml.wsdl/2012.01.31/giArkivOppdatering20120131.wsdl"],
-    ]
-}
-
-wsdl2javaExt {
-    cxfVersion = '3.5.5'
-    deleteGeneratedSourcesOnClean = true
 }
 
 bootRepackage.enabled = false
