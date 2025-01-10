@@ -87,7 +87,7 @@ dependencies {
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 
     compile('com.azure:azure-storage-blob:12.29.0')
-    compile 'io.projectreactor:reactor-core:3.5.8'
+    compile 'io.projectreactor:reactor-core:3.7.1'
 
     // 2.14.2 is the last version without the inbuilt 20 MB size limit
     compile('com.fasterxml.jackson.core:jackson-annotations:2.14.2')
