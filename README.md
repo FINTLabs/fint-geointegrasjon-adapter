@@ -52,6 +52,8 @@ get cases based on a OData filter, not only `mappeid`, `systemid` and `soknadsnu
 
 We currently only support `saksdato` and primary `klassifikasjon`. More will come. Maybe.
 
+NB! Be aware of that journalposts are NOT included and returned with the cases when using this OData filter feature.
+
 ### Examples
 - `$filter=saksdato eq '1999-12-31'`
 - `$filter=klassifikasjon/primar/verdi eq '123456789'`
