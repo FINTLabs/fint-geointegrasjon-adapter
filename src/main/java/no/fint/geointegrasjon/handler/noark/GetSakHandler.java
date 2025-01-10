@@ -1,5 +1,6 @@
 package no.fint.geointegrasjon.handler.noark;
 
+import lombok.extern.slf4j.Slf4j;
 import no.fint.arkiv.CaseProperties;
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
@@ -18,6 +19,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class GetSakHandler implements Handler {
 
     private final CaseQueryService caseQueryService;
@@ -38,6 +40,8 @@ public class GetSakHandler implements Handler {
     @Override
     public void accept(Event<FintLinks> response) {
         String query = response.getQuery();
+        log.debug("Currently dealing with this query: {}", query);
+
         if (!caseQueryService.isValidQuery(query)) {
             response.setResponseStatus(ResponseStatus.REJECTED);
             response.setStatusCode("BAD_REQUEST");
@@ -47,7 +51,11 @@ public class GetSakHandler implements Handler {
         response.setData(new LinkedList<>());
         caseQueryService.query(query)
                 .map(saksmappeMapper.toFintResource(new CaseProperties(), SakResource::new, sakImporter))
-                .peek(journalpostService::addJournalpost)
+                .peek(sak -> {
+                    if (!query.contains("$filter")) {
+                        journalpostService.addJournalpost(sak);
+                    }
+                })
                 .forEach(response::addData);
         response.setResponseStatus(ResponseStatus.ACCEPTED);
     }
