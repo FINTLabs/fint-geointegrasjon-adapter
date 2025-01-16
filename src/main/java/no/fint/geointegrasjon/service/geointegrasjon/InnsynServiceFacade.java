@@ -8,17 +8,18 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
 public class InnsynServiceFacade {
     private final ArkivInnsynPort arkivInnsyn;
 
-    private final ImmutableMap<String, String> odataFIlterFieldMapper;
+    private final ImmutableMap<String, String> odataFilterFieldMapper;
 
     public InnsynServiceFacade(ArkivInnsynPort arkivInnsyn) {
         this.arkivInnsyn = arkivInnsyn;
-        this.odataFIlterFieldMapper = new ImmutableMap.Builder<String, String>()
+        this.odataFilterFieldMapper = new ImmutableMap.Builder<String, String>()
                 .put("klassifikasjon/primar/verdi", "klasse.klasseID")
                 .put("saksdato", "saksmappe.saksdato")
                 .build();
@@ -166,7 +167,7 @@ public class InnsynServiceFacade {
             Soekskriterie soekskriterie = objectFactory.createSoekskriterie();
             soekskriterie.setOperator(SoekeOperatorEnum.EQ);
             Soekefelt soekefelt = objectFactory.createSoekefelt();
-            soekefelt.setFeltnavn(odataFIlterFieldMapper.get(key));
+            soekefelt.setFeltnavn(odataFilterFieldMapper.get(key));
             soekefelt.setFeltverdi(value);
             soekskriterie.setKriterie(soekefelt);
             sok.getListe().add(soekskriterie);
@@ -207,26 +208,43 @@ public class InnsynServiceFacade {
     }
 
     private JournalpostListe finnJournalposterGittSaksmappeNoekkel(Saksnoekkel nokkel) {
-        try {
-            Boolean returnerMerknad = true;
-            Boolean returnerTilleggsinformasjon = true;
-            Boolean returnerKorrespondansepart = true;
-            Boolean returnerAvskrivning = true;
-            ArkivKontekst kontekst = null;
-            return arkivInnsyn.finnJournalposterGittSaksmappeNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon, returnerKorrespondansepart, returnerAvskrivning, kontekst);
-        } catch (ApplicationException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
-        } catch (ValidationException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
-        } catch (SystemException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
-        } catch (FinderException e) {
-            throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
-        } catch (ImplementationException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
-        } catch (OperationalException e) {
-            throw FaultHandler.handleFault(e.getFaultInfo());
+        int count = 0;
+        final int maxRetries = 2;
+        Boolean returnerKorrespondansepart = true;
+
+        while (count < maxRetries) {
+
+            try {
+                Boolean returnerMerknad = true;
+                Boolean returnerTilleggsinformasjon = true;
+
+                Boolean returnerAvskrivning = true;
+                ArkivKontekst kontekst = null;
+
+                return arkivInnsyn.finnJournalposterGittSaksmappeNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon,
+                        returnerKorrespondansepart, returnerAvskrivning, kontekst);
+            } catch (ApplicationException e) {
+                throw FaultHandler.handleFault(e.getFaultInfo());
+            } catch (ValidationException e) {
+                throw FaultHandler.handleFault(e.getFaultInfo());
+            } catch (SystemException e) {
+                throw FaultHandler.handleFault(e.getFaultInfo());
+            } catch (FinderException e) {
+                //throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
+                log.debug("Don't give up 🎶");
+                if (++count >= maxRetries) {
+                    log.debug("Give it a new try without korrespondansepart.");
+                    returnerKorrespondansepart = false;
+                }
+            } catch (ImplementationException e) {
+                throw FaultHandler.handleFault(e.getFaultInfo());
+            } catch (OperationalException e) {
+                throw FaultHandler.handleFault(e.getFaultInfo());
+            }
+
         }
+
+        return null;
     }
 
     public JournalpostListe finnJournalposterGittSystemID(String id) {
