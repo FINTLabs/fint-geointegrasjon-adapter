@@ -209,7 +209,7 @@ public class InnsynServiceFacade {
 
     private JournalpostListe finnJournalposterGittSaksmappeNoekkel(Saksnoekkel nokkel) {
         int count = 0;
-        final int maxRetries = 5;
+        final int maxRetries = 3;
         Boolean returnerKorrespondansepart = true;
 
         while (count < maxRetries) {
@@ -226,9 +226,8 @@ public class InnsynServiceFacade {
                     returnerKorrespondansepart = false;
                 }*/
 
-                log.debug("About to return a arkivInnsyn.finnJournalposterGittSaksmappeNoekkel with korrespondansepart set to {}. Count is {}",
+                log.debug("About to return a arkivInnsyn.finnJournalposterGittSaksmappeNoekkel with returnerKorrespondansepart set to {}. Count is now {}",
                         returnerKorrespondansepart, count);
-
 
                 return arkivInnsyn.finnJournalposterGittSaksmappeNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon,
                         returnerKorrespondansepart, returnerAvskrivning, kontekst);
@@ -240,12 +239,14 @@ public class InnsynServiceFacade {
                 throw FaultHandler.handleFault(e.getFaultInfo());
             } catch (FinderException e) {
                 log.debug("Don't give up 🎶");
-                if (++count >= maxRetries) {
-                    log.debug("Give it a new try without korrespondansepart. -> {}, {}", ++count, maxRetries);
+
+                if (count < maxRetries) {
+                    log.debug("Give it a new try without korrespondansepart. -> {}/{}", count, maxRetries);
                     returnerKorrespondansepart = false;
-                } /*else {
+                    count++;
+                } else {
                     throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
-                }*/
+                }
             } catch (ImplementationException e) {
                 throw FaultHandler.handleFault(e.getFaultInfo());
             } catch (OperationalException e) {
