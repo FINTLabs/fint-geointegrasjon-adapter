@@ -230,7 +230,7 @@ public class InnsynServiceFacade {
                 throw FaultHandler.handleFault(e.getFaultInfo());
             } catch (FinderException e) {
                 if (count < maxRetries) {
-                    log.info("Don't give up 🎶. We'll give it a new try ({} of max {}) without korrespondansepart.", count, maxRetries);
+                    log.info("Don't give up 🎶 (we'll give it a new try without korrespondansepart 🤞).");
                     returnerKorrespondansepart = false;
                     count++;
                 } else {
