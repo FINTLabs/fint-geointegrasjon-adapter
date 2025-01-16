@@ -210,9 +210,9 @@ public class InnsynServiceFacade {
     private JournalpostListe finnJournalposterGittSaksmappeNoekkel(Saksnoekkel nokkel) {
         int count = 0;
         final int maxRetries = 2;
-        Boolean returnerKorrespondansepart = true;
 
         while (count < maxRetries) {
+            Boolean returnerKorrespondansepart = true;
 
             try {
                 Boolean returnerMerknad = true;
@@ -236,7 +236,7 @@ public class InnsynServiceFacade {
                 //throw new NotFoundException(FaultHandler.handleFault(e.getFaultInfo()));
                 log.debug("Don't give up 🎶");
                 if (++count >= maxRetries) {
-                    log.debug("Give it a new try without korrespondansepart.");
+                    log.debug("Give it a new try without korrespondansepart. -> {}, {}", ++count, maxRetries);
                     returnerKorrespondansepart = false;
                 }
             } catch (ImplementationException e) {
@@ -244,7 +244,6 @@ public class InnsynServiceFacade {
             } catch (OperationalException e) {
                 throw FaultHandler.handleFault(e.getFaultInfo());
             }
-
         }
 
         return null;
