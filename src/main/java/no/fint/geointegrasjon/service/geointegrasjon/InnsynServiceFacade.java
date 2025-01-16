@@ -217,17 +217,8 @@ public class InnsynServiceFacade {
             try {
                 Boolean returnerMerknad = true;
                 Boolean returnerTilleggsinformasjon = true;
-
                 Boolean returnerAvskrivning = true;
                 ArkivKontekst kontekst = null;
-
-                /*
-                if (count > 0) {
-                    returnerKorrespondansepart = false;
-                }*/
-
-                log.debug("About to return a arkivInnsyn.finnJournalposterGittSaksmappeNoekkel with returnerKorrespondansepart set to {}. Count is now {}",
-                        returnerKorrespondansepart, count);
 
                 return arkivInnsyn.finnJournalposterGittSaksmappeNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon,
                         returnerKorrespondansepart, returnerAvskrivning, kontekst);
@@ -238,10 +229,8 @@ public class InnsynServiceFacade {
             } catch (SystemException e) {
                 throw FaultHandler.handleFault(e.getFaultInfo());
             } catch (FinderException e) {
-                log.debug("Don't give up 🎶");
-
                 if (count < maxRetries) {
-                    log.debug("Give it a new try without korrespondansepart. -> {}/{}", count, maxRetries);
+                    log.info("Don't give up 🎶. We'll give it a new try ({} of max {}) without korrespondansepart.", count, maxRetries);
                     returnerKorrespondansepart = false;
                     count++;
                 } else {
