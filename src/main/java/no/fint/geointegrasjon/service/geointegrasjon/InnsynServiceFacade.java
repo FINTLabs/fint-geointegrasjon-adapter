@@ -209,10 +209,10 @@ public class InnsynServiceFacade {
 
     private JournalpostListe finnJournalposterGittSaksmappeNoekkel(Saksnoekkel nokkel) {
         int count = 0;
-        final int maxRetries = 2;
+        final int maxRetries = 5;
+        Boolean returnerKorrespondansepart = true;
 
         while (count < maxRetries) {
-            Boolean returnerKorrespondansepart = true;
 
             try {
                 Boolean returnerMerknad = true;
