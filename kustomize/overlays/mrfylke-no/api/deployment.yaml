@@ -27,7 +27,7 @@ spec:
             - {name: fint.adapter.endpoints.providers.noark, value: https://api.felleskomponent.no/arkiv/noark/provider}
             - {name: fint.adapter.endpoints.providers.samferdsel, value: https://api.felleskomponent.no/arkiv/samferdsel/provider}
             - {name: fint.adapter.endpoints.providers.kulturminne, value: https://api.felleskomponent.no/arkiv/kulturminnevern/provider}
-            - {name: fint.geointegrasjon.tracing, value: 'false' }
+            - {name: fint.geointegrasjon.tracing, value: 'true' }
             - {name: fint.geointegrasjon.use-wss, value: 'true' }
             - {name: fint.geointegrasjon.fagsystem, value: 'FAGSYS'} # FAGSYS
             - {name: fint.geointegrasjon.tilleggstype, value: ''} # TILLEGG
@@ -101,4 +101,4 @@ spec:
             - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.title.records, value: '#{tittel}'}
             - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksmappeType, value: 'KUA'}
 
-            - {name: logging.level.no.fint, value: info}
+            - {name: logging.level.no.fint, value: debug}
