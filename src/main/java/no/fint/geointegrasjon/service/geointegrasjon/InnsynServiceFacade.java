@@ -221,6 +221,9 @@ public class InnsynServiceFacade {
                 Boolean returnerAvskrivning = true;
                 ArkivKontekst kontekst = null;
 
+                log.debug("About to return a arkivInnsyn.finnJournalposterGittSaksmappeNoekkel with korrespondansepart set to {}. Count is {}",
+                        returnerKorrespondansepart, count);
+
                 return arkivInnsyn.finnJournalposterGittSaksmappeNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon,
                         returnerKorrespondansepart, returnerAvskrivning, kontekst);
             } catch (ApplicationException e) {
