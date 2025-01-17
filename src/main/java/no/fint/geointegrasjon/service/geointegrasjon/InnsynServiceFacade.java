@@ -229,6 +229,7 @@ public class InnsynServiceFacade {
             } catch (SystemException e) {
                 throw FaultHandler.handleFault(e.getFaultInfo());
             } catch (FinderException e) {
+                log.warn("FYI, we caught an FinderException right now (but we'll continue): {}", e.getFaultInfo());
                 log.info("Don't give up 🎶 (we'll give it a new try without korrespondansepart 🤞).");
                 returnerKorrespondansepart = false;
                 count++;
