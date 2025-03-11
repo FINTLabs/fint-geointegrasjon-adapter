@@ -55,8 +55,6 @@ public class JournalpostMapper {
             ifPresent(journalpost.getTittel(), resource::setTittel);
             ifPresent(journalpost.getOffentligTittel(), resource::setOffentligTittel);
 
-
-
             ifPresent(journalpost.getJournaldato(), resource::setJournalDato, FintUtils::fromXmlDate);
             ifPresent(journalpost.getDokumentetsDato(), resource::setDokumentetsDato, FintUtils::fromXmlDate);
             ifPresent(journalpost.getForfallsdato(), resource::setForfallsDato, FintUtils::fromXmlDate);
@@ -97,6 +95,10 @@ public class JournalpostMapper {
 
             resource.setDokumentbeskrivelse(new LinkedList<>());
             try {
+                log.debug("The 💩 will soon hit the 🪭. JournalpostSystemID: {}", journalpost.getSystemID());
+                log.debug("finnDokumenterGittJournalSystemID (DokumentListe): {}",
+                        innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID()));
+
                 innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID())
                         .getListe()
                         .stream()
