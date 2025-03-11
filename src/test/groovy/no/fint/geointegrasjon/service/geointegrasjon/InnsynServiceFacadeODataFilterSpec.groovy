@@ -1,5 +1,6 @@
 package no.fint.geointegrasjon.service.geointegrasjon
 
+import no.fint.geointegrasjon.exception.IllegalOdataFilter
 import no.geointegrasjon.arkiv.innsyn.ArkivInnsynPort
 import no.geointegrasjon.arkiv.innsyn.SaksmappeListe
 import no.geointegrasjon.arkiv.innsyn.SoekskriterieListe
@@ -49,5 +50,21 @@ class InnsynServiceFacadeODataFilterSpec extends Specification {
         odataFilter                                  || websakFilterFeltnnavn || websakFilterFeltverdi
         "klassifikasjon/primar/verdi eq '123456789'" || "klasse.klasseID"     || "123456789"
         "saksdato eq '31-12-1999'"                   || "saksdato"            || "31-12-1999"
+    }
+
+    def "odata filter not supported test"() {
+        given:
+        def capturedValue = null
+        def facade = new InnsynServiceFacade(arkivInnsyn)
+
+        arkivInnsyn.finnSaksmapper(_, _, _, _, _, _) >> { SoekskriterieListe sok, _1, _2, _3, _4, _5 ->
+            capturedValue = sok
+            return new SaksmappeListe()
+        }
+        when:
+        facade.finnSaksmapperGittOdataFilter("mappeid eq '1970/1337'")
+
+        then:
+        thrown(IllegalOdataFilter)
     }
 }
