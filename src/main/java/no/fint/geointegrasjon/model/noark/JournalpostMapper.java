@@ -92,18 +92,16 @@ public class JournalpostMapper {
 
             resource.setDokumentbeskrivelse(new LinkedList<>());
             try {
-                if (innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID()) != null) {
-                    innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID())
-                            .getListe()
-                            .stream()
-                            .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
-                            .forEach(resource.getDokumentbeskrivelse()::add);
-                } else {
-                    log.info("There are unfortunately null documents in this journalpost ({}). Normally would 💩 hit the 🪭 now 😎, but you're saved by Arkivlandslaget 💪",
-                            journalpost.getSystemID());
-                }
+                log.info("💩 can very sooon hit the 🪭, journalpostSystemID: {}",
+                        journalpost.getSystemID());
+
+                innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID())
+                        .getListe()
+                        .stream()
+                        .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
+                        .forEach(resource.getDokumentbeskrivelse()::add);
             } catch (ClientException e) {
-                log.debug("No documents found for {}", journalpost.getSystemID());
+                log.warn("No documents found for {}", journalpost.getSystemID());
             }
 
             ofNullable(journalpost.getMerknader()).map(MerknadListe::getListe)
