@@ -92,16 +92,15 @@ public class JournalpostMapper {
 
             resource.setDokumentbeskrivelse(new LinkedList<>());
             try {
-                log.info("💩 can very sooon hit the 🪭, journalpostSystemID: {}",
-                        journalpost.getSystemID());
-
-                innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID())
-                        .getListe()
-                        .stream()
-                        .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
-                        .forEach(resource.getDokumentbeskrivelse()::add);
-            } catch (ClientException e) {
-                log.warn("No documents found for {}", journalpost.getSystemID());
+                if (Long.parseLong(journalpost.getAntallVedlegg()) > 0) {
+                    innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID())
+                            .getListe()
+                            .stream()
+                            .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
+                            .forEach(resource.getDokumentbeskrivelse()::add);
+                }
+            } catch (ClientException | NumberFormatException e) {
+                log.warn("Error getting documents for journalpost with id {}", journalpost.getSystemID());
             }
 
             ofNullable(journalpost.getMerknader()).map(MerknadListe::getListe)
