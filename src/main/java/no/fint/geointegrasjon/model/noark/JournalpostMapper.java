@@ -59,8 +59,6 @@ public class JournalpostMapper {
             ifPresent(journalpost.getDokumentetsDato(), resource::setDokumentetsDato, FintUtils::fromXmlDate);
             ifPresent(journalpost.getForfallsdato(), resource::setForfallsDato, FintUtils::fromXmlDate);
 
-            ifPresent(journalpost.getAntallVedlegg(), resource::setAntallVedlegg, Long::valueOf);
-
             ifPresent(journalpost.getJournalnummer(), resource::setJournalAr, j -> j.getJournalaar().toString());
             ifPresent(journalpost.getJournalnummer(),
                     resource::setJournalSekvensnummer,
@@ -92,18 +90,18 @@ public class JournalpostMapper {
                     resource::addJournalstatus,
                     Link.apply(JournalStatus.class, "systemid").compose(Kode::getKodeverdi));
 
-
             resource.setDokumentbeskrivelse(new LinkedList<>());
             try {
-                log.debug("The 💩 will soon hit the 🪭. JournalpostSystemID: {}", journalpost.getSystemID());
-                log.debug("finnDokumenterGittJournalSystemID (DokumentListe): {}",
-                        innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID()));
-
-                innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID())
-                        .getListe()
-                        .stream()
-                        .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
-                        .forEach(resource.getDokumentbeskrivelse()::add);
+                if (innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID()) != null) {
+                    innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID())
+                            .getListe()
+                            .stream()
+                            .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
+                            .forEach(resource.getDokumentbeskrivelse()::add);
+                } else {
+                    log.info("There are unfortunately null documents in this journalpost ({}). Normally would 💩 hit the 🪭 now 😎, but you're saved by Arkivlandslaget 💪",
+                            journalpost.getSystemID());
+                }
             } catch (ClientException e) {
                 log.debug("No documents found for {}", journalpost.getSystemID());
             }
