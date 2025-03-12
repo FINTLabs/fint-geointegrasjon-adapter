@@ -2,6 +2,7 @@ package no.fint.geointegrasjon.service.fint;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.geointegrasjon.exception.IllegalOdataFilter;
 import no.fint.geointegrasjon.service.geointegrasjon.InnsynServiceFacade;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import org.apache.commons.lang3.StringUtils;
@@ -66,7 +67,7 @@ public class CaseQueryService {
         return noekkel -> innsynServiceFacade.finnSaksmapperGittEksternNokkel(fagsystem, noekkel).getListe().stream();
     }
 
-    public Stream<Saksmappe> finnSaksmapperGittODataFilter(String query) {
+    public Stream<Saksmappe> finnSaksmapperGittODataFilter(String query) throws IllegalOdataFilter {
         log.debug("The Odata filtered case query, proudly present to you by Paperboiz: {}", query);
 
         return innsynServiceFacade.finnSaksmapperGittOdataFilter(query).getListe().stream();

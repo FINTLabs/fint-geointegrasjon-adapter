@@ -101,4 +101,4 @@ spec:
             - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.title.records, value: '#{tittel}'}
             - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksmappeType, value: 'KUA'}
 
-            - {name: logging.level.no.fint, value: debug}
+            - {name: logging.level.no.fint, value: info}

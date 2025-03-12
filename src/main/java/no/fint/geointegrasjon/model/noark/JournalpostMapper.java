@@ -48,20 +48,16 @@ public class JournalpostMapper {
     public Function<Journalpost, JournalpostResource> toFintResource(Supplier<JournalpostResource> supplier) {
         return journalpost -> {
             JournalpostResource resource = supplier.get();
-            log.info("Journalpost SystemID {} for sak {}",
+            log.debug("Journalpost SystemID {} for sak {}",
                     journalpost.getSystemID(),
                     journalpost.getReferanseSakSystemID().getSystemID().getId());
 
             ifPresent(journalpost.getTittel(), resource::setTittel);
             ifPresent(journalpost.getOffentligTittel(), resource::setOffentligTittel);
 
-
-
             ifPresent(journalpost.getJournaldato(), resource::setJournalDato, FintUtils::fromXmlDate);
             ifPresent(journalpost.getDokumentetsDato(), resource::setDokumentetsDato, FintUtils::fromXmlDate);
             ifPresent(journalpost.getForfallsdato(), resource::setForfallsDato, FintUtils::fromXmlDate);
-
-            ifPresent(journalpost.getAntallVedlegg(), resource::setAntallVedlegg, Long::valueOf);
 
             ifPresent(journalpost.getJournalnummer(), resource::setJournalAr, j -> j.getJournalaar().toString());
             ifPresent(journalpost.getJournalnummer(),
@@ -94,16 +90,17 @@ public class JournalpostMapper {
                     resource::addJournalstatus,
                     Link.apply(JournalStatus.class, "systemid").compose(Kode::getKodeverdi));
 
-
             resource.setDokumentbeskrivelse(new LinkedList<>());
             try {
-                innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID())
-                        .getListe()
-                        .stream()
-                        .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
-                        .forEach(resource.getDokumentbeskrivelse()::add);
-            } catch (ClientException e) {
-                log.debug("No documents found for {}", journalpost.getSystemID());
+                if (Long.parseLong(journalpost.getAntallVedlegg()) > 0) {
+                    innsynServiceFacade.finnDokumenterGittJournalSystemID(journalpost.getSystemID())
+                            .getListe()
+                            .stream()
+                            .map(dokumentbeskrivelseMapper.toFintResource(DokumentbeskrivelseResource::new))
+                            .forEach(resource.getDokumentbeskrivelse()::add);
+                }
+            } catch (ClientException | NumberFormatException e) {
+                log.warn("Error getting documents for journalpost with id {}", journalpost.getSystemID());
             }
 
             ofNullable(journalpost.getMerknader()).map(MerknadListe::getListe)

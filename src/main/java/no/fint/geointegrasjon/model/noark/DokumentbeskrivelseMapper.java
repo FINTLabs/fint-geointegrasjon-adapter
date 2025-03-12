@@ -25,8 +25,8 @@ public class DokumentbeskrivelseMapper {
     public Function<Dokument, DokumentbeskrivelseResource> toFintResource(Supplier<DokumentbeskrivelseResource> supplier) {
         return dokument -> {
             DokumentbeskrivelseResource resource = supplier.get();
-            log.info("Dokument {} for journalpost {}", dokument.getSystemID(), dokument.getReferanseJournalpostSystemID());
-            log.debug("Dokument: {}", dokument);
+            log.debug("Dokument {} for journalpost {}", dokument.getSystemID(), dokument.getReferanseJournalpostSystemID());
+            log.trace("Dokument: {}", dokument);
             ifPresent(dokument.getTittel(), resource::setTittel);
             ifPresent(dokument.getDokumentnummer(), resource::setDokumentnummer, Long::valueOf);
 

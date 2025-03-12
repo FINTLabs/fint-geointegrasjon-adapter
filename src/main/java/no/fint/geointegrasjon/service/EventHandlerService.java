@@ -11,6 +11,7 @@ import no.fint.event.model.Status;
 import no.fint.event.model.health.Health;
 import no.fint.event.model.health.HealthStatus;
 import no.fint.geointegrasjon.SupportedActions;
+import no.fint.geointegrasjon.exception.IllegalOdataFilter;
 import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.service.geointegrasjon.ClientException;
 import no.fint.geointegrasjon.service.geointegrasjon.NotFoundException;
@@ -96,6 +97,9 @@ public class EventHandlerService {
                 p.setMessage(s);
                 return p;
             }).collect(Collectors.toList()));
+        } catch (IllegalOdataFilter e) {
+            response.setResponseStatus(ResponseStatus.ERROR);
+            response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setResponseStatus(ResponseStatus.ERROR);
             response.setMessage(ExceptionUtils.getStackTrace(e));

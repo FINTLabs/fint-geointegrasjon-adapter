@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 public class ODataFilterUtils {
 
     // Due to Java 8, in Java 9+ you would use List.of()
-    private final List<String> supportedODataProperties = Collections.unmodifiableList(Arrays.asList("mappeid",
-            "saksaar", "sakssekvensnummer", "systemid",
+    private final List<String> supportedODataProperties = Collections.unmodifiableList(Arrays.asList(
             "klassifikasjon/primar/verdi", "saksdato"));
 
     public Object methodName(String query) {
