@@ -48,7 +48,7 @@ public class JournalpostMapper {
     public Function<Journalpost, JournalpostResource> toFintResource(Supplier<JournalpostResource> supplier) {
         return journalpost -> {
             JournalpostResource resource = supplier.get();
-            log.info("Journalpost SystemID {} for sak {}",
+            log.debug("Journalpost SystemID {} for sak {}",
                     journalpost.getSystemID(),
                     journalpost.getReferanseSakSystemID().getSystemID().getId());
 
