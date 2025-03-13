@@ -1,5 +1,6 @@
 package no.fint;
 
+import com.fasterxml.jackson.core.StreamReadConstraints;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import no.fint.oauth.OAuthTokenProps;
@@ -16,8 +17,16 @@ import java.util.concurrent.Executors;
 
 @Configuration
 public class Config {
+
+    static {
+        StreamReadConstraints
+                .overrideDefaultStreamReadConstraints(StreamReadConstraints.builder()
+                        .maxStringLength(Integer.MAX_VALUE).build());
+    }
+
     @ConditionalOnProperty(name = OAuthTokenProps.ENABLE_OAUTH,
             matchIfMissing = true, havingValue = "false")
+
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
@@ -27,6 +36,7 @@ public class Config {
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new ISO8601DateFormat());
+
         return objectMapper;
     }
 
@@ -35,5 +45,4 @@ public class Config {
     public Executor responseHander(@Value("${fint.adapter.response.workers:1}") int workers) {
         return Executors.newFixedThreadPool(workers);
     }
-
 }
