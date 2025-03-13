@@ -7,9 +7,13 @@ resources:
   - ../../../base
   - onepassword.yaml
 
-#commonLabels:
-#  app.kubernetes.io/instance: adapter-sikri-arkiv_fridiks-no
-#  fintlabs.no/org-id: fridiks.no
+commonLabels:
+  app.kubernetes.io/name: fint-geointegrasjon-adapter
+  app.kubernetes.io/component: adapter
+  app.kubernetes.io/part-of: fint-arkiv
+  fintlabs.no/org-id: bym-oslo-kommune-no
+  fintlabs.no/team: arkiv
+
 
 patches:
   
