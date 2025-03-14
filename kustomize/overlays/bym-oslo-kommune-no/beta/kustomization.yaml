@@ -8,12 +8,8 @@ resources:
   - onepassword.yaml
 
 commonLabels:
-  app.kubernetes.io/name: adapter-arkiv-acos
-  app.kubernetes.io/component: adapter
-  app.kubernetes.io/part-of: fint-arkiv
+  app.kubernetes.io/instance: adapter-arkiv-acos_bym-oslo-kommune-no
   fintlabs.no/org-id: oslo-kommune-no
-  fintlabs.no/team: arkiv
-
 
 patches:
   

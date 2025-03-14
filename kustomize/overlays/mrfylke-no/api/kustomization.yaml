@@ -10,14 +10,10 @@ resources:
 
 commonLabels:
   app.kubernetes.io/instance: adapter-arkiv-acos_mrfylke-no
-  app.kubernetes.io/name: adapter-arkiv-acos
-  app.kubernetes.io/component: adapter
-  app.kubernetes.io/part-of: fint-arkiv
-  fintlabs.no/team: arkiv
   fintlabs.no/org-id: mrfylke-no
 
 patches:
-  
+
   - target:
       kind: Deployment
       name: adapter-arkiv-acos
