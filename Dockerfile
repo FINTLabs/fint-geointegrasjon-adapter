@@ -1,5 +1,5 @@
 FROM gradle:4.10.3-jdk8-alpine AS builder
-USER gradle
+USER root
 COPY . .
 RUN gradle --no-daemon build
 
@@ -9,5 +9,4 @@ WORKDIR /app
 COPY --from=builder /home/gradle/build/deps/external/*.jar /app/
 COPY --from=builder /home/gradle/build/deps/fint/*.jar /app/
 COPY --from=builder /home/gradle/build/libs/fint-geointegrasjon-adapter-*.jar /app/fint-geointegrasjon-adapter.jar
-USER nonroot:nonroot
 CMD ["/app/fint-geointegrasjon-adapter.jar"]
