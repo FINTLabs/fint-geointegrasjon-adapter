@@ -14,7 +14,7 @@ commonLabels:
   app.kubernetes.io/component: adapter
   app.kubernetes.io/part-of: fint-arkiv
   fintlabs.no/team: arkiv
-  fintlabs.no/org-id: mrfylke.no
+  fintlabs.no/org-id: mrfylke-no
 
 patches:
   
