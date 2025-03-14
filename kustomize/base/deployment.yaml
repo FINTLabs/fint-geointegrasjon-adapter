@@ -12,6 +12,11 @@ spec:
     metadata:
       labels:
         app: adapter-arkiv-acos
+        app.kubernetes.io/name: adapter-arkiv-acos
+        app.kubernetes.io/component: adapter
+        app.kubernetes.io/part-of: fint-arkiv
+        fintlabs.no/team: arkiv
+
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "8091"
