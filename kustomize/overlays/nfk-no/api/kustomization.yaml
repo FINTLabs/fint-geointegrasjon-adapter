@@ -9,7 +9,7 @@ resources:
 
 commonLabels:
   app.kubernetes.io/instance: adapter-arkiv-acos_nfk-no
-  fintlabs.no/org-id: nfk.no
+  fintlabs.no/org-id: nfk-no
 
 patches:
   
