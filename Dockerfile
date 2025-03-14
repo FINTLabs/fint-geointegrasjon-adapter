@@ -9,5 +9,5 @@ WORKDIR /app
 COPY --from=builder /home/gradle/build/deps/external/*.jar /app/
 COPY --from=builder /home/gradle/build/deps/fint/*.jar /app/
 COPY --from=builder /home/gradle/build/libs/fint-geointegrasjon-adapter-*.jar /app/fint-geointegrasjon-adapter.jar
-USER novari:novari
+USER nonroot:nonroot
 CMD ["/app/fint-geointegrasjon-adapter.jar"]
