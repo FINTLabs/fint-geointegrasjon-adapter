@@ -26,7 +26,7 @@ spec:
             - {name: fint.adapter.endpoints.providers.samferdsel, value: https://beta.felleskomponent.no/arkiv/samferdsel/provider}
             - {name: fint.geointegrasjon.innsyn, value: '/InnsynService' }
             - {name: fint.geointegrasjon.oppdatering, value: '/OppdateringService' }
-            - {name: fint.geointegrasjon.tracing, value: 'true' }
+            - {name: fint.geointegrasjon.tracing, value: 'false' }
             - {name: fint.geointegrasjon.use-wss, value: 'false' }
             - {name: fint.geointegrasjon.fagsystem, value: ''}
             - {name: fint.geointegrasjon.tilleggstype, value: ''}
@@ -50,3 +50,5 @@ spec:
             - {name: fint.case.defaults.soknaddrosjeloyve.tilgangsrestriksjon, value: 'ISK'}
             - {name: fint.case.defaults.soknaddrosjeloyve.skjermingshjemmel, value: '§ 13 1. ledd, jf. fvl. § 13 1. ledd nr. 1'}
             - {name: fint.case.defaults.soknaddrosjeloyve.skjermingskontekst, value: 'SAK,JOURNALPOST,DOKUMENT'}
+
+            - {name: logging.level.no.fint, value: warn}
