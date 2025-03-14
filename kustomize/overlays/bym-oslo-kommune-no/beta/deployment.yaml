@@ -51,4 +51,4 @@ spec:
             - {name: fint.case.defaults.soknaddrosjeloyve.skjermingshjemmel, value: '§ 13 1. ledd, jf. fvl. § 13 1. ledd nr. 1'}
             - {name: fint.case.defaults.soknaddrosjeloyve.skjermingskontekst, value: 'SAK,JOURNALPOST,DOKUMENT'}
 
-            - {name: logging.level.no.fint, value: warn}
+            - {name: logging.level.root, value: warn}
