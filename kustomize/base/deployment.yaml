@@ -16,7 +16,7 @@ spec:
         app.kubernetes.io/component: adapter
         app.kubernetes.io/part-of: fint-arkiv
         fintlabs.no/team: arkiv
-
+        observability.fintlabs.no/loki: "true"
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "8091"
