@@ -1,6 +1,8 @@
 package no.fint.geointegrasjon.handler.noark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.arkiv.CaseDefaults;
 import no.fint.event.model.Event;
@@ -37,6 +39,10 @@ public class UpdateSakHandler implements Handler {
     private final SakExporter sakExporter;
     private CaseDefaults caseDefaults;
 
+    private final MeterRegistry meterRegistry;
+    private final Timer.Builder updateSakTimer;
+
+
     public UpdateSakHandler(ObjectMapper objectMapper,
                             ValidationService validationService,
                             CaseQueryService caseQueryService,
@@ -45,7 +51,7 @@ public class UpdateSakHandler implements Handler {
                             JournalpostService journalpostService,
                             GeointegrasjonCaseDefaultsService caseDefaultsService,
                             SakExporter sakExporter,
-                            CaseDefaults caseDefaults) {
+                            CaseDefaults caseDefaults, MeterRegistry meterRegistry) {
         this.objectMapper = objectMapper;
         this.validationService = validationService;
         this.caseQueryService = caseQueryService;
@@ -55,6 +61,10 @@ public class UpdateSakHandler implements Handler {
         this.caseDefaultsService = caseDefaultsService;
         this.sakExporter = sakExporter;
         this.caseDefaults = caseDefaults;
+        this.meterRegistry = meterRegistry;
+
+        updateSakTimer = Timer.builder("fint.arkiv.update-sak.timer")
+                .description("The P360 Archive Update Timer");
     }
 
     @Override
@@ -64,6 +74,8 @@ public class UpdateSakHandler implements Handler {
             response.setStatusCode("BAD_REQUEST");
             return;
         }
+
+        Timer.Sample sample = Timer.start(meterRegistry);
 
         Operation operation = response.getOperation();
 
@@ -90,6 +102,11 @@ public class UpdateSakHandler implements Handler {
 
         response.setResponseStatus(ResponseStatus.ACCEPTED);
         response.setData(Collections.singletonList(sakResource));
+
+        sample.stop(updateSakTimer.tag("request", "updateCase")
+                .tag("status", response.getStatus().name())
+                .tag("statusCode", response.getStatusCode() != null ? response.getStatusCode() : "N/A")
+                .register(meterRegistry));
     }
 
     private void updateCase(Event<FintLinks> event, String query, SakResource resource) {
