@@ -56,7 +56,7 @@ public class SseInitializer {
                             FintEventListener fintEventListener = new FintEventListener(component, eventHandlerService);
                             fintSse.connect(fintEventListener, ImmutableMap.of(
                                     HeaderConstants.ORG_ID, orgId,
-                                    HeaderConstants.CLIENT, "geointegrasjon-adapter",
+                                    HeaderConstants.CLIENT, "geointegrasjon-adapter@" + orgId,
                                     "x-allowed-asset-ids", orgId
                                     ));
                             sseClients.add(fintSse);
