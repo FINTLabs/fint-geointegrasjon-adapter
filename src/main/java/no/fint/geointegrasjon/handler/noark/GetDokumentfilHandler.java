@@ -1,5 +1,7 @@
 package no.fint.geointegrasjon.handler.noark;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.exception.FileNotFound;
@@ -23,8 +25,20 @@ public class GetDokumentfilHandler implements Handler {
     @Autowired
     private DokumentfilService dokumentfilService;
 
+    private final MeterRegistry meterRegistry;
+    private final Timer.Builder getDokumentfilTimer;
+
+    public GetDokumentfilHandler(MeterRegistry meterRegistry) {
+        this.meterRegistry = meterRegistry;
+        getDokumentfilTimer = Timer.builder("fint.arkiv.get-dokumentfil.timer")
+                .description("The GeoIntegrasjon Archive Dokumentfil Timer");
+    }
+
+
     @Override
     public void accept(Event<FintLinks> response) {
+        Timer.Sample sample = Timer.start(meterRegistry);
+
         try {
             String query = response.getQuery();
             if (!StringUtils.startsWithIgnoreCase(query, "systemid/")) {
@@ -40,6 +54,11 @@ public class GetDokumentfilHandler implements Handler {
             response.setResponseStatus(ResponseStatus.REJECTED);
             response.setStatusCode("NOT_FOUND");
             response.setMessage(e.getMessage());
+        } finally {
+            sample.stop(getDokumentfilTimer.tag("request", "getDokumentfil")
+                    .tag("status", response.getStatus().name())
+                    .tag("statusCode", response.getStatusCode() != null ? response.getStatusCode() : "N/A")
+                    .register(meterRegistry));
         }
     }
 

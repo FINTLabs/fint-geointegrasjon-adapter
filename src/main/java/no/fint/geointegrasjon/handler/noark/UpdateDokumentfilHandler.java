@@ -1,6 +1,8 @@
 package no.fint.geointegrasjon.handler.noark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
@@ -39,6 +41,14 @@ public class UpdateDokumentfilHandler implements Handler {
                             .format(LocalDateTime
                                     .now())));
 
+    private final MeterRegistry meterRegistry;
+    private final Timer.Builder updateDokumentfilTimer;
+
+    public UpdateDokumentfilHandler(MeterRegistry meterRegistry) {
+        this.meterRegistry = meterRegistry;
+        updateDokumentfilTimer = Timer.builder("fint.arkiv.create-dokumentfil.timer")
+                .description("The GeoIntegrasjon Archive Dokumentfil Timer");
+    }
 
     @Override
     public Set<String> actions() {
@@ -47,6 +57,7 @@ public class UpdateDokumentfilHandler implements Handler {
 
     @Override
     public void accept(Event<FintLinks> response) {
+        Timer.Sample sample = Timer.start(meterRegistry);
 
         if (response.getOperation() != Operation.CREATE || StringUtils.isNoneBlank(response.getQuery()) || response.getData().size() != 1) {
             response.setResponseStatus(ResponseStatus.REJECTED);
@@ -54,19 +65,30 @@ public class UpdateDokumentfilHandler implements Handler {
             response.setMessage("Illegal request");
             return;
         }
+
         DokumentfilResource dokumentfilResource = objectMapper.convertValue(response.getData().get(0), DokumentfilResource.class);
 
-        log.trace("Format: {}, data: {}...", dokumentfilResource.getFormat(), StringUtils.substring(dokumentfilResource.getData(), 0, 25));
+        log.trace("Format: {}, data: {}...", dokumentfilResource.getFormat(),
+                StringUtils.substring(dokumentfilResource.getData(), 0, 25));
 
         dokumentfilResource.setSystemId(FintUtils.createIdentifikator(String.format("I_%d", identifier.incrementAndGet())));
         response.getData().clear();
+
         try {
             repository.putFile(response, dokumentfilResource);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-        response.addData(dokumentfilResource);
-        response.setResponseStatus(ResponseStatus.ACCEPTED);
 
+            response.addData(dokumentfilResource);
+            response.setResponseStatus(ResponseStatus.ACCEPTED);
+        } catch (IOException e) {
+            response.setMessage(e.getMessage());
+            response.setResponseStatus(ResponseStatus.ERROR);
+
+            log.error(e.getMessage(), e);
+        } finally {
+            sample.stop(updateDokumentfilTimer.tag("request", "createDokumentfil")
+                    .tag("status", response.getStatus().name())
+                    .tag("statusCode", response.getStatusCode() != null ? response.getStatusCode() : "N/A")
+                    .register(meterRegistry));
+        }
     }
 }
