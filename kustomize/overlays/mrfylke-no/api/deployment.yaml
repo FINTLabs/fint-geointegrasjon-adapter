@@ -38,7 +38,7 @@ spec:
             - {name: fint.case.defaults.sak.arkivdel, value: 'SAK'}
 
             - {name: fint.case.defaults.soknaddrosjeloyve.title.cases, value: 'Drosjeløyve - ${organisasjonsnavn} - ${organisasjonsnummer}'}
-            - {name: fint.case.defaults.soknaddrosjeloyve.administrativEnhet, value: 'FRAMD'}
+            - {name: fint.case.defaults.soknaddrosjeloyve.administrativEnhet, value: 'FRAMDFO'}
             - {name: fint.case.defaults.soknaddrosjeloyve.arkivdel, value: 'DLØYVE'}
             - {name: fint.case.defaults.soknaddrosjeloyve.dokumentstatus, value: 'F'}
             - {name: fint.case.defaults.soknaddrosjeloyve.journalenhet, value: 'PM'}
