@@ -50,13 +50,14 @@ https://geointegrasjon.no/arkiv/veileder-arkiv/veileder-arkiv-for-leverandor-av-
 This adapter have support for OData filtering of cases. That means it's now possible to
 get cases based on a OData filter, not only `mappeid`, `systemid` and `soknadsnummer`.
 
-We currently only support `saksdato` and primary `klassifikasjon`. More will come. Maybe.
+We currently only support `arkivdel`, primary `klassifikasjon` and `saksdato`. More will come. Maybe.
 
 NB! Be aware of that journalposts are NOT included and returned with the cases when using this OData filter feature.
 
 ### Examples
-- `$filter=saksdato eq '1999-12-31'`
+- `$filter=arkivdel eq 'SAK'`
 - `$filter=klassifikasjon/primar/verdi eq '123456789'`
+- `$filter=saksdato eq '1999-12-31'`
 
 # Shielded titles
 

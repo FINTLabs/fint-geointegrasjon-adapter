@@ -20,6 +20,7 @@ public class InnsynServiceFacade {
     public InnsynServiceFacade(ArkivInnsynPort arkivInnsyn) {
         this.arkivInnsyn = arkivInnsyn;
         this.odataFilterFieldMapper = new ImmutableMap.Builder<String, String>()
+                .put("arkivdel", "saksmappe.referanseArkivdel")
                 .put("klassifikasjon/primar/verdi", "klasse.klasseID")
                 .put("saksdato", "saksmappe.saksdato")
                 .build();
