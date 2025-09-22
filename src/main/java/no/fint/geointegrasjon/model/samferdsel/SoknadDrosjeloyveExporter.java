@@ -2,8 +2,8 @@ package no.fint.geointegrasjon.model.samferdsel;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.geointegrasjon.utils.UrlUtils;
-import no.fint.model.resource.Link;
-import no.fint.model.resource.arkiv.samferdsel.SoknadDrosjeloyveResource;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.arkiv.samferdsel.SoknadDrosjeloyveResource;
 import no.geointegrasjon.arkiv.oppdatering.Saksmappe;
 import no.geointegrasjon.arkiv.oppdatering.Skjerming;
 import no.geointegrasjon.arkiv.oppdatering.Tilgangsrestriksjon;

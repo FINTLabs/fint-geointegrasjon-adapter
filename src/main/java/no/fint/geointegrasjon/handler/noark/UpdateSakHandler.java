@@ -12,9 +12,9 @@ import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.model.noark.SakExporter;
 import no.fint.geointegrasjon.service.fint.*;
 import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonFactory;
-import no.fint.model.arkiv.noark.NoarkActions;
-import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.arkiv.noark.SakResource;
+import no.novari.fint.model.arkiv.noark.NoarkActions;
+import no.novari.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.arkiv.noark.SakResource;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import org.springframework.stereotype.Service;
 

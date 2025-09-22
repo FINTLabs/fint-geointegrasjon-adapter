@@ -1,6 +1,6 @@
 package no.fint.geointegrasjon.model.samferdsel;
 
-import no.fint.model.resource.arkiv.samferdsel.SoknadDrosjeloyveResource;
+import no.novari.fint.model.resource.arkiv.samferdsel.SoknadDrosjeloyveResource;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import org.jooq.lambda.function.Consumer2;
 import org.springframework.stereotype.Service;

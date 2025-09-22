@@ -1,9 +1,9 @@
 package no.fint.geointegrasjon.model.noark;
 
-import no.fint.model.arkiv.kodeverk.Skjermingshjemmel;
-import no.fint.model.arkiv.kodeverk.Tilgangsrestriksjon;
-import no.fint.model.resource.Link;
-import no.fint.model.resource.arkiv.noark.SkjermingResource;
+import no.novari.fint.model.arkiv.kodeverk.Skjermingshjemmel;
+import no.novari.fint.model.arkiv.kodeverk.Tilgangsrestriksjon;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.arkiv.noark.SkjermingResource;
 import no.geointegrasjon.arkiv.innsyn.Skjerming;
 import org.springframework.stereotype.Service;
 

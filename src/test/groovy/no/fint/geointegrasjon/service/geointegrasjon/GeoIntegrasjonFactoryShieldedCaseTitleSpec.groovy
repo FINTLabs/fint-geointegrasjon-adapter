@@ -3,7 +3,7 @@ package no.fint.geointegrasjon.service.geointegrasjon
 import no.fint.arkiv.AdditionalFieldService
 import no.fint.arkiv.CaseProperties
 import no.fint.arkiv.TitleService
-import no.fint.model.resource.arkiv.noark.SaksmappeResource
+import no.novari.fint.model.resource.arkiv.noark.SaksmappeResource
 import spock.lang.Specification
 
 import java.util.stream.Stream

@@ -6,10 +6,10 @@ import no.fint.arkiv.CaseProperties;
 import no.fint.arkiv.TitleService;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.fint.geointegrasjon.utils.UrlUtils;
-import no.fint.model.felles.kompleksedatatyper.Kontaktinformasjon;
-import no.fint.model.resource.Link;
-import no.fint.model.resource.arkiv.noark.*;
-import no.fint.model.resource.felles.kompleksedatatyper.AdresseResource;
+import no.novari.fint.model.felles.kompleksedatatyper.Kontaktinformasjon;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.arkiv.noark.*;
+import no.novari.fint.model.resource.felles.kompleksedatatyper.AdresseResource;
 import no.geointegrasjon.arkiv.oppdatering.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.lambda.function.Consumer2;
@@ -415,7 +415,9 @@ public class GeoIntegrasjonFactory {
 
                             dokument.setTittel(db.getTittel());
                             FintUtils.ifPresent(db.getDokumentnummer(), dokument::setDokumentnummer, String::valueOf);
-                            dokument.setFormat(setKodeverdi(objectFactory::createFormat, dobj.getFormat()));
+
+                            // TODO: Sette filformat i stedet?
+                            //dokument.setFormat(setKodeverdi(objectFactory::createFormat, dobj.getFilformat().getFormat()));
 
                             setKodeverdiFromLink(db.getDokumentType(),
                                     objectFactory::createDokumenttype,

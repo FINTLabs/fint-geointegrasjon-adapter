@@ -3,8 +3,8 @@ package no.fint.geointegrasjon.handler.samferdsel;
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.handler.Handler;
-import no.fint.model.arkiv.samferdsel.SamferdselActions;
-import no.fint.model.resource.FintLinks;
+import no.novari.fint.model.arkiv.samferdsel.SamferdselActions;
+import no.novari.fint.model.resource.FintLinks;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

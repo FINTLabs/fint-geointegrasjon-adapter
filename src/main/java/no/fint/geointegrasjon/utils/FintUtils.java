@@ -2,11 +2,11 @@ package no.fint.geointegrasjon.utils;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.FintMainObject;
-import no.fint.model.felles.kompleksedatatyper.Identifikator;
-import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.Link;
-import no.fint.model.resource.arkiv.noark.SkjermingResource;
+import no.novari.fint.model.FintMainObject;
+import no.novari.fint.model.felles.kompleksedatatyper.Identifikator;
+import no.novari.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.arkiv.noark.SkjermingResource;
 import no.geointegrasjon.arkiv.innsyn.Kode;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;

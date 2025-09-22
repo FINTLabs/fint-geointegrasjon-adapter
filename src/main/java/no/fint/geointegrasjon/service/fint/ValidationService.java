@@ -3,7 +3,7 @@ package no.fint.geointegrasjon.service.fint;
 import no.fint.event.model.Event;
 import no.fint.event.model.Problem;
 import no.fint.event.model.ResponseStatus;
-import no.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.FintLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

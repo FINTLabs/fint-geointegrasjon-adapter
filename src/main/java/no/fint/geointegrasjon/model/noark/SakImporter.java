@@ -1,7 +1,7 @@
 package no.fint.geointegrasjon.model.noark;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.arkiv.noark.SakResource;
+import no.novari.fint.model.resource.arkiv.noark.SakResource;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import org.jooq.lambda.function.Consumer2;
 import org.springframework.stereotype.Service;

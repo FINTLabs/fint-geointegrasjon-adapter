@@ -1,6 +1,6 @@
 package no.fint.geointegrasjon.utils;
 
-import no.fint.model.resource.Link;
+import no.novari.fint.model.resource.Link;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
