@@ -2,7 +2,7 @@ package no.fint.geointegrasjon.model.kulturminne;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.geointegrasjon.service.geointegrasjon.GeoIntegrasjonFactory;
-import no.fint.model.resource.arkiv.kulturminnevern.DispensasjonAutomatiskFredaKulturminneResource;
+import no.novari.fint.model.resource.arkiv.kulturminnevern.DispensasjonAutomatiskFredaKulturminneResource;
 import no.geointegrasjon.arkiv.oppdatering.Saksmappe;
 import org.jooq.lambda.function.Consumer2;
 import org.springframework.beans.factory.annotation.Value;

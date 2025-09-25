@@ -9,9 +9,9 @@ import no.fint.geointegrasjon.model.noark.SaksmappeMapper;
 import no.fint.geointegrasjon.model.samferdsel.SoknadDrosjeloyveImporter;
 import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostService;
-import no.fint.model.arkiv.samferdsel.SamferdselActions;
-import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.arkiv.samferdsel.SoknadDrosjeloyveResource;
+import no.novari.fint.model.arkiv.samferdsel.SamferdselActions;
+import no.novari.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.arkiv.samferdsel.SoknadDrosjeloyveResource;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

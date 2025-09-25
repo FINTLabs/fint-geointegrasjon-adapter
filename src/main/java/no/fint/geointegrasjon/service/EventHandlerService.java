@@ -16,7 +16,7 @@ import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.service.geointegrasjon.ClientException;
 import no.fint.geointegrasjon.service.geointegrasjon.NotFoundException;
 import no.fint.geointegrasjon.service.geointegrasjon.ServerException;
-import no.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.FintLinks;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

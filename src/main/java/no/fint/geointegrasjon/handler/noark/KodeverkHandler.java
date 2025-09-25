@@ -8,10 +8,10 @@ import no.fint.event.model.ResponseStatus;
 import no.fint.event.model.Status;
 import no.fint.geointegrasjon.handler.Handler;
 import no.fint.geointegrasjon.service.geointegrasjon.InnsynServiceFacade;
-import no.fint.model.arkiv.kodeverk.KodeverkActions;
-import no.fint.model.felles.basisklasser.Begrep;
-import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.arkiv.kodeverk.*;
+import no.novari.fint.model.arkiv.kodeverk.KodeverkActions;
+import no.novari.fint.model.felles.basisklasser.Begrep;
+import no.novari.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.arkiv.kodeverk.*;
 import no.geointegrasjon.arkiv.innsyn.Kode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static no.fint.geointegrasjon.utils.FintUtils.createIdentifikator;
-import static no.fint.model.arkiv.kodeverk.KodeverkActions.*;
+import static no.novari.fint.model.arkiv.kodeverk.KodeverkActions.*;
 
 @Service
 @Slf4j
