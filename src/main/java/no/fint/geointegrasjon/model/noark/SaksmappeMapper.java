@@ -125,7 +125,8 @@ public class SaksmappeMapper {
             ifPresent(saksmappe.getSkjerming(), resource::setSkjerming, skjermingMapper);
 
             if (!titleService.parseCaseTitle(caseProperties.getTitle(), resource, saksmappe.getTittel())) {
-                log.warn("Title {} does not match expected format for {}", saksmappe.getTittel(), resource.getClass());
+                // The legacy of Case Defaults. Downgraded to trace (not warn) for now. Noise when using FLYT.
+                log.trace("Title {} does not match expected format for {}", saksmappe.getTittel(), resource.getClass());
                 //FIXME throw new InvalidCaseType(resource.getClass().getSimpleName());
             }
             additionalFieldService.setFieldsForResource(caseProperties.getField(),
