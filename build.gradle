@@ -70,9 +70,9 @@ dependencies {
     compile('no.fint:fint-spring-secrets:0.2.2')
     compile('no.fint:fint-sse:2.0.1')
 
-    compile('no.fintlabs:fint-arkiv-case-defaults:4.4.0')
-    compile("no.fint:fint-arkiv-resource-model-java:${apiVersion}")
-    compile("no.fint:fint-administrasjon-resource-model-java:${apiVersion}")
+    compile('no.fintlabs:fint-arkiv-case-defaults:5.0.0-rc-1')
+    compile("no.novari:fint-arkiv-resource-model-java:${apiVersion}")
+    compile("no.novari:fint-administrasjon-resource-model-java:${apiVersion}")
 
     compile('no.fintlabs:fint-antlr:1.2.0')
 

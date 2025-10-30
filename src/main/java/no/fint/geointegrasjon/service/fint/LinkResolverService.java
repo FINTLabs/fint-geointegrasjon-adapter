@@ -2,9 +2,9 @@ package no.fint.geointegrasjon.service.fint;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.arkiv.LinkResolver;
-import no.fint.model.resource.Link;
-import no.fint.model.resource.felles.kodeverk.FylkeResource;
-import no.fint.model.resource.felles.kodeverk.KommuneResource;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.felles.kodeverk.FylkeResource;
+import no.novari.fint.model.resource.felles.kodeverk.KommuneResource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;

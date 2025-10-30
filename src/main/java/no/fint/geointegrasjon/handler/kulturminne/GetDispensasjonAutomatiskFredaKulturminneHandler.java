@@ -8,8 +8,8 @@ import no.fint.geointegrasjon.model.kulturminne.DispensasjonAutomatiskFredaKultu
 import no.fint.geointegrasjon.model.noark.SaksmappeMapper;
 import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostService;
-import no.fint.model.arkiv.kulturminnevern.KulturminnevernActions;
-import no.fint.model.resource.FintLinks;
+import no.novari.fint.model.arkiv.kulturminnevern.KulturminnevernActions;
+import no.novari.fint.model.resource.FintLinks;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

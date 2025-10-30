@@ -1,14 +1,14 @@
 package no.fint.geointegrasjon.model.noark;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.arkiv.kodeverk.DokumentStatus;
-import no.fint.model.arkiv.kodeverk.DokumentType;
-import no.fint.model.arkiv.kodeverk.TilknyttetRegistreringSom;
-import no.fint.model.arkiv.kodeverk.Variantformat;
-import no.fint.model.arkiv.noark.Dokumentfil;
-import no.fint.model.resource.Link;
-import no.fint.model.resource.arkiv.noark.DokumentbeskrivelseResource;
-import no.fint.model.resource.arkiv.noark.DokumentobjektResource;
+import no.novari.fint.model.arkiv.kodeverk.DokumentStatus;
+import no.novari.fint.model.arkiv.kodeverk.DokumentType;
+import no.novari.fint.model.arkiv.kodeverk.TilknyttetRegistreringSom;
+import no.novari.fint.model.arkiv.kodeverk.Variantformat;
+import no.novari.fint.model.arkiv.noark.Dokumentfil;
+import no.novari.fint.model.resource.Link;
+import no.novari.fint.model.resource.arkiv.noark.DokumentbeskrivelseResource;
+import no.novari.fint.model.resource.arkiv.noark.DokumentobjektResource;
 import no.geointegrasjon.arkiv.innsyn.Dokument;
 import no.geointegrasjon.arkiv.innsyn.Kode;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,8 @@ public class DokumentbeskrivelseMapper {
             ifPresent(dokument.getDokumentstatus(), resource::addDokumentstatus, Link.apply(DokumentStatus.class, "systemid").compose(Kode::getKodeverdi));
 
             DokumentobjektResource o = new DokumentobjektResource();
-            ifPresent(dokument.getFormat(), o::setFormat, Kode::getKodeverdi);
+            // TODO: Sette filformat i stedet?
+            // ifPresent(dokument.getFormat(), o::setFormat, Kode::getKodeverdi);
             ifPresent(dokument.getVariantformat(), o::addVariantFormat, Link.apply(Variantformat.class, "systemid").compose(Kode::getKodeverdi));
             ifPresent(dokument.getSystemID(), o::addReferanseDokumentfil, Link.apply(Dokumentfil.class, "systemid"));
 

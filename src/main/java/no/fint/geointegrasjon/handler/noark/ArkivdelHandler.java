@@ -2,9 +2,9 @@ package no.fint.geointegrasjon.handler.noark;
 
 import no.fint.event.model.Event;
 import no.fint.geointegrasjon.handler.Handler;
-import no.fint.model.arkiv.noark.NoarkActions;
-import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.arkiv.noark.ArkivdelResource;
+import no.novari.fint.model.arkiv.noark.NoarkActions;
+import no.novari.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.arkiv.noark.ArkivdelResource;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

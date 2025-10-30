@@ -1,7 +1,7 @@
 package no.fint.geointegrasjon.service.fint;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.arkiv.noark.JournalpostResource;
+import no.novari.fint.model.resource.arkiv.noark.JournalpostResource;
 import org.springframework.stereotype.Service;
 
 @Service

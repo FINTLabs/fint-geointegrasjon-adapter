@@ -11,9 +11,9 @@ import no.fint.geointegrasjon.model.noark.SakImporter;
 import no.fint.geointegrasjon.model.noark.SaksmappeMapper;
 import no.fint.geointegrasjon.service.fint.CaseQueryService;
 import no.fint.geointegrasjon.service.fint.JournalpostService;
-import no.fint.model.arkiv.noark.NoarkActions;
-import no.fint.model.resource.FintLinks;
-import no.fint.model.resource.arkiv.noark.SakResource;
+import no.novari.fint.model.arkiv.noark.NoarkActions;
+import no.novari.fint.model.resource.FintLinks;
+import no.novari.fint.model.resource.arkiv.noark.SakResource;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

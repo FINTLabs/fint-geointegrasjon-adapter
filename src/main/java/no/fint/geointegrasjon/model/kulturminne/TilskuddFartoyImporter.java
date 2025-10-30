@@ -1,7 +1,7 @@
 package no.fint.geointegrasjon.model.kulturminne;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.model.resource.arkiv.kulturminnevern.TilskuddFartoyResource;
+import no.novari.fint.model.resource.arkiv.kulturminnevern.TilskuddFartoyResource;
 import no.geointegrasjon.arkiv.innsyn.Saksmappe;
 import org.jooq.lambda.function.Consumer2;
 import org.springframework.stereotype.Service;
