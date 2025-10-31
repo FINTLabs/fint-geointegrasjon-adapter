@@ -51,6 +51,8 @@ class InnsynServiceFacadeODataFilterSpec extends Specification {
         "klassifikasjon/primar/verdi eq '123456789'" || "klasse.klasseID"               || "123456789"
         "saksdato eq '31-12-1999'"                   || "saksdato"                      || "31-12-1999"
         "arkivdel eq 'SAK'"                          || "saksmappe.referanseArkivdel"   || "SAK"
+        "saksmappetype eq 'OPL'"                     || "saksmappe.mappetype"           || "OPL"
+        "saksstatus eq 'B'"                          || "saksmappe.saksstatus"          || "B"
     }
 
     def "odata filter not supported test"() {

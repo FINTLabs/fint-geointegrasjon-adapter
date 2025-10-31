@@ -50,7 +50,7 @@ jobs:
         org: [ nfk-no, mrfylke-no ]
         cluster: [ aks-api-fint-2022-02-08 ]
         include:
-          - org: mrfylke-no
+          - org: nfk-no
             cluster: aks-api-fint-2022-02-08
             deploy-every-branch: true
 
