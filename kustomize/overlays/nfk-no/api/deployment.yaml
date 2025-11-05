@@ -91,9 +91,9 @@ spec:
             - { name: fint.adapter.endpoints.providers.noark, value: http://provider-arkiv-noark.default:8080/arkiv/noark/provider }
             - { name: fint.adapter.endpoints.providers.kulturminne, value: http://provider-arkiv-kulturminnevern.default:8080/arkiv/kulturminnevern/provider }
 
-            - { name: fint.geointegrasjon.tracing, value: 'false' }
+            - { name: fint.geointegrasjon.tracing, value: 'true' }
             - { name: fint.geointegrasjon.use-wss, value: 'true' }
             - { name: fint.geointegrasjon.fagsystem, value: 'FAGSYS' }
             - { name: fint.geointegrasjon.tilleggstype, value: 'TILLEGG' }
 
-            - {name: logging.level.no.fint, value: info}
+            - {name: logging.level.no.fint, value: debug}
