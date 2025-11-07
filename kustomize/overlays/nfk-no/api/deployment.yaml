@@ -29,7 +29,8 @@ spec:
             - { name: fint.adapter.organizations, value: nfk.no }
             - { name: fint.adapter.reject-unknown-events, value: 'false' }
 
-            - {name: fint.case.defaults.sak.arkivdel, value: 'SA'}
+            - { name: fint.case.defaults.sak.arkivdel, value: 'SA' }
+            - { name: fint.case.defaults.sak.journalenhet, value: 'PM' }
 
             - { name: fint.case.defaults.tilskuddfartoy.title.cases, value: 'Tilskudd - fartøyvern - ${kallesignal} ${fartoyNavn}' }
             - { name: fint.case.defaults.tilskuddfartoy.title.records, value: '#{tittel.replaceFirst("Digisak - ","")}' }
