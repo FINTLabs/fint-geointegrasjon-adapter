@@ -26,7 +26,6 @@ public class InnsynServiceFacade {
                 .put("saksmappetype", "saksmappe.mappetype")
                 .put("saksstatus", "saksmappe.saksstatus")
                 .put("tittel", "saksmappe.tittel")
-                .put("offentligtittel", "saksmappe.offentligtittel")
                 .build();
     }
 

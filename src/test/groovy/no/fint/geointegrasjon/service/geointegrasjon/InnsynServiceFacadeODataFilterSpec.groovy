@@ -54,7 +54,6 @@ class InnsynServiceFacadeODataFilterSpec extends Specification {
         "saksmappetype eq 'OPL'"                       || "saksmappe.mappetype"         || "OPL"
         "saksstatus eq 'B'"                            || "saksmappe.saksstatus"        || "B"
         "tittel eq 'En ganske unik sakstittel'"        || "saksmappe.tittel"            || "En ganske unik sakstittel"
-        "offentligtittel eq 'En offentlig sakstittel'" || "saksmappe.offentligtittel"   || "En offentlig sakstittel"
     }
 
     def "odata filter not supported test"() {

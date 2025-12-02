@@ -62,7 +62,6 @@ NB! Be aware of that journalposts are NOT included and returned with the cases w
 - `$filter=saksmappetype eq 'OPL'`
 - `$filter=saksstatus eq 'B'`
 - `$filter=tittel eq 'En ganske unik sakstittel'`
-- `$filter=offentligtittel eq 'En offentlig sakstittel'`
 
 # Shielded titles
 
