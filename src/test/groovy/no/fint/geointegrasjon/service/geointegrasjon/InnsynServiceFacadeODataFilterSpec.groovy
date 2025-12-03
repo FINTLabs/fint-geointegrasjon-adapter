@@ -47,12 +47,13 @@ class InnsynServiceFacadeODataFilterSpec extends Specification {
         assert capturedValue.getListe().get(0).getKriterie().toString().contains(websakFilterFeltverdi)
 
         where:
-        odataFilter                                  || websakFilterFeltnnavn           || websakFilterFeltverdi
-        "klassifikasjon/primar/verdi eq '123456789'" || "klasse.klasseID"               || "123456789"
-        "saksdato eq '31-12-1999'"                   || "saksdato"                      || "31-12-1999"
-        "arkivdel eq 'SAK'"                          || "saksmappe.referanseArkivdel"   || "SAK"
-        "saksmappetype eq 'OPL'"                     || "saksmappe.mappetype"           || "OPL"
-        "saksstatus eq 'B'"                          || "saksmappe.saksstatus"          || "B"
+        odataFilter                                    || websakFilterFeltnnavn         || websakFilterFeltverdi
+        "klassifikasjon/primar/verdi eq '123456789'"   || "klasse.klasseID"             || "123456789"
+        "saksdato eq '31-12-1999'"                     || "saksdato"                    || "31-12-1999"
+        "arkivdel eq 'SAK'"                            || "saksmappe.referanseArkivdel" || "SAK"
+        "saksmappetype eq 'OPL'"                       || "saksmappe.mappetype"         || "OPL"
+        "saksstatus eq 'B'"                            || "saksmappe.saksstatus"        || "B"
+        "tittel eq 'En ganske unik sakstittel'"        || "saksmappe.tittel"            || "En ganske unik sakstittel"
     }
 
     def "odata filter not supported test"() {
