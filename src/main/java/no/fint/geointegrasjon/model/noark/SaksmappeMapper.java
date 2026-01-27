@@ -1,9 +1,9 @@
 package no.fint.geointegrasjon.model.noark;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.arkiv.AdditionalFieldService;
-import no.fint.arkiv.CaseProperties;
-import no.fint.arkiv.TitleService;
+import no.novari.fint.arkiv.AdditionalFieldService;
+import no.novari.fint.arkiv.CaseProperties;
+import no.novari.fint.arkiv.TitleService;
 import no.fint.geointegrasjon.utils.FintUtils;
 import no.novari.fint.model.arkiv.kodeverk.Merknadstype;
 import no.novari.fint.model.arkiv.kodeverk.Saksmappetype;

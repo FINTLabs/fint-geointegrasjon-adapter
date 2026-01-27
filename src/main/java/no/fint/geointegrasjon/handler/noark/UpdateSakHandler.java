@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.arkiv.CaseDefaults;
+import no.novari.fint.arkiv.CaseDefaults;
 import no.fint.event.model.Event;
 import no.fint.event.model.Operation;
 import no.fint.event.model.ResponseStatus;

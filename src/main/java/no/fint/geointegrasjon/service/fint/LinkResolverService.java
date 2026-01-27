@@ -1,7 +1,7 @@
 package no.fint.geointegrasjon.service.fint;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fint.arkiv.LinkResolver;
+import no.novari.fint.arkiv.LinkResolver;
 import no.novari.fint.model.resource.Link;
 import no.novari.fint.model.resource.felles.kodeverk.FylkeResource;
 import no.novari.fint.model.resource.felles.kodeverk.KommuneResource;

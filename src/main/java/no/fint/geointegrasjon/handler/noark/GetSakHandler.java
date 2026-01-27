@@ -3,7 +3,7 @@ package no.fint.geointegrasjon.handler.noark;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.arkiv.CaseProperties;
+import no.novari.fint.arkiv.CaseProperties;
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
 import no.fint.geointegrasjon.handler.Handler;

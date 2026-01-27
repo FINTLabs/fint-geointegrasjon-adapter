@@ -2,7 +2,7 @@ package no.fint.geointegrasjon.handler.noark;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.arkiv.NoarkMetadataService;
+import no.novari.fint.arkiv.NoarkMetadataService;
 import no.fint.event.model.Event;
 import no.fint.event.model.ResponseStatus;
 import no.fint.event.model.Status;
