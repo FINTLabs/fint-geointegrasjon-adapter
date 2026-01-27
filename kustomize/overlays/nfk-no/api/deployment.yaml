@@ -7,6 +7,13 @@ spec:
     spec:
       containers:
         - name: adapter-arkiv-acos
+          resources:
+            limits:
+              memory: "6Gi"
+              cpu: "2"
+            requests:
+              memory: "5Gi"
+              cpu: "1024m"
           envFrom:
             - secretRef:
                 name: arkiv-acos-onepassword
@@ -15,14 +22,15 @@ spec:
           env:
             - name: JAVA_TOOL_OPTIONS
               value: >-
-                -Xmx2G -verbose:gc
+                -Xmx5G -verbose:gc
                 -XX:+ExitOnOutOfMemoryError
                 -Dfile.encoding=UTF-8
             - { name: springfox.title, value: "Nordland ACOS GeoIntegrasjon" }
             - { name: fint.adapter.organizations, value: nfk.no }
             - { name: fint.adapter.reject-unknown-events, value: 'false' }
 
-            - {name: fint.case.defaults.sak.arkivdel, value: 'SA'}
+            - { name: fint.case.defaults.sak.arkivdel, value: 'SA' }
+            - { name: fint.case.defaults.sak.journalenhet, value: 'PM' }
 
             - { name: fint.case.defaults.tilskuddfartoy.title.cases, value: 'Tilskudd - fartøyvern - ${kallesignal} ${fartoyNavn}' }
             - { name: fint.case.defaults.tilskuddfartoy.title.records, value: '#{tittel.replaceFirst("Digisak - ","")}' }
