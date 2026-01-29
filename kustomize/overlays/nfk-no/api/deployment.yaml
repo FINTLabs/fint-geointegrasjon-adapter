@@ -9,10 +9,10 @@ spec:
         - name: adapter-arkiv-acos
           resources:
             limits:
-              memory: "6Gi"
+              memory: "12Gi"
               cpu: "2"
             requests:
-              memory: "5Gi"
+              memory: "10Gi"
               cpu: "1024m"
           envFrom:
             - secretRef:
@@ -22,7 +22,7 @@ spec:
           env:
             - name: JAVA_TOOL_OPTIONS
               value: >-
-                -Xmx5G -verbose:gc
+                -Xmx10G -verbose:gc
                 -XX:+ExitOnOutOfMemoryError
                 -Dfile.encoding=UTF-8
             - { name: springfox.title, value: "Nordland ACOS GeoIntegrasjon" }
