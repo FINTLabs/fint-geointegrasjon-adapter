@@ -97,4 +97,4 @@ spec:
             - { name: fint.geointegrasjon.fagsystem, value: 'FAGSYS' }
             - { name: fint.geointegrasjon.tilleggstype, value: 'TILLEGG' }
 
-            - {name: logging.level.no.fint, value: info}
+            - {name: logging.level.no.fint, value: debug}
