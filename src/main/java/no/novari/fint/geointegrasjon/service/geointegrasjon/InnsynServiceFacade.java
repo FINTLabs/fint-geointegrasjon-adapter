@@ -211,16 +211,16 @@ public class InnsynServiceFacade {
     }
 
     private JournalpostListe finnJournalposterGittSaksmappeNoekkel(Saksnoekkel nokkel) {
-        int count = 0;
+        int retry = 0;
         final int maxRetries = 3;
         Boolean returnerKorrespondansepart = true;
+        Boolean returnerAvskrivning = true;
 
-        while (count < maxRetries) {
+        while (retry < maxRetries) {
 
             try {
                 Boolean returnerMerknad = true;
                 Boolean returnerTilleggsinformasjon = true;
-                Boolean returnerAvskrivning = true;
                 ArkivKontekst kontekst = null;
 
                 return arkivInnsyn.finnJournalposterGittSaksmappeNoekkel(nokkel, returnerMerknad, returnerTilleggsinformasjon,
@@ -232,10 +232,24 @@ public class InnsynServiceFacade {
             } catch (SystemException e) {
                 throw FaultHandler.handleFault(e.getFaultInfo());
             } catch (FinderException e) {
+                retry++;
                 log.warn("FYI, we caught an FinderException right now (but we'll continue): {}", e.getFaultInfo());
-                log.info("Don't give up 🎶 (we'll give it a new try without korrespondansepart 🤞).");
-                returnerKorrespondansepart = false;
-                count++;
+                if (retry == 1) {
+                    log.info("Don't give up 🎶 (we'll give it a new try without korrespondansepart 🤞).");
+                    returnerKorrespondansepart = false;
+                }
+
+                if (retry == 2) {
+                    log.info("Don't give up 🎶 (we'll give it a new try without avskrivning 🤞).");
+                    returnerAvskrivning = false;
+                    returnerKorrespondansepart = true;
+                }
+
+                if (retry == 3) {
+                    log.info("Don't give up 🎶 (we'll give it a new try without both korrespondansepart and avskrivning 🤞).");
+                    returnerKorrespondansepart = false;
+                    returnerAvskrivning = false;
+                }
             } catch (ImplementationException e) {
                 throw FaultHandler.handleFault(e.getFaultInfo());
             } catch (OperationalException e) {
