@@ -14,6 +14,7 @@ import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 import org.apache.wss4j.dom.WSConstants;
@@ -81,6 +82,14 @@ public class GeoIntegrasjonConfiguration {
     private void setupEndpoint(Object port, String address, String username, String password) {
         final Client client = ClientProxy.getClient(port);
         client.getRequestContext().put(Message.ENDPOINT_ADDRESS, address);
+
+        if (log.isDebugEnabled()) {
+            HTTPConduit conduit = (HTTPConduit) client.getConduit();
+            HTTPClientPolicy policy = conduit.getClient();
+
+            log.debug("FYI, we're running with a client (cxf) with connectionTimeout={} and receiveTimeout={}",
+                    policy.getConnectionTimeout(), policy.getReceiveTimeout());
+        }
 
         if (useWSS) {
             client
