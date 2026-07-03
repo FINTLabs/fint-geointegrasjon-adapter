@@ -83,6 +83,7 @@ public class GeoIntegrasjonConfiguration {
         final Client client = ClientProxy.getClient(port);
         client.getRequestContext().put(Message.ENDPOINT_ADDRESS, address);
 
+        // Consider increase these timeout values. After summer.
         if (log.isDebugEnabled()) {
             HTTPConduit conduit = (HTTPConduit) client.getConduit();
             HTTPClientPolicy policy = conduit.getClient();

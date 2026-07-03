@@ -98,4 +98,4 @@ spec:
             - { name: fint.geointegrasjon.tilleggstype, value: 'TILLEGG' }
 
             - { name: logging.level.no.fint, value: info}
-            - { name: logging.level.no.novari.fint.geointegrasjon, value: debug }
+            - { name: logging.level.no.novari.fint.geointegrasjon, value: info }
