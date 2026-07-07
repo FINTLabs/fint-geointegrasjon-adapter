@@ -68,14 +68,13 @@ public class GetSakHandler implements Handler {
                         try {
                             journalpostService.addJournalpost(sak);
                         } catch (Exception e) {
-                            log.error("Feil ved henting av journalposter for query={}, systemId={}, saksnummer={}, mappeId={}, tittel={}",
+                            log.error("Feil ved henting av journalposter for query={}, systemId={}, saksnummer={}, mappeId={}",
                                     query,
                                     sak != null && sak.getSystemId() != null ? sak.getSystemId().getIdentifikatorverdi() : null,
                                     sak != null && sak.getSaksaar() != null && sak.getSakssekvensnummer() != null
                                             ? sak.getSaksaar() + "/" + sak.getSakssekvensnummer()
                                             : sak != null && sak.getMappeId() != null ? sak.getMappeId().getIdentifikatorverdi() : null,
                                     sak != null ? sak.getMappeId() : null,
-                                    sak != null ? sak.getTittel() : null,
                                     e);
                             throw e;
                         }
