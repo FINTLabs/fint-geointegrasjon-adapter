@@ -52,20 +52,32 @@ public class JournalpostService {
         String caseSystemId = getCaseSystemId(sakResource);
         String caseNumber = getCaseNumber(sakResource);
         if (caseSystemId == null) {
-            log.error("Kan ikke hente journalposter fordi saksmappe mangler systemId. saksnummer={}, mappeId={}, tittel={}",
+            log.error("Kan ikke hente journalposter fordi saksmappe mangler systemId. saksnummer={}, mappeId={}",
                     caseNumber,
-                    sakResource != null ? sakResource.getMappeId() : null,
-                    sakResource != null ? sakResource.getTittel() : null);
+                    sakResource != null ? sakResource.getMappeId() : null);
             throw new IllegalStateException("Saksmappe mangler systemId.identifikatorverdi");
         }
 
         sakResource.setJournalpost(new LinkedList<>());
         no.geointegrasjon.arkiv.innsyn.JournalpostListe journalpostListe =
                 innsynServiceFacade.finnJournalposterGittSaksmappeSystemID(caseSystemId);
+        if (journalpostListe == null) {
+            log.error("GeoIntegrasjon returnerte null JournalpostListe for saksmappe systemId={}, saksnummer={}, mappeId={}",
+                    caseSystemId,
+                    caseNumber,
+                    sakResource.getMappeId());
+            throw new IllegalStateException("GeoIntegrasjon returnerte null JournalpostListe");
+        }
+        if (journalpostListe.getListe() == null) {
+            log.error("GeoIntegrasjon returnerte JournalpostListe uten liste for saksmappe systemId={}, saksnummer={}, mappeId={}",
+                    caseSystemId,
+                    caseNumber,
+                    sakResource.getMappeId());
+            throw new IllegalStateException("GeoIntegrasjon returnerte JournalpostListe uten liste");
+        }
 
         List<no.geointegrasjon.arkiv.innsyn.Journalpost> journalposter =
-                Objects.requireNonNull(journalpostListe.getListe(),
-                        "JournalpostListe.getListe() var null for saksmappe " + caseSystemId);
+                Objects.requireNonNull(journalpostListe.getListe());
 
         log.debug("Hentet {} journalposter for saksmappe systemId={}, saksnummer={}, mappeId={}",
                 journalposter.size(),
@@ -77,13 +89,12 @@ public class JournalpostService {
             try {
                 sakResource.getJournalpost().add(journalpostMapper.toFintResource(JournalpostResource::new).apply(journalpost));
             } catch (Exception e) {
-                log.error("Feil ved mapping av journalpost for saksmappe systemId={}, saksnummer={}, mappeId={}, journalpostSystemId={}, referanseSakSystemId={}, tittel={}",
+                log.error("Feil ved mapping av journalpost for saksmappe systemId={}, saksnummer={}, mappeId={}, journalpostSystemId={}, referanseSakSystemId={}",
                         caseSystemId,
                         caseNumber,
                         sakResource.getMappeId(),
                         journalpost != null ? journalpost.getSystemID() : null,
                         getReferencedCaseSystemId(journalpost),
-                        journalpost != null ? journalpost.getTittel() : null,
                         e);
                 throw e;
             }

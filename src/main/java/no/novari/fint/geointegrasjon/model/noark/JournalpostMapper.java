@@ -50,9 +50,8 @@ public class JournalpostMapper {
             JournalpostResource resource = supplier.get();
             String referanseSakSystemId = getReferanseSakSystemId(journalpost);
             if (referanseSakSystemId == null) {
-                log.warn("Journalpost mangler referanse til sak. journalpostSystemId={}, tittel={}, journalposttype={}, journalstatus={}",
+                log.warn("Journalpost mangler referanse til sak. journalpostSystemId={}, journalposttype={}, journalstatus={}",
                         journalpost.getSystemID(),
-                        journalpost.getTittel(),
                         journalpost.getJournalposttype() != null ? journalpost.getJournalposttype().getKodeverdi() : null,
                         journalpost.getJournalstatus() != null ? journalpost.getJournalstatus().getKodeverdi() : null);
             } else {
