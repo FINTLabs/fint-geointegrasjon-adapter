@@ -48,9 +48,18 @@ public class JournalpostMapper {
     public Function<Journalpost, JournalpostResource> toFintResource(Supplier<JournalpostResource> supplier) {
         return journalpost -> {
             JournalpostResource resource = supplier.get();
-            log.debug("Journalpost SystemID {} for sak {}",
-                    journalpost.getSystemID(),
-                    journalpost.getReferanseSakSystemID().getSystemID().getId());
+            String referanseSakSystemId = getReferanseSakSystemId(journalpost);
+            if (referanseSakSystemId == null) {
+                log.warn("Journalpost mangler referanse til sak. journalpostSystemId={}, tittel={}, journalposttype={}, journalstatus={}",
+                        journalpost.getSystemID(),
+                        journalpost.getTittel(),
+                        journalpost.getJournalposttype() != null ? journalpost.getJournalposttype().getKodeverdi() : null,
+                        journalpost.getJournalstatus() != null ? journalpost.getJournalstatus().getKodeverdi() : null);
+            } else {
+                log.debug("Journalpost SystemID {} for sak {}",
+                        journalpost.getSystemID(),
+                        referanseSakSystemId);
+            }
 
             ifPresent(journalpost.getTittel(), resource::setTittel);
             ifPresent(journalpost.getOffentligTittel(), resource::setOffentligTittel);
@@ -121,6 +130,14 @@ public class JournalpostMapper {
 
             return resource;
         };
+    }
+
+    private String getReferanseSakSystemId(Journalpost journalpost) {
+        if (journalpost == null || journalpost.getReferanseSakSystemID() == null ||
+                journalpost.getReferanseSakSystemID().getSystemID() == null) {
+            return null;
+        }
+        return journalpost.getReferanseSakSystemID().getSystemID().getId();
     }
 
     private KorrespondansepartResource part(Korrespondansepart korrespondansepart) {

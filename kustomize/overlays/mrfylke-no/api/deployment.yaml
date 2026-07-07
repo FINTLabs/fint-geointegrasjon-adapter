@@ -104,3 +104,4 @@ spec:
             - {name: fint.case.defaults.dispensasjonautomatiskfredakulturminne.saksmappeType, value: 'KUA'}
 
             - {name: logging.level.no.fint, value: info}
+            - {name: logging.level.no.novari.fint.geointegrasjon, value: debug}

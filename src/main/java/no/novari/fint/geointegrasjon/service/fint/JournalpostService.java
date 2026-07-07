@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -48,13 +49,45 @@ public class JournalpostService {
     private boolean noark_3_2;
 
     public void addJournalpost(SaksmappeResource sakResource) {
+        String caseSystemId = getCaseSystemId(sakResource);
+        String caseNumber = getCaseNumber(sakResource);
+        if (caseSystemId == null) {
+            log.error("Kan ikke hente journalposter fordi saksmappe mangler systemId. saksnummer={}, mappeId={}, tittel={}",
+                    caseNumber,
+                    sakResource != null ? sakResource.getMappeId() : null,
+                    sakResource != null ? sakResource.getTittel() : null);
+            throw new IllegalStateException("Saksmappe mangler systemId.identifikatorverdi");
+        }
+
         sakResource.setJournalpost(new LinkedList<>());
-        innsynServiceFacade
-                .finnJournalposterGittSaksmappeSystemID(sakResource.getSystemId().getIdentifikatorverdi())
-                .getListe()
-                .stream()
-                .map(journalpostMapper.toFintResource(JournalpostResource::new))
-                .forEach(sakResource.getJournalpost()::add);
+        no.geointegrasjon.arkiv.innsyn.JournalpostListe journalpostListe =
+                innsynServiceFacade.finnJournalposterGittSaksmappeSystemID(caseSystemId);
+
+        List<no.geointegrasjon.arkiv.innsyn.Journalpost> journalposter =
+                Objects.requireNonNull(journalpostListe.getListe(),
+                        "JournalpostListe.getListe() var null for saksmappe " + caseSystemId);
+
+        log.debug("Hentet {} journalposter for saksmappe systemId={}, saksnummer={}, mappeId={}",
+                journalposter.size(),
+                caseSystemId,
+                caseNumber,
+                sakResource.getMappeId());
+
+        for (no.geointegrasjon.arkiv.innsyn.Journalpost journalpost : journalposter) {
+            try {
+                sakResource.getJournalpost().add(journalpostMapper.toFintResource(JournalpostResource::new).apply(journalpost));
+            } catch (Exception e) {
+                log.error("Feil ved mapping av journalpost for saksmappe systemId={}, saksnummer={}, mappeId={}, journalpostSystemId={}, referanseSakSystemId={}, tittel={}",
+                        caseSystemId,
+                        caseNumber,
+                        sakResource.getMappeId(),
+                        journalpost != null ? journalpost.getSystemID() : null,
+                        getReferencedCaseSystemId(journalpost),
+                        journalpost != null ? journalpost.getTittel() : null,
+                        e);
+                throw e;
+            }
+        }
     }
 
     public void createJournalpostForCase(String caseId, SaksmappeResource resource) {
@@ -105,5 +138,30 @@ public class JournalpostService {
                 return journalstatus;
         }
 
+    }
+
+    private String getCaseSystemId(SaksmappeResource sakResource) {
+        if (sakResource == null || sakResource.getSystemId() == null) {
+            return null;
+        }
+        return sakResource.getSystemId().getIdentifikatorverdi();
+    }
+
+    private String getReferencedCaseSystemId(no.geointegrasjon.arkiv.innsyn.Journalpost journalpost) {
+        if (journalpost == null || journalpost.getReferanseSakSystemID() == null ||
+                journalpost.getReferanseSakSystemID().getSystemID() == null) {
+            return null;
+        }
+        return journalpost.getReferanseSakSystemID().getSystemID().getId();
+    }
+
+    private String getCaseNumber(SaksmappeResource sakResource) {
+        if (sakResource == null) {
+            return null;
+        }
+        if (sakResource.getSaksaar() != null && sakResource.getSakssekvensnummer() != null) {
+            return sakResource.getSaksaar() + "/" + sakResource.getSakssekvensnummer();
+        }
+        return sakResource.getMappeId() != null ? sakResource.getMappeId().getIdentifikatorverdi() : null;
     }
 }
