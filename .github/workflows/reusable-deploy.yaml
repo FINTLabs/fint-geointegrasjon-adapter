@@ -53,7 +53,7 @@ jobs:
       - name: Set the target cluster
         uses: azure/aks-set-context@v5
         with:
-          cluster-name: ${{ vars.cluster }}
+          cluster-name: ${{ vars[format('{0}_CLUSTER_NAME', inputs.environment)] }}
           resource-group: rg-aks-${{ inputs.environment }}
           admin: true
 
