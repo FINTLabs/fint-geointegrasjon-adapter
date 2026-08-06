@@ -1,0 +1,41 @@
+name: CD
+
+on: push
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  packages: read
+  contents: read
+
+jobs:
+
+  build-push:
+    uses: ./.github/workflows/reusable-build-push.yaml
+    secrets: inherit
+
+  beta:
+    needs: build-push
+    uses: ./.github/workflows/reusable-deploy.yaml
+    strategy:
+      matrix:
+        org: [ bym-oslo-kommune-no ]
+    with:
+      tags: ${{ needs.build-push.outputs.tags }}
+      environment: beta
+      deploy-every-branch: true
+    secrets: inherit
+
+  prod:
+    needs: [ build-push, beta ]
+    uses: ./.github/workflows/reusable-deploy.yaml
+    strategy:
+      matrix:
+        org: [ nfk-no, mrfylke-no ]
+    with:
+      tags: ${{ needs.build-push.outputs.tags }}
+      environment: api
+      org: ${{ matrix.org }}
+    secrets: inherit
