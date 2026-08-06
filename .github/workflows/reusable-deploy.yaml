@@ -20,7 +20,7 @@ on:
 jobs:
   deploy-to-aks:
     name: deploy
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.org && format('{0} ({1})', inputs.org, inputs.environment) || inputs.environment }}
     if: >-
       github.actor != 'dependabot[bot]' &&
       (
