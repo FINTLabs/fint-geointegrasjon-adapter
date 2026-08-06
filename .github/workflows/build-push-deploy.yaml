@@ -20,7 +20,7 @@ jobs:
 
   beta:
     needs: build-push
-    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml@main
+    uses: fintlabs/shared-workflows/.github/workflows/kustomize-deploy.yaml@v0
     strategy:
       matrix:
         org: [ bym-oslo-kommune-no ]
@@ -33,7 +33,7 @@ jobs:
 
   prod:
     needs: [ build-push, beta ]
-    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml@main
+    uses: fintlabs/shared-workflows/.github/workflows/kustomize-deploy.yaml@v0
     strategy:
       matrix:
         org: [ nfk-no, mrfylke-no ]
