@@ -11,14 +11,14 @@ permissions:
 jobs:
 
   build-push:
-    uses: fintlabs/shared-workflows/.github/workflows/java-gradle-build-push.yaml
+    uses: fintlabs/shared-workflows/.github/workflows/java-gradle-build-push.yaml@main
     with:
       java-version: '8'
     secrets: inherit
 
   beta:
     needs: build-push
-    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml
+    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml@main
     strategy:
       matrix:
         org: [ bym-oslo-kommune-no ]
@@ -31,7 +31,7 @@ jobs:
 
   prod:
     needs: [ build-push, beta ]
-    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml
+    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml@main
     strategy:
       matrix:
         org: [ nfk-no, mrfylke-no ]
