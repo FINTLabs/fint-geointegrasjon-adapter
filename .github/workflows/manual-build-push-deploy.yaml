@@ -1,0 +1,45 @@
+name: Manual Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Organization and environment to deploy'
+        required: true
+        type: choice
+        options:
+          - bym-oslo-kommune-no/beta
+          - nfk-no/api
+          - mrfylke-no/api
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      org: ${{ steps.parse.outputs.org }}
+      environment: ${{ steps.parse.outputs.environment }}
+    steps:
+      - id: parse
+        run: |
+          echo "org=$(echo '${{ inputs.target }}' | cut -d/ -f1)" >> $GITHUB_OUTPUT
+          echo "environment=$(echo '${{ inputs.target }}' | cut -d/ -f2)" >> $GITHUB_OUTPUT
+
+  build-push:
+    uses: fintlabs/shared-workflows/.github/workflows/java-gradle-build-push.yaml@main
+    with:
+      java-version: '8'
+    secrets: inherit
+
+  deploy:
+    needs: [ setup, build-push ]
+    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml@main
+    with:
+      tags: ${{ needs.build-push.outputs.tags }}
+      environment: ${{ needs.setup.outputs.environment }}
+      org: ${{ needs.setup.outputs.org }}
+      deploy-every-branch: true
+    secrets: inherit
