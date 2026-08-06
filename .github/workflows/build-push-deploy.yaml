@@ -1,3 +1,5 @@
+name: Build, Push and Deploy
+
 on: push
 
 concurrency:
