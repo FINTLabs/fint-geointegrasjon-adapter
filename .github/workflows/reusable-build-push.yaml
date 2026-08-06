@@ -2,6 +2,11 @@ name: Reusable Build and Publish Workflow
 
 on:
   workflow_call:
+    inputs:
+      java-version:
+        required: false
+        type: string
+        default: '8'
     outputs:
       tags:
         description: Docker image tags
@@ -17,6 +22,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: corretto
+          java-version: ${{ inputs.java-version }}
+          cache: gradle
+
+      - uses: gradle/actions/wrapper-validation@v6
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Build with Gradle
+        run: ./gradlew build
 
       - name: Docker meta
         id: meta
