@@ -54,7 +54,7 @@ jobs:
         uses: azure/aks-set-context@v5
         with:
           cluster-name: ${{ vars[format('{0}_CLUSTER_NAME', inputs.environment)] }}
-          resource-group: rg-aks-${{ inputs.environment }}
+          resource-group: ${{ vars[format('{0}_CLUSTER_RESOURCE_GROUP', inputs.environment)] }}
           admin: true
 
       - name: Get namespace from manifest
