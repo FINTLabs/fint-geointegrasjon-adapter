@@ -10,7 +10,7 @@ This adapter integrates with [GeoIntegrasjon Arkiv](https://geointegrasjon.no/ar
 | `fint.adapter.endpoints.sse`            | Url to the sse endpoint for provider                                       | `/sse/%s`                                              |
 | `fint.adapter.endpoints.status`         | Url to the status endpoint for provider                                    | `/status`                                              |
 | `fint.adapter.endpoints.response`       | Url to the response endpoint for provider                                  | `/response`                                            |
-| `fint.adapter.endpoints.providers.*`    | Baseurl for the `*` provider (see below)                                   |                                                        |
+| `fint.adapter.endpoints.providers.*`    | Base URL for the `*` provider (see below)                                   |                                                        |
 | `fint.adapter.sse-expiration`           | Expiration for SSE messages                                                | `1200000`                                              |                                                        
 | `fint.internal-files.directory`         | Location for `FILE` based internal files                                   | `file-cache`                                           |                                                        
 | `fint.internal-files.connection-string` | Azure connection string to storage account for `BLOB` based internal files |                                                        |
@@ -47,13 +47,13 @@ https://geointegrasjon.no/arkiv/veileder-arkiv/veileder-arkiv-for-leverandor-av-
 
 # OData filter support
 
-This adapter have support for OData filtering of cases. That means it's now possible to
-get cases based on a OData filter, not only `mappeid`, `systemid` and `soknadsnummer`.
+This adapter has support for OData filtering of cases. That means it's now possible to
+get cases based on an OData filter, not only `mappeid`, `systemid` and `soknadsnummer`.
 
 We currently support `arkivdel`, primary `klassifikasjon`, `saksdato`, `saksmappetype`, `saksstatus`, `tittel` and
 `offentligtittel`.
 
-NB! Be aware of that journalposts are NOT included and returned with the cases when using this OData filter feature.
+NB! Be aware that journalposts are NOT included and returned with the cases when using this OData filter feature.
 
 ### Examples
 - `$filter=arkivdel eq 'SAK'`
@@ -74,5 +74,5 @@ Parts of titles can be shielded. To shield content, use `@...@`. It is only poss
 
 ### Result
 
-Everything between the two `@` will be shielded, resulting in an `offentligTittel` in ACOS WebSak `Opplæringsmappe` and
+Everything between the two `@` symbols will be shielded, resulting in an `offentligTittel` in ACOS WebSak `Opplæringsmappe` and
 the field `skjermetTittel` set to `true`.
