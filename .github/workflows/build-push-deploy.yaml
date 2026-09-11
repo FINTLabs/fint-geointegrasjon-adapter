@@ -36,9 +36,12 @@ jobs:
     uses: fintlabs/shared-workflows/.github/workflows/kustomize-deploy.yaml@v0
     strategy:
       matrix:
-        org: [ nfk-no, mrfylke-no ]
+        org:
+          - nfk-no
+          - mrfylke-no
     with:
       tags: ${{ needs.build-push.outputs.tags }}
       environment: api
       org: ${{ matrix.org }}
+      deploy-every-branch: false
     secrets: inherit
