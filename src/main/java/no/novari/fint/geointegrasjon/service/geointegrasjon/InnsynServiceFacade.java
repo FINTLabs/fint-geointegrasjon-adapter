@@ -216,7 +216,7 @@ public class InnsynServiceFacade {
         Boolean returnerKorrespondansepart = true;
         Boolean returnerAvskrivning = true;
 
-        while (retry < maxRetries) {
+        while (retry <= maxRetries) {
 
             try {
                 Boolean returnerMerknad = true;
