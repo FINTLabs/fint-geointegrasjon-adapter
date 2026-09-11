@@ -37,11 +37,11 @@ jobs:
     strategy:
       matrix:
         org:
-          #- nfk-no
+          - nfk-no
           - mrfylke-no
     with:
       tags: ${{ needs.build-push.outputs.tags }}
       environment: api
       org: ${{ matrix.org }}
-      deploy-every-branch: true
+      deploy-every-branch: false
     secrets: inherit
