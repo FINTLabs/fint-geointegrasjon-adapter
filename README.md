@@ -2,6 +2,12 @@
 
 This adapter integrates with [GeoIntegrasjon Arkiv](https://geointegrasjon.no/arkiv/).
 
+## Additional trusted CA certificates
+
+The Docker image includes GlobalSign Root R46 for outgoing HTTPS connections,
+alongside the runtime's existing trusted root certificates. See
+[`certs/README.md`](certs/README.md) for the certificate source and fingerprint.
+
 ## Adapter configuration
 
 | Key                                     | Description                                                                | Default                                                |
