@@ -28,7 +28,7 @@ jobs:
       tags: ${{ needs.build-push.outputs.tags }}
       environment: beta
       org: ${{ matrix.org }}
-      deploy-every-branch: true
+      deploy-every-branch: false
     secrets: inherit
 
   prod:
